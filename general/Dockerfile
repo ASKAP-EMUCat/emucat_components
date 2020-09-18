@@ -12,8 +12,9 @@ RUN pip3 install pyvo retry jinja2 asyncio asyncpg aiofiles
 
 RUN mkdir /input
 RUN mkdir /output
-COPY ./scripts/casda.py /usr/bin
-COPY ./scripts/catalog.py /usr/bin
-WORKDIR /usr/bin
+RUN mkdir /scripts
+COPY ./scripts/casda.py /scripts
+COPY ./scripts/catalog.py /scripts
+WORKDIR /scripts
 RUN chmod +x casda.py
 RUN chmod +x catalog.py

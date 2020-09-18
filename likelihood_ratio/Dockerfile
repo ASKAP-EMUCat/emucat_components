@@ -12,7 +12,8 @@ RUN pip3 install numpy astropy scipy matplotlib aplpy pandas
 
 RUN mkdir /input
 RUN mkdir /output
-COPY ./likelihood_ratio/likelihood_ratio_matching.py /usr/bin
-COPY ./likelihood_ratio/lr_wrapper_emucat.py /usr/bin
-WORKDIR /usr/bin
+RUN mkdir /scripts
+COPY ./likelihood_ratio/likelihood_ratio_matching.py /scripts
+COPY ./likelihood_ratio/lr_wrapper_emucat.py /scripts
+WORKDIR /scripts
 RUN chmod +x lr_wrapper_emucat.py
