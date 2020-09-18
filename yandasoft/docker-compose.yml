@@ -1,0 +1,9 @@
+version: '3'
+
+services:
+  yandasoft_devel_focal:
+    image: yandasoft_devel_focal
+    container_name: yandasoft_devel_focal
+    build:
+      context: .
+      dockerfile: Dockerfile

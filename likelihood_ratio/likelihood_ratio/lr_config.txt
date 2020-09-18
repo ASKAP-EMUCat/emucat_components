@@ -1,0 +1,17 @@
+parameter	value
+outdir		'./output'
+bands		'w1'
+id_col		'designation'
+ra_col		'ra'
+dec_col		'dec'
+mask_col	'Mask'
+sg_col		'stargal'
+mag_col		'Xmpro'
+mag_err_col	'Xsigmpro'
+flux_col	'col_flux_int'
+flux_err_col	'col_flux_int_err'
+radio_ra_col    'col_ra_deg_cont'
+radio_dec_col   'col_dec_deg_cont'
+radio_id_col    'col_component_id'
+beam_size	10
+cal_errors	0.1

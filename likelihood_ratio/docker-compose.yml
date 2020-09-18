@@ -1,0 +1,9 @@
+version: '3'
+
+services:
+  emucat_lhr:
+    image: emucat_lhr
+    container_name: emucat_lhr
+    build:
+      context: .
+      dockerfile: Dockerfile
