@@ -3,7 +3,7 @@ import xml.etree.ElementTree as ET
 import aiofiles
 import asyncio
 import asyncpg
-import csv
+import os
 import sys
 import random
 import string
@@ -49,6 +49,14 @@ async def db_components_upsert_many(conn, rows):
                                      '$16, $17, $18, $19, $20, $21, $22, $23, $24, $25, $26, $27, $28, $29,'
                                      '$30, $31, $32, $33, $34, $35, $36, $37, $38, $39) '
                                      'ON CONFLICT ("mosaic_id", "component_name", "ra_deg_cont", "dec_deg_cont") DO NOTHING',
+                                     rows)
+
+
+async def db_lhr_upsert_many(conn, rows):
+    await conn.executemany('INSERT INTO emucat.sources_lhr_allwise ("component_id", "wise_id", "w1_LR",'
+                                     '"w1_Rel","w1_n_cont","w1_separation")'
+                                     'VALUES($1, $2, $3, $4, $5, $6) '
+                                     'ON CONFLICT ("component_id", "wise_id") DO NOTHING',
                                      rows)
 
 
@@ -122,7 +130,10 @@ async def import_selavy_catalog(conn, ser_name: str, filename: str):
     for param in root.findall('./ivoa:RESOURCE/ivoa:TABLE/ivoa:PARAM', ns):
         key = param.get('name')
         value = convert(param.get('value'), param.get('datatype'))
+        if key == 'imageFile':
+            value = os.path.basename(value)
         mosaic_map[key] = value
+
 
     mosaic_map['ser_id'] = ser_id
     params = list(mosaic_map.values())
@@ -141,6 +152,40 @@ async def import_selavy_catalog(conn, ser_name: str, filename: str):
     await db_components_upsert_many(conn, rows)
 
 
+async def import_lhr_catalog(conn, filename: str):
+    ns = {'ivoa': 'http://www.ivoa.net/xml/VOTable/v1.4'}
+
+    content = await _get_file_bytes(filename, mode='r')
+    root = ET.fromstring(content)
+
+    datatypes = []
+    for field in root.findall('./ivoa:RESOURCE/ivoa:TABLE/ivoa:FIELD', ns):
+        datatypes.append(field.get('datatype'))
+
+    rows = []
+    for i, tr in enumerate(root.findall('./ivoa:RESOURCE/ivoa:TABLE/ivoa:DATA/ivoa:TABLEDATA/ivoa:TR', ns)):
+        cat = [convert(td.text.strip(), datatypes[j]) for j, td in enumerate(tr)]
+        rows.append(cat)
+
+    await db_lhr_upsert_many(conn, rows)
+
+
+def import_lhr(args):
+    asyncio.run(import_lhr_votable(args.input, args.credentials))
+
+
+async def import_lhr_votable(filename: str, credentials: str):
+    config = configparser.ConfigParser()
+    config.read(credentials)
+    user = config['emucat_database']['user']
+    password = config['emucat_database']['password']
+    database = config['emucat_database']['database']
+    host = config['emucat_database']['host']
+
+    conn = await asyncpg.connect(user=user, password=password, database=database, host=host)
+    await import_lhr_catalog(conn, filename)
+
+
 def import_selavy(args):
     asyncio.run(import_selavy_votable(args.ser, args.input, args.credentials))
 
@@ -155,28 +200,6 @@ async def import_selavy_votable(ser_name: str, filename: str, credentials: str):
 
     conn = await asyncpg.connect(user=user, password=password, database=database, host=host)
     await import_selavy_catalog(conn, ser_name, filename)
-
-
-def parse_allwise_votable(filename: str):
-    ns = 'http://www.ivoa.net/xml/VOTable/v1.3'
-    ET.register_namespace("ivoa", ns)
-    q = ET.QName(ns, "TR")
-    context = ET.iterparse(filename, events=("start", "end"))
-    context = iter(context)
-    ev, root = next(context)
-
-    for ev, el in context:
-        if ev == 'end' and el.tag == q:
-            data = [el[0].text, f'({el[1].text}d, {el[2].text}d)']
-            yield data
-            root.clear()
-
-
-async def export_allwise_votable_to_csv(input_path: str, output_path: str):
-    with open(output_path, 'w', newline='') as f:
-        writer = csv.writer(f)
-        for data in parse_wise_votable(input_path):
-            writer.writerows([data])
 
 
 def random_word(length):
@@ -202,11 +225,17 @@ def main():
     parser = argparse.ArgumentParser(prog='EMUCat', description='EMUCat catalog functions.')
     subparsers = parser.add_subparsers(help='sub-command help')
 
-    input_selavy = subparsers.add_parser('import_selavy', help='Import selavy component catalog into EMUCat.')
-    input_selavy.add_argument('-s', '--ser', help='Source extraction region.', type=str, required=True)
-    input_selavy.add_argument('-i', '--input', help='Selavy votable.', type=str, required=True)
-    input_selavy.add_argument('-c', '--credentials', help='Credentials file.', required=True)
-    input_selavy.set_defaults(func=import_selavy)
+    input_selavy_parser = subparsers.add_parser('import_selavy', help='Import selavy component catalog into EMUCat.')
+    input_selavy_parser.add_argument('-s', '--ser', help='Source extraction region.', type=str, required=True)
+    input_selavy_parser.add_argument('-i', '--input', help='Selavy votable.', type=str, required=True)
+    input_selavy_parser.add_argument('-c', '--credentials', help='Credentials file.', required=True)
+    input_selavy_parser.set_defaults(func=import_selavy)
+
+    input_lhr_parser = subparsers.add_parser('import_lhr', help='Import lhr results into EMUCat.')
+    input_lhr_parser.add_argument('-i', '--input', help='lhr votable.', type=str, required=True)
+    input_lhr_parser.add_argument('-c', '--credentials', help='Credentials file.', required=True)
+    input_lhr_parser.set_defaults(func=import_lhr)
+
     args = parser.parse_args()
     args.func(args)
 
