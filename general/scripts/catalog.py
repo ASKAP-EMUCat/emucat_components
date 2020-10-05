@@ -79,7 +79,7 @@ def convert(value, datatype):
     if datatype == 'float':
         return float(value)
     elif datatype =='boolean':
-        return bool(value)
+        return bool(int(value))
     elif datatype == 'int':
         return int(value)
     elif datatype == 'double':
