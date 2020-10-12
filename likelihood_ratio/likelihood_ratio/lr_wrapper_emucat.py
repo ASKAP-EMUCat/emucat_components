@@ -9,7 +9,7 @@
 
 import os
 import argparse, subprocess, os, numpy as np, pandas as pd
-from astropy.table import Table
+from astropy.table import Table, join
 from astropy.io import fits
 from astropy.wcs import WCS
 from astropy.coordinates import SkyCoord
@@ -99,7 +99,37 @@ def add_mask_and_stargal_cols(mwfile, fileformat='fits'):
     return
 
 
-def VOTable_to_fits(fname_in, fname_out, over_write=True):
+def good_data(data, flagcol, flagval, replace=False, param2col='', scalefactor=2,
+              warning_col_name='q_warning'):
+    ###address issue with flux_int_err == 0
+    'either filter out or replace bad data based on column value'
+    'assumes data as astropy table'
+    
+    if replace == True:
+        ###arrays to keep easy track of what I'm actually doing here!
+        flagcol_array = np.array(data[flagcol])
+        param2_array = np.array(data[param2col])
+        ##convert bad values
+        baddata = (flagcol_array==flagval)
+        flagcol_array[baddata] = param2_array[baddata]/scalefactor
+        ##e.g. flux_err ==0, if param2 is flux, then this assumes source is scalefactor*sigma
+        data[flagcol] = flagcol_array
+        ##add warning column
+        warning = np.zeros(len(data))
+        warning[baddata] = 1
+        data[warning_col_name] = warning.astype(int)
+    
+    else:
+        data = data[(data[flagcol]!=flagval)]
+        ##add warning col for method consistency (all zeros in this case)
+        data[warning_col_name] = np.zeros(len(data)).astype(int)
+
+    return(data)
+
+
+def VOTable_to_fits(fname_in, fname_out, over_write=True, filterbad=False,
+                    flagcol='', flagval='', replace=False, param2col='',
+                    flagscale=2):
     ###create fits copy of VOTable from EMUcat for use with LR code
     data = Table.read(fname_in, format='votable')
     for c in data.columns.values():
@@ -107,12 +137,35 @@ def VOTable_to_fits(fname_in, fname_out, over_write=True):
             as_str = data[c.name].astype('str')
             data.replace_column(c.name, as_str)
 
+    ##filter/replace bad data (e.g. flux_err == 0)
+    if filterbad == True:
+        data = good_data(data=data, flagcol=flagcol, flagval=flagval,
+                         replace=replace, param2col=param2col,
+                         scalefactor=flagscale)
+
     data.write(fname_out, format='fits', overwrite=over_write)
     return
 
 
-def output_to_VOTable(fname_in, fname_out, overwrite=True):
+def output_to_VOTable(fname_in, fname_out, overwrite=True,
+                      merge_with_other=False, other_table='',
+                      other_format='votable', main_on='', other_on='',
+                      needcolumns=[]):
+    'take output data and convert to votable for emucat'
+    
     data = Table.read(fname_in, format='ascii')
+    
+    ###if need to merge with other data
+    if merge_with_other == True:
+        other_data =  Table.read(other_table, format=other_format)
+        ###ensure same column name in both tables
+        needcolumns = [main_on] + needcolumns ##ensures join key in subset
+        if main_on == other_on:
+            data = join(data, other_data[needcolumns], keys=main_on, join_type='left')
+        else:
+            other_data[main_on] = other_data[other_on]
+            data = join(data, other_data[needcolumns], keys=main_on, join_type='left')
+    
     data.write(fname_out, format='votable', overwrite=overwrite)
     return
 
@@ -131,9 +184,12 @@ def run_lr(fakefile='fakemask.fits', racol='ra', deccol='dec'):
                         help='configuration file.')
     args = parser.parse_args()
     
-    ###extract info from config file - need outdir
+    ###extract info from config file - need outdir, radio ID, flux and err cols
     config_info = pd.read_table(args.config, sep='\s+').replace("'", "", regex=True)
     outdir = config_info[(config_info['parameter']=='outdir')].iloc[0]['value']
+    radio_id = config_info[(config_info['parameter']=='radio_id_col')].iloc[0]['value']
+    radio_s_col = config_info[(config_info['parameter']=='flux_col')].iloc[0]['value']
+    radio_s_err_col = config_info[(config_info['parameter']=='flux_err_col')].iloc[0]['value']
 
     try:
         os.makedirs(outdir)
@@ -145,7 +201,12 @@ def run_lr(fakefile='fakemask.fits', racol='ra', deccol='dec'):
     fitsnames = [os.path.splitext(fname)[0]+'.fits' for fname in table_data]
 
     for i in range(len(table_data)):
-        VOTable_to_fits(fname_in=table_data[i], fname_out=fitsnames[i])
+        if i == 1:
+            VOTable_to_fits(fname_in=table_data[i], fname_out=fitsnames[i],
+                            filterbad=True, flagcol=radio_s_err_col, flagval=0,
+                            replace=True, param2col=radio_s_col, flagscale=2)
+        else:
+            VOTable_to_fits(fname_in=table_data[i], fname_out=fitsnames[i])
     
     ###add in mask and stargal columns
     add_mask_and_stargal_cols(mwfile=fitsnames[0])
@@ -161,11 +222,15 @@ def run_lr(fakefile='fakemask.fits', racol='ra', deccol='dec'):
          snr_cut=5, LR_threshold=0.8)
 
     ###convert outputs (keep those that end in '_LR_matches.dat') to VOTable
+    ###add merging tables to get q_warning
 
     for filename in os.listdir(outdir):
         if '_LR_matches.dat' in filename:
             newname = os.path.join(outdir, filename.split('.')[0] + '.xml')
-            output_to_VOTable(fname_in=os.path.join(outdir, filename), fname_out=newname, overwrite=True)
+            output_to_VOTable(fname_in=os.path.join(outdir, filename), fname_out=newname,
+                              overwrite=True, merge_with_other=True, other_table=fitsnames[1],
+                              other_format='fits', main_on='radio_ID', other_on=radio_id,
+                              needcolumns=['q_warning'])
 
     ##tidy up - get rid of surplus (add in moving files to target directory)
     '''for filename in file_list:
