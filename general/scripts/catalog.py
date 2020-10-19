@@ -19,45 +19,50 @@ logging.basicConfig(stream=sys.stdout,
 
 async def db_moasic_upsert(conn, row):
     mosaic_id = await conn.fetchrow('INSERT INTO emucat.mosaics ("ser_id", "table_version", "image_file", '
-                                     '"flag_subsection",'
-                                     '"subsection", "flag_statsec", "statsec", "search_type", "flag_negative", '
-                                     '"flag_baseline", "flag_robuststats", "flag_fdr", "threshold", "flag_growth", '
-                                     '"growth_threshold", "min_pix", "min_channels", "min_voxels", "flag_adjacent", '
-                                     '"thresh_velocity", "flag_rejectbeforemerge", "flag_twostagemerging", '
-                                     '"pixel_centre", "flag_smooth", "flag_atrous", "reference_frequency", '
-                                     '"threshold_actual") '
-                                     'VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15,'
-                                     '$16, $17, $18, $19, $20, $21, $22, $23, $24, $25, $26, $27) '
-                                     'ON CONFLICT ("ser_id", "subsection") '
-                                     'DO UPDATE SET subsection = EXCLUDED.subsection RETURNING id',
-                                     *row)
+                                    '"flag_subsection",'
+                                    '"subsection", "flag_statsec", "statsec", "search_type", "flag_negative", '
+                                    '"flag_baseline", "flag_robuststats", "flag_fdr", "threshold", "flag_growth", '
+                                    '"growth_threshold", "min_pix", "min_channels", "min_voxels", "flag_adjacent", '
+                                    '"thresh_velocity", "flag_rejectbeforemerge", "flag_twostagemerging", '
+                                    '"pixel_centre", "flag_smooth", "flag_atrous", "reference_frequency", '
+                                    '"threshold_actual") '
+                                    'VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15,'
+                                    '$16, $17, $18, $19, $20, $21, $22, $23, $24, $25, $26, $27) '
+                                    'ON CONFLICT ("ser_id", "subsection") '
+                                    'DO UPDATE SET subsection = EXCLUDED.subsection RETURNING id',
+                                    *row)
     return mosaic_id[0]
 
 
 async def db_components_upsert_many(conn, rows):
     await conn.executemany('INSERT INTO emucat.components ("mosaic_id","island_id","component_id",'
-                                     '"component_name","ra_hms_cont","dec_hms_cont","ra_deg_cont",'
-                                     '"dec_deg_cont","ra_err","dec_err","freq","flux_peak","flux_peak_err",'
-                                     '"flux_int","flux_int_err","maj_axis","min_axis","pos_ang","maj_axis_err",'
-                                     '"min_axis_err","pos_ang_err","maj_axis_deconv","min_axis_deconv",'
-                                     '"pos_ang_deconv","maj_axis_deconv_err","min_axis_deconv_err",'
-                                     '"pos_ang_deconv_err","chi_squared_fit","rms_fit_gauss","spectral_index",'
-                                     '"spectral_curvature","spectral_index_err","spectral_curvature_err",'
-                                     '"rms_image","has_siblings","fit_is_estimate","spectral_index_from_tt",'
-                                     '"flag_c4","comment")'
-                                     'VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15,'
-                                     '$16, $17, $18, $19, $20, $21, $22, $23, $24, $25, $26, $27, $28, $29,'
-                                     '$30, $31, $32, $33, $34, $35, $36, $37, $38, $39) '
-                                     'ON CONFLICT ("mosaic_id", "component_name", "ra_deg_cont", "dec_deg_cont") DO NOTHING',
-                                     rows)
+                           '"component_name","ra_hms_cont","dec_hms_cont","ra_deg_cont",'
+                           '"dec_deg_cont","ra_err","dec_err","freq","flux_peak","flux_peak_err",'
+                           '"flux_int","flux_int_err","maj_axis","min_axis","pos_ang","maj_axis_err",'
+                           '"min_axis_err","pos_ang_err","maj_axis_deconv","min_axis_deconv",'
+                           '"pos_ang_deconv","maj_axis_deconv_err","min_axis_deconv_err",'
+                           '"pos_ang_deconv_err","chi_squared_fit","rms_fit_gauss","spectral_index",'
+                           '"spectral_curvature","spectral_index_err","spectral_curvature_err",'
+                           '"rms_image","has_siblings","fit_is_estimate","spectral_index_from_tt",'
+                           '"flag_c4","comment")'
+                           'VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15,'
+                           '$16, $17, $18, $19, $20, $21, $22, $23, $24, $25, $26, $27, $28, $29,'
+                           '$30, $31, $32, $33, $34, $35, $36, $37, $38, $39) '
+                           'ON CONFLICT ("mosaic_id", "component_name", "ra_deg_cont", "dec_deg_cont") DO NOTHING',
+                           rows)
 
 
 async def db_lhr_upsert_many(conn, rows):
     await conn.executemany('INSERT INTO emucat.sources_lhr_allwise ("component_id", "wise_id", "w1_LR",'
-                                     '"w1_Rel","w1_n_cont","w1_separation")'
-                                     'VALUES($1, $2, $3, $4, $5, $6) '
-                                     'ON CONFLICT ("component_id", "wise_id") DO NOTHING',
-                                     rows)
+                           '"w1_Rel","w1_n_cont","w1_separation")'
+                           'VALUES($1, $2, $3, $4, $5, $6) '
+                           'ON CONFLICT ("component_id", "wise_id") '
+                           'DO UPDATE SET '
+                           '"w1_LR"=EXCLUDED."w1_LR",'
+                           '"w1_Rel"=EXCLUDED."w1_Rel",'
+                           '"w1_n_cont"=EXCLUDED."w1_n_cont",'
+                           '"w1_separation"=EXCLUDED."w1_separation"',
+                            rows)
 
 
 async def _get_file_bytes(path: str, mode: str = 'rb'):
@@ -78,9 +83,11 @@ async def _get_file_bytes(path: str, mode: str = 'rb'):
 def convert(value, datatype):
     if datatype == 'float':
         return float(value)
-    elif datatype =='boolean':
+    elif datatype == 'boolean':
         return bool(int(value))
     elif datatype == 'int':
+        return int(value)
+    elif datatype == 'long':
         return int(value)
     elif datatype == 'double':
         return float(value)
@@ -165,6 +172,8 @@ async def import_lhr_catalog(conn, filename: str):
     rows = []
     for i, tr in enumerate(root.findall('./ivoa:RESOURCE/ivoa:TABLE/ivoa:DATA/ivoa:TABLEDATA/ivoa:TR', ns)):
         cat = [convert(td.text.strip(), datatypes[j]) for j, td in enumerate(tr)]
+        # not interested in q_warning
+        cat.pop()
         rows.append(cat)
 
     await db_lhr_upsert_many(conn, rows)
