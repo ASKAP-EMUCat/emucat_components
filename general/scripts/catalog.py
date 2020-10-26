@@ -10,6 +10,8 @@ import string
 import logging
 import argparse
 import configparser
+import pyvo as vo
+import logging
 
 
 logging.basicConfig(stream=sys.stdout,
@@ -230,6 +232,88 @@ async def import_allwise_catalog_from_csv(input_path: str):
             await conn.fetchrow(copy_sql)
 
 
+def connect_to_noao():
+    return vo.dal.TAPService("https://datalab.noao.edu/tap")
+
+
+async def _import_des_from_lhr(ser: str, credentials: str):
+    loop = asyncio.get_event_loop()
+
+    config = configparser.ConfigParser()
+    config.read(credentials)
+    user = config['emucat_database']['user']
+    password = config['emucat_database']['password']
+    database = config['emucat_database']['database']
+    host = config['emucat_database']['host']
+
+    # Get the lhr sources that dont already exist in des_dr1
+    fetch = 'SELECT distinct(lhr.wise_id) ' \
+            'FROM emucat.components c, emucat.mosaics m, emucat.source_extraction_regions s, ' \
+            'emucat.sources_lhr_allwise lhr ' \
+            'LEFT JOIN emucat.allwise as aw on lhr.wise_id = aw.designation ' \
+            'LEFT JOIN emucat.des_dr1 as des on aw.designation = des.wise_id ' \
+            'WHERE c.mosaic_id=m.id ' \
+            'AND m.ser_id=s.id ' \
+            'AND lhr.component_id=c.id ' \
+            'AND s.name=$1 ' \
+            'AND des.wise_id is NULL'
+
+    count = 0
+    noao = await loop.run_in_executor(None, connect_to_noao)
+    insert_conn = await asyncpg.connect(user=user, password=password, database=database, host=host)
+    conn = await asyncpg.connect(user=user, password=password, database=database, host=host)
+    async with conn.transaction():
+        cur = await conn.cursor(fetch, ser)
+        while True:
+            records = await cur.fetch(10000)
+            if not records:
+                break
+
+            logging.info(f'Getting des_dr1 records from {len(records)} lhr matches.')
+
+            result = ', '.join("'{0}'".format(r[0]) for r in records)
+
+            sql = f"SELECT daw.designation,dm.mag_auto_g,dm.mag_auto_r,dm.mag_auto_i,dm.mag_auto_z,dm.mag_auto_y " \
+                  f"FROM des_dr1.des_allwise daw, des_dr1.mag dm " \
+                  f"WHERE daw.coadd_object_id = dm.coadd_object_id AND daw.designation " \
+                  f"IN ({result})"
+
+            logging.info(f'Searching des_dr1 archive.')
+
+            rowset = noao.search(sql)
+            logging.info(f'Found {len(rowset)} des_dr1 matches.')
+            if len(rowset) == 0:
+                continue
+
+            count += len(rowset)
+            insert_rows = []
+            for row in rowset:
+                insert_rows.append([r for r in row.values()])
+
+            logging.info(f'Inserting {len(rowset)} into des_dr1.')
+            async with insert_conn.transaction():
+                await insert_conn.executemany('INSERT INTO emucat.des_dr1 ("wise_id", "mag_auto_g", "mag_auto_r", '
+                                              '"mag_auto_i", "mag_auto_z", "mag_auto_y") '
+                                              'VALUES($1, $2, $3, $4, $5, $6) '
+                                              'ON CONFLICT ("wise_id") '
+                                              'DO NOTHING',
+                                              insert_rows)
+
+    logging.info(f'des_dr1 import complete, total of {count} records inserted.')
+
+
+async def _delete_components(ser: str, credentials: str):
+    pass
+
+
+def import_des_from_lhr(args):
+    asyncio.run(_import_des_from_lhr(args.ser, args.credentials))
+
+
+def delete_components(args):
+    asyncio.run(_delete_components(args.ser, args.credentials))
+
+
 def main():
     parser = argparse.ArgumentParser(prog='EMUCat', description='EMUCat catalog functions.')
     subparsers = parser.add_subparsers(help='sub-command help')
@@ -244,6 +328,18 @@ def main():
     input_lhr_parser.add_argument('-i', '--input', help='lhr votable.', type=str, required=True)
     input_lhr_parser.add_argument('-c', '--credentials', help='Credentials file.', required=True)
     input_lhr_parser.set_defaults(func=import_lhr)
+
+    import_des_from_lhr_parser = subparsers.add_parser('import_des_from_lhr',
+                                                       help='Import des_dr1 catalog based on lhr matches.')
+    import_des_from_lhr_parser.add_argument('-s', '--ser', help='Source extraction region.', type=str, required=True)
+    import_des_from_lhr_parser.add_argument('-c', '--credentials', help='Credentials file.', required=True)
+    import_des_from_lhr_parser.set_defaults(func=import_des_from_lhr)
+
+    delete_components_parser = subparsers.add_parser('delete_components',
+                                                     help='Delete all components of a SER.')
+    delete_components_parser.add_argument('-s', '--ser', help='Source extraction region.', type=str, required=True)
+    delete_components_parser.add_argument('-c', '--credentials', help='Credentials file.', required=True)
+    delete_components_parser.set_defaults(func=delete_components)
 
     args = parser.parse_args()
     args.func(args)
