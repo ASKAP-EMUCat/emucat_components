@@ -66,8 +66,6 @@ def download_casda_obscore_fits(rowset, check_exists, output_dir, timeout, crede
     for row in rowset:
         dl = row['access_url']
         filename = row['filename']
-        dl = dl.decode("utf-8")
-        filename = filename.decode("utf-8")
         req = urllib.request.Request(dl)
 
         credentials = ('%s:%s' % (username, password))
