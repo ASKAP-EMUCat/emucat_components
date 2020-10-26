@@ -11,7 +11,6 @@ import logging
 import argparse
 import configparser
 import pyvo as vo
-import logging
 
 
 logging.basicConfig(stream=sys.stdout,
@@ -303,7 +302,20 @@ async def _import_des_from_lhr(ser: str, credentials: str):
 
 
 async def _delete_components(ser: str, credentials: str):
-    pass
+    config = configparser.ConfigParser()
+    config.read(credentials)
+    user = config['emucat_database']['user']
+    password = config['emucat_database']['password']
+    database = config['emucat_database']['database']
+    host = config['emucat_database']['host']
+
+    sql = 'DELETE FROM emucat.components c WHERE c.mosaic_id IN ' \
+          '(SELECT m.id FROM emucat.mosaics m, emucat.source_extraction_regions s WHERE m.ser_id=s.id AND s.name=$1)'
+
+    conn = await asyncpg.connect(user=user, password=password, database=database, host=host)
+    async with conn.transaction():
+        result = await conn.execute(sql, ser)
+        logging.info(result)
 
 
 def import_des_from_lhr(args):
