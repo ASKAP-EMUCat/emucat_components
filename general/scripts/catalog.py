@@ -309,8 +309,8 @@ async def _delete_components(ser: str, credentials: str):
     database = config['emucat_database']['database']
     host = config['emucat_database']['host']
 
-    sql = 'DELETE FROM emucat.components c WHERE c.mosaic_id IN ' \
-          '(SELECT m.id FROM emucat.mosaics m, emucat.source_extraction_regions s WHERE m.ser_id=s.id AND s.name=$1)'
+    sql = 'DELETE FROM emucat.mosaics m WHERE m.ser_id IN ' \
+          '(SELECT s.id FROM emucat.source_extraction_regions s WHERE s.name=$1)'
 
     conn = await asyncpg.connect(user=user, password=password, database=database, host=host)
     async with conn.transaction():
