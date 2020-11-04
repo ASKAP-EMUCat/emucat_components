@@ -66,6 +66,22 @@ async def db_lhr_upsert_many(conn, rows):
                             rows)
 
 
+async def db_match_nearest_neighbour_with_allwise(conn, ser_name: str, max_separation_rads: float):
+    sql = "INSERT INTO emucat.sources_nearest_allwise (component_id, wise_id, separation) " \
+          "select c.id, a.designation, a.distance " \
+          "from emucat.components c, emucat.mosaics m, emucat.source_extraction_regions s,  " \
+          "lateral " \
+          "(select aw.designation, aw.ra_dec, " \
+          "aw.ra_dec <-> spoint(c.ra_deg_cont*pi()/180.0, c.dec_deg_cont*pi()/180.0) distance " \
+          "from emucat.allwise aw " \
+          "where " \
+          "aw.ra_dec @ scircle(spoint(c.ra_deg_cont*pi()/180.0, c.dec_deg_cont*pi()/180.0), $2)) a " \
+          "where c.mosaic_id=m.id and m.ser_id=s.id and s.name=$1 " \
+          "ON CONFLICT (component_id, wise_id) DO NOTHING RETURNING id"
+
+    return await conn.fetch(sql, ser_name, max_separation_rads)
+
+
 async def _get_file_bytes(path: str, mode: str = 'rb'):
     buffer = []
 
@@ -191,8 +207,9 @@ async def import_lhr_votable(filename: str, credentials: str):
     password = config['emucat_database']['password']
     database = config['emucat_database']['database']
     host = config['emucat_database']['host']
+    port = config['emucat_database'].get('port', 5432)
 
-    conn = await asyncpg.connect(user=user, password=password, database=database, host=host)
+    conn = await asyncpg.connect(user=user, password=password, database=database, host=host, port=port)
     await import_lhr_catalog(conn, filename)
 
 
@@ -207,8 +224,9 @@ async def import_selavy_votable(ser_name: str, filename: str, credentials: str):
     password = config['emucat_database']['password']
     database = config['emucat_database']['database']
     host = config['emucat_database']['host']
+    port = config['emucat_database'].get('port', 5432)
 
-    conn = await asyncpg.connect(user=user, password=password, database=database, host=host)
+    conn = await asyncpg.connect(user=user, password=password, database=database, host=host, port=port)
     await import_selavy_catalog(conn, ser_name, filename)
 
 
@@ -244,6 +262,7 @@ async def _import_des_from_lhr(ser: str, credentials: str):
     password = config['emucat_database']['password']
     database = config['emucat_database']['database']
     host = config['emucat_database']['host']
+    port = config['emucat_database'].get('port', 5432)
 
     # Get the lhr sources that dont already exist in des_dr1
     fetch = 'SELECT distinct(lhr.wise_id) ' \
@@ -259,8 +278,8 @@ async def _import_des_from_lhr(ser: str, credentials: str):
 
     count = 0
     noao = await loop.run_in_executor(None, connect_to_noao)
-    insert_conn = await asyncpg.connect(user=user, password=password, database=database, host=host)
-    conn = await asyncpg.connect(user=user, password=password, database=database, host=host)
+    insert_conn = await asyncpg.connect(user=user, password=password, database=database, host=host, port=port)
+    conn = await asyncpg.connect(user=user, password=password, database=database, host=host, port=port)
     async with conn.transaction():
         cur = await conn.cursor(fetch, ser)
         while True:
@@ -308,14 +327,32 @@ async def _delete_components(ser: str, credentials: str):
     password = config['emucat_database']['password']
     database = config['emucat_database']['database']
     host = config['emucat_database']['host']
+    port = config['emucat_database'].get('port', 5432)
 
     sql = 'DELETE FROM emucat.mosaics m WHERE m.ser_id IN ' \
           '(SELECT s.id FROM emucat.source_extraction_regions s WHERE s.name=$1)'
 
-    conn = await asyncpg.connect(user=user, password=password, database=database, host=host)
+    conn = await asyncpg.connect(user=user, password=password, database=database, host=host, port=port)
     async with conn.transaction():
         result = await conn.execute(sql, ser)
         logging.info(result)
+
+
+async def _match_nearest_neighbour_with_allwise(ser: str, credentials: str):
+    config = configparser.ConfigParser()
+    config.read(credentials)
+    user = config['emucat_database']['user']
+    password = config['emucat_database']['password']
+    database = config['emucat_database']['database']
+    host = config['emucat_database']['host']
+    port = config['emucat_database'].get('port', 5432)
+
+    conn = await asyncpg.connect(user=user, password=password, database=database, host=host, port=port)
+    async with conn.transaction():
+        result = await db_match_nearest_neighbour_with_allwise(conn=conn,
+                                                               ser_name=ser,
+                                                               max_separation_rads=1.93925472249408e-5)
+        logging.info(len(result))
 
 
 def import_des_from_lhr(args):
@@ -326,9 +363,14 @@ def delete_components(args):
     asyncio.run(_delete_components(args.ser, args.credentials))
 
 
+def match_nearest_neighbour_with_allwise(args):
+    asyncio.run(_match_nearest_neighbour_with_allwise(args.ser, args.credentials))
+
+
 def main():
     parser = argparse.ArgumentParser(prog='EMUCat', description='EMUCat catalog functions.')
     subparsers = parser.add_subparsers(help='sub-command help')
+    parser.set_defaults(func=lambda args: parser.print_help())
 
     input_selavy_parser = subparsers.add_parser('import_selavy', help='Import selavy component catalog into EMUCat.')
     input_selavy_parser.add_argument('-s', '--ser', help='Source extraction region.', type=str, required=True)
@@ -352,6 +394,14 @@ def main():
     delete_components_parser.add_argument('-s', '--ser', help='Source extraction region.', type=str, required=True)
     delete_components_parser.add_argument('-c', '--credentials', help='Credentials file.', required=True)
     delete_components_parser.set_defaults(func=delete_components)
+
+    match_nearest_neighbour_with_allwise_parser = subparsers.add_parser('match_nearest_neighbour_with_allwise',
+                                                     help='Match nearest neighbour with allwise.')
+    match_nearest_neighbour_with_allwise_parser.add_argument('-s', '--ser', help='Source extraction region.',
+                                                             type=str, required=True)
+    match_nearest_neighbour_with_allwise_parser.add_argument('-c', '--credentials',
+                                                             help='Credentials file.', required=True)
+    match_nearest_neighbour_with_allwise_parser.set_defaults(func=match_nearest_neighbour_with_allwise)
 
     args = parser.parse_args()
     args.func(args)
