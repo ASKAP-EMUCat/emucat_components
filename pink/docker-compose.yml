@@ -1,0 +1,9 @@
+version: '3'
+
+services:
+  emucat_pink:
+    image: emucat_pink
+    container_name: emucat_pink
+    build:
+      context: .
+      dockerfile: Dockerfile
