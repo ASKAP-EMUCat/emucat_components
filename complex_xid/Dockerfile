@@ -13,3 +13,6 @@ RUN git clone https://github.com/tjgalvin/pyink.git
 WORKDIR pyink
 RUN pip3 install astropy extension-helpers numpy jinja2 sklearn scipy
 RUN python3 setup.py install
+RUN pip3 install pandas
+WORKDIR /
+RUN git clone https://github.com/avantyghem/ComplexXID.git

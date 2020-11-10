@@ -1,0 +1,9 @@
+version: '3'
+
+services:
+  emucat_complexxid:
+    image: emucat_complexxid
+    container_name: emucat_complexxid
+    build:
+      context: .
+      dockerfile: Dockerfile
