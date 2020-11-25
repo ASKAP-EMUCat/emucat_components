@@ -210,7 +210,10 @@ async def import_lhr_votable(filename: str, credentials: str):
     port = config['emucat_database'].get('port', 5432)
 
     conn = await asyncpg.connect(user=user, password=password, database=database, host=host, port=port)
-    await import_lhr_catalog(conn, filename)
+    try:
+        await import_lhr_catalog(conn, filename)
+    finally:
+        await conn.close()
 
 
 def import_selavy(args):
@@ -227,7 +230,10 @@ async def import_selavy_votable(ser_name: str, filename: str, credentials: str):
     port = config['emucat_database'].get('port', 5432)
 
     conn = await asyncpg.connect(user=user, password=password, database=database, host=host, port=port)
-    await import_selavy_catalog(conn, ser_name, filename)
+    try:
+        await import_selavy_catalog(conn, ser_name, filename)
+    finally:
+        await conn.close()
 
 
 def random_word(length):
@@ -276,46 +282,54 @@ async def _import_des_from_lhr(ser: str, credentials: str):
             'AND s.name=$1 ' \
             'AND des.wise_id is NULL'
 
+    insert_conn = None
+    conn = None
     count = 0
-    noao = await loop.run_in_executor(None, connect_to_noao)
-    insert_conn = await asyncpg.connect(user=user, password=password, database=database, host=host, port=port)
-    conn = await asyncpg.connect(user=user, password=password, database=database, host=host, port=port)
-    async with conn.transaction():
-        cur = await conn.cursor(fetch, ser)
-        while True:
-            records = await cur.fetch(10000)
-            if not records:
-                break
+    try:
+        noao = await loop.run_in_executor(None, connect_to_noao)
+        insert_conn = await asyncpg.connect(user=user, password=password, database=database, host=host, port=port)
+        conn = await asyncpg.connect(user=user, password=password, database=database, host=host, port=port)
+        async with conn.transaction():
+            cur = await conn.cursor(fetch, ser)
+            while True:
+                records = await cur.fetch(10000)
+                if not records:
+                    break
 
-            logging.info(f'Getting des_dr1 records from {len(records)} lhr matches.')
+                logging.info(f'Getting des_dr1 records from {len(records)} lhr matches.')
 
-            result = ', '.join("'{0}'".format(r[0]) for r in records)
+                result = ', '.join("'{0}'".format(r[0]) for r in records)
 
-            sql = f"SELECT daw.designation,dm.mag_auto_g,dm.mag_auto_r,dm.mag_auto_i,dm.mag_auto_z,dm.mag_auto_y " \
-                  f"FROM des_dr1.des_allwise daw, des_dr1.mag dm " \
-                  f"WHERE daw.coadd_object_id = dm.coadd_object_id AND daw.designation " \
-                  f"IN ({result})"
+                sql = f"SELECT daw.designation,dm.mag_auto_g,dm.mag_auto_r,dm.mag_auto_i,dm.mag_auto_z,dm.mag_auto_y " \
+                      f"FROM des_dr1.des_allwise daw, des_dr1.mag dm " \
+                      f"WHERE daw.coadd_object_id = dm.coadd_object_id AND daw.designation " \
+                      f"IN ({result})"
 
-            logging.info(f'Searching des_dr1 archive.')
+                logging.info(f'Searching des_dr1 archive.')
 
-            rowset = noao.search(sql)
-            logging.info(f'Found {len(rowset)} des_dr1 matches.')
-            if len(rowset) == 0:
-                continue
+                rowset = noao.search(sql)
+                logging.info(f'Found {len(rowset)} des_dr1 matches.')
+                if len(rowset) == 0:
+                    continue
 
-            count += len(rowset)
-            insert_rows = []
-            for row in rowset:
-                insert_rows.append([r for r in row.values()])
+                count += len(rowset)
+                insert_rows = []
+                for row in rowset:
+                    insert_rows.append([r for r in row.values()])
 
-            logging.info(f'Inserting {len(rowset)} into des_dr1.')
-            async with insert_conn.transaction():
-                await insert_conn.executemany('INSERT INTO emucat.des_dr1 ("wise_id", "mag_auto_g", "mag_auto_r", '
-                                              '"mag_auto_i", "mag_auto_z", "mag_auto_y") '
-                                              'VALUES($1, $2, $3, $4, $5, $6) '
-                                              'ON CONFLICT ("wise_id") '
-                                              'DO NOTHING',
-                                              insert_rows)
+                logging.info(f'Inserting {len(rowset)} into des_dr1.')
+                async with insert_conn.transaction():
+                    await insert_conn.executemany('INSERT INTO emucat.des_dr1 ("wise_id", "mag_auto_g", "mag_auto_r", '
+                                                  '"mag_auto_i", "mag_auto_z", "mag_auto_y") '
+                                                  'VALUES($1, $2, $3, $4, $5, $6) '
+                                                  'ON CONFLICT ("wise_id") '
+                                                  'DO NOTHING',
+                                                  insert_rows)
+    finally:
+        if insert_conn:
+            await insert_conn.close()
+        if conn:
+            await conn.close()
 
     logging.info(f'des_dr1 import complete, total of {count} records inserted.')
 
@@ -333,9 +347,12 @@ async def _delete_components(ser: str, credentials: str):
           '(SELECT s.id FROM emucat.source_extraction_regions s WHERE s.name=$1)'
 
     conn = await asyncpg.connect(user=user, password=password, database=database, host=host, port=port)
-    async with conn.transaction():
-        result = await conn.execute(sql, ser)
-        logging.info(result)
+    try:
+        async with conn.transaction():
+            result = await conn.execute(sql, ser)
+            logging.info(result)
+    finally:
+        await conn.close()
 
 
 async def _match_nearest_neighbour_with_allwise(ser: str, credentials: str):
@@ -348,11 +365,14 @@ async def _match_nearest_neighbour_with_allwise(ser: str, credentials: str):
     port = config['emucat_database'].get('port', 5432)
 
     conn = await asyncpg.connect(user=user, password=password, database=database, host=host, port=port)
-    async with conn.transaction():
-        result = await db_match_nearest_neighbour_with_allwise(conn=conn,
-                                                               ser_name=ser,
-                                                               max_separation_rads=1.93925472249408e-5)
-        logging.info(len(result))
+    try:
+        async with conn.transaction():
+            result = await db_match_nearest_neighbour_with_allwise(conn=conn,
+                                                                   ser_name=ser,
+                                                                   max_separation_rads=1.93925472249408e-5)
+            logging.info(len(result))
+    finally:
+        await conn.close()
 
 
 def import_des_from_lhr(args):
