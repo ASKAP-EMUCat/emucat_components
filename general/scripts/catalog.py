@@ -54,13 +54,13 @@ async def db_components_upsert_many(conn, rows):
 
 
 async def db_lhr_upsert_many(conn, rows):
-    await conn.executemany('INSERT INTO emucat.sources_lhr_allwise ("component_id", "wise_id", "w1_LR",'
-                           '"w1_Rel","w1_n_cont","w1_separation")'
+    await conn.executemany('INSERT INTO emucat.sources_lhr_allwise ("component_id", "wise_id", "w1_lr",'
+                           '"w1_rel","w1_n_cont","w1_separation")'
                            'VALUES($1, $2, $3, $4, $5, $6) '
                            'ON CONFLICT ("component_id", "wise_id") '
                            'DO UPDATE SET '
-                           '"w1_LR"=EXCLUDED."w1_LR",'
-                           '"w1_Rel"=EXCLUDED."w1_Rel",'
+                           '"w1_lr"=EXCLUDED."w1_lr",'
+                           '"w1_rel"=EXCLUDED."w1_rel",'
                            '"w1_n_cont"=EXCLUDED."w1_n_cont",'
                            '"w1_separation"=EXCLUDED."w1_separation"',
                             rows)
