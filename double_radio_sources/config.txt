@@ -1,15 +1,15 @@
 parameter	value
-name_col	'Component_name'
-ra_col		'RA'
-dec_col		'DEC'
-Speak_col	'Peak_flux'
-Stot_col	'Total_flux'
-maj_col		'DC_Maj'
-min_col		'DC_Min'
-pa_col		'DC_PA'
-min_brightness	3
-min_size_lobe	5
-max_size_core	0.5
-data_format	'fits'
+name_col	'component_name'
+ra_col		'ra_deg_cont'
+dec_col		'dec_deg_cont'
+Speak_col	'flux_peak'
+Stot_col	'flux_int'
+maj_col		'maj_axis_deconv'
+min_col		'min_axis_deconv'
+pa_col		'pos_ang_deconv'
+min_brightness	0.5
+min_size_lobe	15
+max_size_core	1
+data_format	'votable'
 
 
