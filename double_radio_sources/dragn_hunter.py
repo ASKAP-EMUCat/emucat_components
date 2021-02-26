@@ -153,10 +153,11 @@ def hunt_dragns(catfile, config_file, write_file=True):
     ###write to file or return data in code
     if write_file==True:
         ##create new file name based on old
-        splitname = catfile.split('.')
-        prename, extension = splitname[0], '.' + splitname[len(splitname)-1]
-        newname = (prename + '_flux' + str(int(catparams['flux_min'])) + '_size'
-                   + str(int(catparams['lobesize_min'])) + '_pairs' + extension)
+        splitname = catfile.rsplit('.', 1)
+        prename, extension = splitname[0], '.' + splitname[1]
+#        newname = (prename + '_flux' + str(int(catparams['flux_min'])) + '_size'
+#                   + str(int(catparams['lobesize_min'])) + '_pairs' + extension)
+        newname = prename + '_pairs' + extension
         pairs.write(newname, format=catparams['file_format'])
         return
     else:
