@@ -375,6 +375,45 @@ async def _match_nearest_neighbour_with_allwise(ser: str, credentials: str):
         await conn.close()
 
 
+async def _check_preconditions(sbid: int, credentials: str):
+    config = configparser.ConfigParser()
+    config.read(credentials)
+    user = config['emucat_database']['user']
+    password = config['emucat_database']['password']
+    database = config['emucat_database']['database']
+    host = config['emucat_database']['host']
+    port = config['emucat_database'].get('port', 5432)
+
+    sql_update = 'UPDATE emucat.scheduling_blocks SET deposited = true WHERE sb_num = $1'
+    sql_select = 'SELECT ser.name, ' \
+                 'count(sb.sb_num) as sbid_count, ' \
+                 'sum(case when sb.deposited = true then 1 else 0 end) as deposited_count ' \
+                 'FROM emucat.source_extraction_regions as ser, ' \
+                 'emucat.mosaic_prerequisites as mp, ' \
+                 'emucat.scheduling_blocks as sb ' \
+                 'WHERE ser.id = mp.ser_id and mp.sb_id = sb.id ' \
+                 'and ser.submitted = false ' \
+                 'GROUP BY ser.name'
+
+    conn = await asyncpg.connect(user=user, password=password, database=database, host=host, port=port)
+    try:
+        async with conn.transaction():
+            await conn.execute(sql_update, sbid)
+
+        async with conn.transaction():
+            results = await conn.fetch(sql_select)
+
+        ser = []
+        for result in results:
+            if result['sbid_count'] == result['deposited_count']:
+                ser.append(result['name'])
+
+        print(', '.join(ser))
+
+    finally:
+        await conn.close()
+
+
 def import_des_from_lhr(args):
     asyncio.run(_import_des_from_lhr(args.ser, args.credentials))
 
@@ -387,10 +426,23 @@ def match_nearest_neighbour_with_allwise(args):
     asyncio.run(_match_nearest_neighbour_with_allwise(args.ser, args.credentials))
 
 
+def check_preconditions(args):
+    asyncio.run(_check_preconditions(int(args.sbid), args.credentials))
+
+
 def main():
     parser = argparse.ArgumentParser(prog='EMUCat', description='EMUCat catalog functions.')
     subparsers = parser.add_subparsers(help='sub-command help')
     parser.set_defaults(func=lambda args: parser.print_help())
+
+    preconditions = subparsers.add_parser('emucat_preconditions',
+                                           help='Check CASDA event against EMU preconditions and execute pipeline.')
+    preconditions.add_argument('-s', '--sbid',
+                               help='ASKAP scheduling block ID.',
+                               type=str, required=True)
+    preconditions.add_argument('-c', '--credentials',
+                               help='Credentials file.', required=True)
+    preconditions.set_defaults(func=check_preconditions)
 
     input_selavy_parser = subparsers.add_parser('import_selavy', help='Import selavy component catalog into EMUCat.')
     input_selavy_parser.add_argument('-s', '--ser', help='Source extraction region.', type=str, required=True)
