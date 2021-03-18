@@ -408,7 +408,7 @@ async def _check_preconditions(sbid: int, credentials: str):
             if result['sbid_count'] == result['deposited_count']:
                 ser.append(result['name'])
 
-        print(', '.join(ser))
+        print(' '.join(ser), end='')
 
     finally:
         await conn.close()
