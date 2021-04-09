@@ -25,35 +25,22 @@ import argparse
 #############################################################################
 ###params
 
-########remove this block once made command line
+###time not important other than to show progress - background subtraction and psf flux can be slow for large images (on my laptop at any rate!)
 ########################################
 #time of code check - not important for code to run
 import time
 start_time = time.time()
 ########################################
 
-plt.interactive(True)
 
-###test data
-tfile = '../data/J212057-550722_emu_cutout.fits'
-trfile = '../data/J212057-550722_emu_rms_cutout.fits'
-tname = 'J212057-550722'
-tpos = SkyCoord(ra=320.241375, dec=-55.122992, unit='deg')
-ts_peak = 1.046*(u.mJy/u.beam)
-ts_int = 1.015*u.mJy
-
-
-tplist = SkyCoord(ra=[tpos.ra], dec=[tpos.dec])
-########remove once made command line -- END
-
-
-###header keys for pix size (not always 'CDELT1')
-#dxkey = 'CDELT1'
-#xukey = 'CUNIT1'
-#dykey = 'CDELT2'
-#yukey = 'CUNIT2'
-
-
+###could make the below params a config file? probably fine without within emucat
+###target file parameters
+acol = 'ra'
+dcol = 'dec'
+namecol = 'designation'
+tposunits = 'deg'
+outname = 'forced_emu_photometry.xml'
+outformat = 'votable'
 
 #############################################################################
 #############################################################################
@@ -353,7 +340,7 @@ class ForcedPhoto:
         psf_results = {'psf_flux': flux, 'psf_flux_err': flux_err}
                                 
         print('psf time: ', np.round(time.time()-t0, 2), 's')
-                                
+
         return(psf_results)
 
 
@@ -369,15 +356,42 @@ class ForcedPhoto:
         return(Table({**aphot, **pphot}))
 
 
+def parse_args():
+    "parse input args, i.e. target list, image, and rms file names"
+    parser = argparse.ArgumentParser(description="find radio pairs in catalogue data")
+    parser.add_argument("targets", help="file with list of sky coords to perform forced photometry on")
+    parser.add_argument("image", help="image file")
+    parser.add_argument("noise", help="noise file")
+                        
+    args = parser.parse_args()
 
 
-
-#def get:
-#    return
+    return args
 
 
 #############################################################################
 #############################################################################
 ###main code -- make command line
+
+
+if __name__ == '__main__':
+    ##parse command line arguments
+    args = parse_args()
+    
+    ###load data, grab target names and positions
+    targets = Table.read(args.targets)
+    targetids = targets[namecol]
+    targetpos = SkyCoord(ra=targets[acol], dec=targets[dcol], unit=tposunits)
+    
+    ##perform photometry
+    photo = ForcedPhoto(image_file=args.image, rms_file=args.noise, load_method=fits.open)
+    phototab = photo.photoTable(targets=targetpos, include_psf=True)
+    
+    ##finalise table and write to file
+    phototab.add_column(col=targetids, index=0) ##adds ID column
+    phototab.write(outname, format=outformat)
+
+
+
 
 
