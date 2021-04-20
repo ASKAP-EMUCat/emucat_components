@@ -385,7 +385,7 @@ if __name__ == '__main__':
     
     ##perform photometry
     photo = ForcedPhoto(image_file=args.image, rms_file=args.noise, load_method=radio_image_as_2d)
-    phototab = photo.photoTable(targets=targetpos, include_psf=True)
+    phototab = photo.photoTable(targets=targetpos, include_psf=False)
     
     ##finalise table and write to file
     phototab.add_column(col=targetids, index=0) ##adds ID column
