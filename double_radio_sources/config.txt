@@ -1,5 +1,5 @@
 parameter	value
-name_col	'component_name'
+name_col	'component_id'
 ra_col		'ra_deg_cont'
 dec_col		'dec_deg_cont'
 Speak_col	'flux_peak'
