@@ -1,3 +1,29 @@
+**EMU extended doubles finding**
+
+contact yjan.gordon@umanitoba.ca
+
+Code for finding extended double radio sources in EMU. This is based on the code dragn_hunter.py (readme below) being developed for high resolution survey data, and this code has been specifically adapted for EMUcat.
+Run on the command line as:
+
+*python3 emu_doubles.py radio_catalogue --known_hosts=xid_filename*
+
+where *radio_catalogue* is the file name of the SER component catalogue, and *xid_filename* is the filename of the SER simple cross ID file (e.g. nearest WISE match). The config file *config.txt* has been setup for EMUcat. The output is a votable file of the same name as the *radio_catalogue* file name with *_pairs* added before the extension, this is written to the same directory as the *radio_catalogue*. The output file currently contains the following columns
+
+parameter | description [units]
+----------|------------
+id_1 | the identifier for the first component of the pair
+id_2 | the identifier for the second component of the pair
+pair_name | identifier for the pair of the format Jhhmmss.ss±ddmmss.s
+cenRA | RA of the pair's flux weighted centroid [deg]
+cenDEC | DEC of the pair's flux weighted centroid [deg]
+
+note: for the columns id_1 and id_2, these column names are depended on the column name of the component identifier in the input data. For instance if the column 'component_id' is used to identify the components the output data will contain the columns 'component_id_1' and 'component_id_2'.
+
+
+
+
+Additional information on the general dragn_hunter.py functionality is below (this is retained within the emu_doubles.py script).
+
 **dragn_hunter.py readme**
 
 command line code for searching for pairs of radio components that satisfy specified criteria, and flagging likely Double Radio sources associated with Active Galactic Nuclei (DRAGNs). Run as
