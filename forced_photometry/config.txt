@@ -1,7 +1,0 @@
-parameter		value
-name_col		'designation'
-ra_col			'ra'
-dec_col			'dec'
-
-
-
