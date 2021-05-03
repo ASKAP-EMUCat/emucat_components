@@ -35,6 +35,20 @@ async def db_moasic_upsert(conn, row):
     return mosaic_id[0]
 
 
+async def db_mosaic_island_upsert_many(conn, rows):
+    await conn.executemany('INSERT INTO emucat.mosaic_islands ("island_id") '
+                           'VALUES ($1) '
+                           'ON CONFLICT ("island_id") DO NOTHING',
+                            rows)
+
+
+async def db_sources_island_upsert_many(conn, rows):
+    await conn.executemany('INSERT INTO emucat.sources_selavy_islands ("mosaic_id", "island_id") '
+                           'VALUES ($1, $2) '
+                           'ON CONFLICT ("mosaic_id", "island_id") DO NOTHING',
+                           rows)
+
+
 async def db_components_upsert_many(conn, rows):
     await conn.executemany('INSERT INTO emucat.components ("mosaic_id","island_id","component_id",'
                            '"component_name","ra_hms_cont","dec_hms_cont","ra_deg_cont",'
@@ -49,7 +63,8 @@ async def db_components_upsert_many(conn, rows):
                            'VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15,'
                            '$16, $17, $18, $19, $20, $21, $22, $23, $24, $25, $26, $27, $28, $29,'
                            '$30, $31, $32, $33, $34, $35, $36, $37, $38, $39) '
-                           'ON CONFLICT ("mosaic_id", "component_name", "ra_deg_cont", "dec_deg_cont") DO NOTHING',
+                           'ON CONFLICT ("mosaic_id", "island_id", "component_name", '
+                           '"ra_deg_cont", "dec_deg_cont") DO NOTHING',
                            rows)
 
 
@@ -173,6 +188,15 @@ async def import_selavy_catalog(conn, ser_name: str, filename: str):
         cat.insert(0, mosaic_id)
         rows.append(cat)
 
+    island_rows = []
+    source_island_rows = []
+    for row in rows:
+        # mosaic_id and island_id
+        island_rows.append([row[1]])
+        source_island_rows.append([row[0], row[1]])
+
+    await db_mosaic_island_upsert_many(conn, island_rows)
+    await db_sources_island_upsert_many(conn, source_island_rows)
     await db_components_upsert_many(conn, rows)
 
 
