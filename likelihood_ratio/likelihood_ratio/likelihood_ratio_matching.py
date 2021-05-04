@@ -235,7 +235,6 @@ def make_match_magnitudes( band, band_data, radio_data, outfile='', ra_col='RA',
             results_dict[results[2]] = results
 
         for key in sorted(results_dict):
-            print(key)
             results = results_dict[key]
             radio_ids += results[0]
             match_mags += results[1]
@@ -296,7 +295,6 @@ def find_number_no_counterparts( radio_dat, band_dat, radii, ra_col='RA', dec_co
         results_dict[results[1]] = results
 
     for key in sorted(results_dict):
-        print(key)
         results = results_dict[key]
         if n_counterparts is None:
             n_counterparts = results[0]
@@ -486,7 +484,6 @@ def _LR_and_reliability(band, radio_dat, band_dat, qm_nm, sigma_pos, mag_bins, r
                         ra_col, dec_col, mag_col, id_col, rad_ra_col, rad_dec_col,
                         rad_id_col, queue, i):
 
-    print(radio_dat.shape, band_dat.shape, sigma_pos.shape, mag_bins.shape, r_max)
     band_col = mag_col.replace('X', band)
     sig_sq = np.power( sigma_pos, 2. )
 
@@ -575,7 +572,6 @@ def LR_and_reliability( band, band_dat, radio_dat, qm_nm, sigma_pos, mag_bins, r
         results_dict[results[7]] = results
 
     for key in sorted(results_dict):
-        print(key)
         results = results_dict[key]
         radio_id += results[0]
         band_id += results[1]
