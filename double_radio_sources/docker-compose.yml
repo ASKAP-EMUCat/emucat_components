@@ -1,0 +1,9 @@
+version: '3'
+
+services:
+  emucat_double_sources:
+    image: emucat_double_sources
+    container_name: emucat_double_sources
+    build:
+      context: .
+      dockerfile: Dockerfile
