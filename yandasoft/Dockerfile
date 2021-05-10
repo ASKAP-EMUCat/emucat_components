@@ -3,9 +3,10 @@ FROM ubuntu:focal
 ARG DEBIAN_FRONTEND=noninteractive
 ENV TZ=Australia
 ARG COMPILE_JOBS=2
-ARG YANDASOFT_BRANCH=develop
+ARG YANDASOFT_BRANCH=master
 
 RUN apt-get update
+RUN apt-get -y upgrade
 
 # Toolchains, etc
 RUN apt-get install -y \
