@@ -8,13 +8,11 @@ RUN apt install -y python3-setuptools
 RUN apt install -y python3
 RUN apt install -y wget
 RUN apt install -y python3-pip
-RUN pip3 install wheel astropy pyvo retry jinja2 asyncio asyncpg aiofiles
+RUN pip3 install wheel numpy astropy numpy argparse pandas
 
 RUN mkdir /input
 RUN mkdir /output
 RUN mkdir /scripts
-COPY ./scripts/casda.py /scripts
-COPY ./scripts/catalog.py /scripts
+COPY ./double_radio_sources/emu_doubles.py /scripts
 WORKDIR /scripts
-RUN chmod +x casda.py
-RUN chmod +x catalog.py
+RUN chmod +x emu_doubles.py

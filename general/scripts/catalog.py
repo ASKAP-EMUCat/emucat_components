@@ -1,6 +1,5 @@
 #!python3
 import xml.etree.ElementTree as ET
-import aiofiles
 import asyncio
 import asyncpg
 import os
@@ -35,6 +34,20 @@ async def db_moasic_upsert(conn, row):
     return mosaic_id[0]
 
 
+async def db_mosaic_island_upsert_many(conn, rows):
+    await conn.executemany('INSERT INTO emucat.mosaic_islands ("island_id") '
+                           'VALUES ($1) '
+                           'ON CONFLICT ("island_id") DO NOTHING',
+                           rows)
+
+
+async def db_sources_island_upsert_many(conn, rows):
+    await conn.executemany('INSERT INTO emucat.sources_selavy_islands ("mosaic_id", "island_id") '
+                           'VALUES ($1, $2) '
+                           'ON CONFLICT ("mosaic_id", "island_id") DO NOTHING',
+                           rows)
+
+
 async def db_components_upsert_many(conn, rows):
     await conn.executemany('INSERT INTO emucat.components ("mosaic_id","island_id","component_id",'
                            '"component_name","ra_hms_cont","dec_hms_cont","ra_deg_cont",'
@@ -49,7 +62,8 @@ async def db_components_upsert_many(conn, rows):
                            'VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15,'
                            '$16, $17, $18, $19, $20, $21, $22, $23, $24, $25, $26, $27, $28, $29,'
                            '$30, $31, $32, $33, $34, $35, $36, $37, $38, $39) '
-                           'ON CONFLICT ("mosaic_id", "component_name", "ra_deg_cont", "dec_deg_cont") DO NOTHING',
+                           'ON CONFLICT ("mosaic_id", "island_id", "component_name", '
+                           '"ra_deg_cont", "dec_deg_cont") DO NOTHING',
                            rows)
 
 
@@ -63,7 +77,7 @@ async def db_lhr_upsert_many(conn, rows):
                            '"w1_rel"=EXCLUDED."w1_rel",'
                            '"w1_n_cont"=EXCLUDED."w1_n_cont",'
                            '"w1_separation"=EXCLUDED."w1_separation"',
-                            rows)
+                           rows)
 
 
 async def db_match_nearest_neighbour_with_allwise(conn, ser_name: str, max_separation_rads: float):
@@ -80,21 +94,6 @@ async def db_match_nearest_neighbour_with_allwise(conn, ser_name: str, max_separ
           "ON CONFLICT (component_id, wise_id) DO NOTHING RETURNING id"
 
     return await conn.fetch(sql, ser_name, max_separation_rads)
-
-
-async def _get_file_bytes(path: str, mode: str = 'rb'):
-    buffer = []
-
-    async with aiofiles.open(path, mode) as f:
-        while True:
-            buff = await f.read()
-            if not buff:
-                break
-            buffer.append(buff)
-        if 'b' in mode:
-            return b''.join(buffer)
-        else:
-            return ''.join(buffer)
 
 
 def convert(value, datatype):
@@ -120,36 +119,35 @@ async def import_selavy_catalog(conn, ser_name: str, filename: str):
 
     ns = {'ivoa': 'http://www.ivoa.net/xml/VOTable/v1.3'}
 
-    content = await _get_file_bytes(filename, mode='r')
-    root = ET.fromstring(content)
+    root = await asyncio.get_event_loop().run_in_executor(None, ET.parse, filename)
 
     mosaic_map = {'ser_id': None,
-                'table_version': None,
-                'imageFile': None,
-                'flagSubsection': False,
-                'subsection': None,
-                'flagStatSec': False,
-                'StatSec': None,
-                'searchType': None,
-                'flagNegative': False,
-                'flagBaseline': False,
-                'flagRobustStats': False,
-                'flagFDR': False,
-                'threshold': None,
-                'flagGrowth': False,
-                'growthThreshold': 0.0,
-                'minPix': 0,
-                'minChannels': 0,
-                'minVoxels': 0,
-                'flagAdjacent': False,
-                'threshVelocity': None,
-                'flagRejectBeforeMerge': False,
-                'flagTwoStageMerging': False,
-                'pixelCentre': None,
-                'flagSmooth': False,
-                'flagATrous': False,
-                'Reference frequency': 0.0,
-                'thresholdActual': 0.0}
+                  'table_version': None,
+                  'imageFile': None,
+                  'flagSubsection': False,
+                  'subsection': None,
+                  'flagStatSec': False,
+                  'StatSec': None,
+                  'searchType': None,
+                  'flagNegative': False,
+                  'flagBaseline': False,
+                  'flagRobustStats': False,
+                  'flagFDR': False,
+                  'threshold': None,
+                  'flagGrowth': False,
+                  'growthThreshold': 0.0,
+                  'minPix': 0,
+                  'minChannels': 0,
+                  'minVoxels': 0,
+                  'flagAdjacent': False,
+                  'threshVelocity': None,
+                  'flagRejectBeforeMerge': False,
+                  'flagTwoStageMerging': False,
+                  'pixelCentre': None,
+                  'flagSmooth': False,
+                  'flagATrous': False,
+                  'Reference frequency': 0.0,
+                  'thresholdActual': 0.0}
 
     for param in root.findall('./ivoa:RESOURCE/ivoa:TABLE/ivoa:PARAM', ns):
         key = param.get('name')
@@ -157,7 +155,6 @@ async def import_selavy_catalog(conn, ser_name: str, filename: str):
         if key == 'imageFile':
             value = os.path.basename(value)
         mosaic_map[key] = value
-
 
     mosaic_map['ser_id'] = ser_id
     params = list(mosaic_map.values())
@@ -173,25 +170,42 @@ async def import_selavy_catalog(conn, ser_name: str, filename: str):
         cat.insert(0, mosaic_id)
         rows.append(cat)
 
+    island_rows = []
+    source_island_rows = []
+    for row in rows:
+        # mosaic_id and island_id
+        island_rows.append([row[1]])
+        source_island_rows.append([row[0], row[1]])
+
+    await db_mosaic_island_upsert_many(conn, island_rows)
+    await db_sources_island_upsert_many(conn, source_island_rows)
     await db_components_upsert_many(conn, rows)
 
 
 async def import_lhr_catalog(conn, filename: str):
-    ns = {'ivoa': 'http://www.ivoa.net/xml/VOTable/v1.4'}
 
-    content = await _get_file_bytes(filename, mode='r')
-    root = ET.fromstring(content)
+    ns = '{http://www.ivoa.net/xml/VOTable/v1.4}'
 
-    datatypes = []
-    for field in root.findall('./ivoa:RESOURCE/ivoa:TABLE/ivoa:FIELD', ns):
-        datatypes.append(field.get('datatype'))
-
+    data_types = [int, str, float, float, float, float, int]
     rows = []
-    for i, tr in enumerate(root.findall('./ivoa:RESOURCE/ivoa:TABLE/ivoa:DATA/ivoa:TABLEDATA/ivoa:TR', ns)):
-        cat = [convert(td.text.strip(), datatypes[j]) for j, td in enumerate(tr)]
-        # not interested in q_warning
-        cat.pop()
-        rows.append(cat)
+    row = []
+    type_count = 0
+
+    for event, elem in ET.iterparse(filename, events=('start', 'end', 'start-ns', 'end-ns')):
+        if event == 'end':
+            if elem.tag == f"{ns}TR":
+                # remove q_warning element
+                row.pop()
+                rows.append(row)
+                elem.clear()
+            elif elem.tag == f"{ns}TD":
+                value = data_types[type_count](elem.text)
+                row.append(value)
+                type_count += 1
+        elif event == 'start':
+            if elem.tag == f"{ns}TR":
+                row = []
+                type_count = 0
 
     await db_lhr_upsert_many(conn, rows)
 
@@ -207,7 +221,7 @@ async def import_lhr_votable(filename: str, credentials: str):
     password = config['emucat_database']['password']
     database = config['emucat_database']['database']
     host = config['emucat_database']['host']
-    port = config['emucat_database'].get('port', 5432)
+    port = config['emucat_database'].getint('port', 5432)
 
     conn = await asyncpg.connect(user=user, password=password, database=database, host=host, port=port)
     try:
@@ -227,7 +241,7 @@ async def import_selavy_votable(ser_name: str, filename: str, credentials: str):
     password = config['emucat_database']['password']
     database = config['emucat_database']['database']
     host = config['emucat_database']['host']
-    port = config['emucat_database'].get('port', 5432)
+    port = config['emucat_database'].getint('port', 5432)
 
     conn = await asyncpg.connect(user=user, password=password, database=database, host=host, port=port)
     try:
@@ -237,8 +251,8 @@ async def import_selavy_votable(ser_name: str, filename: str, credentials: str):
 
 
 def random_word(length):
-   letters = string.ascii_lowercase
-   return ''.join(random.choice(letters) for i in range(length))
+    letters = string.ascii_lowercase
+    return ''.join(random.choice(letters) for i in range(length))
 
 
 async def import_allwise_catalog_from_csv(input_path: str):
@@ -268,7 +282,7 @@ async def _import_des_from_lhr(ser: str, credentials: str):
     password = config['emucat_database']['password']
     database = config['emucat_database']['database']
     host = config['emucat_database']['host']
-    port = config['emucat_database'].get('port', 5432)
+    port = config['emucat_database'].getint('port', 5432)
 
     # Get the lhr sources that dont already exist in des_dr1
     fetch = 'SELECT distinct(lhr.wise_id) ' \
@@ -341,7 +355,7 @@ async def _delete_components(ser: str, credentials: str):
     password = config['emucat_database']['password']
     database = config['emucat_database']['database']
     host = config['emucat_database']['host']
-    port = config['emucat_database'].get('port', 5432)
+    port = config['emucat_database'].getint('port', 5432)
 
     sql = 'DELETE FROM emucat.mosaics m WHERE m.ser_id IN ' \
           '(SELECT s.id FROM emucat.source_extraction_regions s WHERE s.name=$1)'
@@ -362,7 +376,7 @@ async def _match_nearest_neighbour_with_allwise(ser: str, credentials: str):
     password = config['emucat_database']['password']
     database = config['emucat_database']['database']
     host = config['emucat_database']['host']
-    port = config['emucat_database'].get('port', 5432)
+    port = config['emucat_database'].getint('port', 5432)
 
     conn = await asyncpg.connect(user=user, password=password, database=database, host=host, port=port)
     try:
@@ -382,7 +396,7 @@ async def _check_preconditions(sbid: int, credentials: str):
     password = config['emucat_database']['password']
     database = config['emucat_database']['database']
     host = config['emucat_database']['host']
-    port = config['emucat_database'].get('port', 5432)
+    port = config['emucat_database'].getint('port', 5432)
 
     sql_update = 'UPDATE emucat.scheduling_blocks SET deposited = true WHERE sb_num = $1'
     sql_select = 'SELECT ser.name, ' \
@@ -436,7 +450,7 @@ def main():
     parser.set_defaults(func=lambda args: parser.print_help())
 
     preconditions = subparsers.add_parser('emucat_preconditions',
-                                           help='Check CASDA event against EMU preconditions and execute pipeline.')
+                                          help='Check CASDA event against EMU preconditions and execute pipeline.')
     preconditions.add_argument('-s', '--sbid',
                                help='ASKAP scheduling block ID.',
                                type=str, required=True)
@@ -468,7 +482,7 @@ def main():
     delete_components_parser.set_defaults(func=delete_components)
 
     match_nearest_neighbour_with_allwise_parser = subparsers.add_parser('match_nearest_neighbour_with_allwise',
-                                                     help='Match nearest neighbour with allwise.')
+                                                                        help='Match nearest neighbour with allwise.')
     match_nearest_neighbour_with_allwise_parser.add_argument('-s', '--ser', help='Source extraction region.',
                                                              type=str, required=True)
     match_nearest_neighbour_with_allwise_parser.add_argument('-c', '--credentials',
