@@ -14,6 +14,8 @@ import matplotlib
 matplotlib.use('Agg')
 from matplotlib import pyplot as plt
 import aplpy
+import multiprocessing
+from multiprocessing import Process, Queue
 
 def cenang( a1, d1, a2, d2 ):
 
@@ -35,6 +37,7 @@ def cenang( a1, d1, a2, d2 ):
 
 def apply_mask( catalogue, mask_image, ra_col='RA', dec_col='DEC', overwrite=True):
 
+    print("apply mask:", catalogue)
     ## open the catalogue
     mycat = fits.open( catalogue )
     data = mycat[1].data
@@ -74,7 +77,7 @@ def apply_mask( catalogue, mask_image, ra_col='RA', dec_col='DEC', overwrite=Tru
     new_table = fits.BinTableHDU( data=new_data, header=new_header )
     new_name = catalogue.replace('.fits', '_masked.fits')
     new_table.writeto( new_name, overwrite=overwrite )
-    
+    print("apply mask complete")
     return( new_name )
 
 def get_unmasked_area( mask_image, outdir, overwrite=True ):
@@ -122,7 +125,7 @@ def make_master_cat( multiwave_cat, overwrite=False, outdir='.', my_bands='J,H,K
     mw_hdul.close()
 
     if os.path.isfile( outcat ) and not overwrite:
-        print( 'File already exists and overwrite is not set to true, exiting.' )
+        print( 'Master catalogue already exists and overwrite is not set to true, exiting.' )
     else:
         # columns to keep
         basic_cols = [id_col, ra_col, dec_col, mask_col, sg_col]
@@ -179,9 +182,26 @@ def make_mag_bins( magnitudes ):
         mag_bins = np.insert( mag_bins, 0, np.min( mag_bins )-0.4 )
     return( mag_bins )
 
+
+def _make_match_magnitudes(radio_data, band_data, ra_col, dec_col, rad_ra_col,
+                           rad_dec_col, rad_id_col, mag, r_max_deg, queue, i):
+
+    match_mags = []
+    radio_ids = []
+    n_radio_sources = radio_data.shape[0]
+    for x in np.arange(n_radio_sources):
+        distances = cenang(radio_data[rad_ra_col][x], radio_data[rad_dec_col][x], band_data[ra_col], band_data[dec_col])
+        candidate_idx = np.where(distances <= r_max_deg)[0]
+        #print('match_magnitudes', 'pid:', os.getpid(), 'x:', x, '# sources:', n_radio_sources, 'distances:',
+        #      distances.shape[0], 'candidate:', candidate_idx.shape[0])
+        match_mags += band_data[mag][candidate_idx].tolist()
+        radio_ids += np.repeat(radio_data[rad_id_col][x], len(candidate_idx)).tolist()
+
+    queue.put((radio_ids, match_mags, i))
+
 def make_match_magnitudes( band, band_data, radio_data, outfile='', ra_col='RA', dec_col='DEC', rad_ra_col='RA',
-                           rad_dec_col='DEC', rad_id_col='Source_id', mag='', r_max=0.0, overwrite=True ):
-    
+                           rad_dec_col='DEC', rad_id_col='Source_id', mag='', r_max=0.0, overwrite=False ):
+
     ## get number of radio sources
     n_radio_sources = radio_data.shape[0]
 
@@ -190,17 +210,44 @@ def make_match_magnitudes( band, band_data, radio_data, outfile='', ra_col='RA',
 
     ## only run if the outfile does not exist and overwrite is False
     if os.path.isfile( outfile ) and not overwrite:
-        print( 'File exits, reading from disk.' )
+        print( 'Magnitude file exits, reading from disk.' )
         m_mags = Table.read( outfile, format='ascii' )
     else:
         print( 'Finding magnitudes of all sources within r_max.' )
         match_mags = []
         radio_ids = []
+
+        num_cpu = int(os.getenv('LHR_CPU', 4))
+        split_radio = np.array_split(radio_data, num_cpu)
+
+        queue = Queue()
+        processes = [Process(target=_make_match_magnitudes,
+                             args=(split_radio[i], band_data, ra_col, dec_col, rad_ra_col,
+                                   rad_dec_col, rad_id_col, mag, r_max_deg, queue, i))
+                     for i in range(num_cpu)]
+
+        for p in processes:
+            p.start()
+
+        results_dict = {}
+        unsorted_result = [queue.get() for _ in processes]
+        for results in unsorted_result:
+            results_dict[results[2]] = results
+
+        for key in sorted(results_dict):
+            results = results_dict[key]
+            radio_ids += results[0]
+            match_mags += results[1]
+
+        for p in processes:
+            p.join()
+        '''
         for x in np.arange( n_radio_sources ):
             distances = cenang( radio_data[rad_ra_col][x], radio_data[rad_dec_col][x], band_data[ra_col], band_data[dec_col] )
             candidate_idx = np.where( distances <= r_max_deg )[0]
             match_mags = match_mags + band_data[mag][candidate_idx].tolist()
             radio_ids = radio_ids + np.repeat( radio_data[rad_id_col][x], len(candidate_idx) ).tolist()
+        '''
         ## make a table and write the file
         m_mags = Table()
         m_mags['radio_id'] = Column( radio_ids )
@@ -209,16 +256,66 @@ def make_match_magnitudes( band, band_data, radio_data, outfile='', ra_col='RA',
 
     return( m_mags )
 
-def find_number_no_counterparts( radio_dat, band_dat, radii, ra_col='RA', dec_col='DEC', rad_ra_col='RA', rad_dec_col='DEC'):
+
+def _find_number_no_counterparts( radio_dat, band_dat, radii, ra_col, dec_col, rad_ra_col, rad_dec_col, queue, i):
     ## what is the number of sources with no possible counterparts
     n_counterparts = np.zeros( (radio_dat.shape[0], len(radii)) )
+
+    for xx in np.arange( radio_dat.shape[0] ):
+        ## calculate the distance from the source to all other sources, convert to asec
+        distances = cenang( radio_dat[rad_ra_col][xx], radio_dat[rad_dec_col][xx], band_dat[ra_col], band_dat[dec_col] ) * 60. * 60.
+        #print('no_counterparts', 'pid:', os.getpid(), 'xx:', xx, '# sources:',
+        #      radio_dat.shape[0], 'distances:', distances.shape[0])
+        ## loop through radii to find number of counterparts
+        for yy in np.arange( len(radii) ):
+            n_counterparts[xx,yy] = len( np.where(distances <= radii[yy])[0] )
+
+    #print('_find_number_no_counterparts:', n_counterparts.shape)
+    queue.put((n_counterparts, i))
+
+
+def find_number_no_counterparts( radio_dat, band_dat, radii, ra_col='RA', dec_col='DEC', rad_ra_col='RA', rad_dec_col='DEC'):
+
+    n_counterparts = None
+    num_cpu = int(os.getenv('LHR_CPU', 4))
+    split_radio = np.array_split(radio_dat, num_cpu)
+
+    queue = Queue()
+    processes = [Process(target=_find_number_no_counterparts,
+                         args=(split_radio[i], band_dat, radii, ra_col, dec_col, rad_ra_col,
+                               rad_dec_col, queue, i))
+                 for i in range(num_cpu)]
+
+    for p in processes:
+        p.start()
+
+    results_dict = {}
+    unsorted_result = [queue.get() for _ in processes]
+    for results in unsorted_result:
+        results_dict[results[1]] = results
+
+    for key in sorted(results_dict):
+        results = results_dict[key]
+        if n_counterparts is None:
+            n_counterparts = results[0]
+        else:
+            n_counterparts = np.concatenate((n_counterparts, results[0]), axis=0)
+
+    for p in processes:
+        p.join()
+
+    print('find_number_no_counterparts:', n_counterparts.shape)
+    '''
+    ## what is the number of sources with no possible counterparts
+    n_counterparts = np.zeros( (radio_dat.shape[0], len(radii)) )
+
     for xx in np.arange( radio_dat.shape[0] ):
         ## calculate the distance from the source to all other sources, convert to asec
         distances = cenang( radio_dat[rad_ra_col][xx], radio_dat[rad_dec_col][xx], band_dat[ra_col], band_dat[dec_col] ) * 60. * 60.
         ## loop through radii to find number of counterparts
         for yy in np.arange( len(radii) ):
             n_counterparts[xx,yy] = len( np.where(distances <= radii[yy])[0] )
-
+    '''
     ## find number of sources with no counterpart as function of radius
     n_blanks = np.zeros( len(radii) )
     for xx in np.arange( len(radii) ):
@@ -266,7 +363,7 @@ def random_points_on_a_sphere( npoints, ra_limits, dec_limits ):
 
 
 def find_Q0_fleuren( band, radio_dat, band_dat, radii, mask_image, outdir,
-                     ra_col='RA', dec_col='DEC', rad_ra_col='RA', rad_dec_col='DEC', overwrite=True ):
+                     ra_col='RA', dec_col='DEC', rad_ra_col='RA', rad_dec_col='DEC', overwrite=False ):
 
 
     ## first check if the number of no counterparts has already been found
@@ -329,7 +426,7 @@ def find_Q0_fleuren( band, radio_dat, band_dat, radii, mask_image, outdir,
             rand_table = fits.BinTableHDU( data=t )
             rand_table.writeto( f_rand_file, overwrite=overwrite )
 
-        masked_rand_cat = apply_mask( f_rand_file, mask_image, overwrite=True )
+        masked_rand_cat = apply_mask( f_rand_file, mask_image )
         ## read in the masked radio catalogue 
         masked_hdul = fits.open( masked_rand_cat )
         masked_dat = masked_hdul[1].data
@@ -382,13 +479,70 @@ def find_Q0_fleuren( band, radio_dat, band_dat, radii, mask_image, outdir,
 
     return( coeff[0], coeff_err[0] )
 
+
+def _LR_and_reliability(band, radio_dat, band_dat, qm_nm, sigma_pos, mag_bins, r_max, q0, LR_threshold,
+                        ra_col, dec_col, mag_col, id_col, rad_ra_col, rad_dec_col,
+                        rad_id_col, queue, i):
+
+    band_col = mag_col.replace('X', band)
+    sig_sq = np.power( sigma_pos, 2. )
+
+    radio_id = []
+    band_id = []
+    lr_value = []
+    lr_rel = []
+    n_cont = []
+    separation = []
+    count = 0
+
+    for xx in np.arange(radio_dat.shape[0]):
+
+        ## calculate f(r)
+        distances = cenang(radio_dat[rad_ra_col][xx], radio_dat[rad_dec_col][xx], band_dat[ra_col],
+                           band_dat[dec_col]) * 60. * 60.
+        candidate_idx = np.where(distances <= r_max)[0]
+        n_cand = len(candidate_idx)
+        #print('LR_and_reliability', 'pid:', os.getpid(), 'x:', xx, '# sources:',  radio_dat.shape[0],
+        #      'distances:', candidate_idx.shape, 'candidate:', n_cand)
+        if n_cand > 0:
+            ## select the data
+            tmp_dat = band_dat[candidate_idx]
+            ## get the magnitudes
+            band_mags = tmp_dat[band_col]
+            ## calculate the radial probability distribution for the candidates
+            f_r = 1. / (2. * np.pi * sig_sq[xx]) * np.exp(- np.power(distances[candidate_idx], 2.) / (2. * sig_sq[xx]))
+            ## loop through the candidates
+            LR = []
+            for yy in np.arange(len(candidate_idx)):
+                qm_nm_tmp = qm_nm[np.max(np.where(mag_bins <= band_mags[yy])[0])]
+                tmpval = qm_nm_tmp * f_r[yy]
+                LR.append(tmpval)
+            LR = np.array(LR)
+
+            ## calculate the reliability
+            LR_reliability = LR / (np.sum(LR) + 1. - q0)
+
+            ## save information to lists
+            radio_id = radio_id + np.repeat(radio_dat[rad_id_col][xx], n_cand).tolist()
+            band_id = band_id + tmp_dat[id_col].tolist()
+            lr_value = lr_value + LR.tolist()
+            lr_rel = lr_rel + LR_reliability.tolist()
+            # contaminants ?
+            lr_cont = np.sum(1. - LR_reliability[np.where(LR_reliability > LR_threshold)[0]]).tolist()
+            n_cont = n_cont + np.repeat(lr_cont, n_cand).tolist()
+            separation = separation + distances[candidate_idx].tolist()
+            count = count + n_cand
+
+    queue.put((radio_id, band_id, lr_value, lr_rel, n_cont, separation, count, i))
+
+
 def LR_and_reliability( band, band_dat, radio_dat, qm_nm, sigma_pos, mag_bins, r_max, q0, outdir, LR_threshold=0.8,
                         ra_col='RA', dec_col='DEC', mag_col='', id_col='', rad_ra_col='RA', rad_dec_col='DEC',
                         rad_id_col='Source_id'):
 
     ## housekeeping
-    band_col = mag_col.replace('X', band)
-    sig_sq = np.power( sigma_pos, 2. )
+    #band_col = mag_col.replace('X', band)
+    #sig_sq = np.power( sigma_pos, 2. )
 
     ## initialize empty lists
     radio_id = []
@@ -399,6 +553,39 @@ def LR_and_reliability( band, band_dat, radio_dat, qm_nm, sigma_pos, mag_bins, r
     separation = []
     count = 0
 
+    num_cpu = int(os.getenv('LHR_CPU', 4))
+    split_radio = np.array_split(radio_dat, num_cpu)
+    split_sigma_pos = np.array_split(sigma_pos, num_cpu)
+    queue = Queue()
+    processes = [Process(target=_LR_and_reliability,
+                         args=(band, split_radio[i], band_dat, qm_nm, split_sigma_pos[i], mag_bins, r_max, q0, LR_threshold,
+                               ra_col, dec_col, mag_col, id_col, rad_ra_col, rad_dec_col, rad_id_col,
+                               queue, i))
+                 for i in range(num_cpu)]
+
+    for p in processes:
+        p.start()
+
+    results_dict = {}
+    unsorted_result = [queue.get() for _ in processes]
+    for results in unsorted_result:
+        results_dict[results[7]] = results
+
+    for key in sorted(results_dict):
+        results = results_dict[key]
+        radio_id += results[0]
+        band_id += results[1]
+        lr_value += results[2]
+        lr_rel += results[3]
+        n_cont += results[4]
+        separation += results[5]
+        count += results[6]
+
+    for p in processes:
+        p.join()
+
+    '''
+    print(radio_dat.shape, band_dat.shape, sigma_pos.shape, mag_bins.shape, r_max)
     for xx in np.arange(radio_dat.shape[0]):
 
         ## calculate f(r)
@@ -433,7 +620,7 @@ def LR_and_reliability( band, band_dat, radio_dat, qm_nm, sigma_pos, mag_bins, r
             n_cont = n_cont + np.repeat( lr_cont, n_cand ).tolist()
             separation = separation + distances[candidate_idx].tolist()
             count = count + n_cand
-
+    '''
     ## write results for the band
     t = Table()
     t['radio_ID'] = radio_id
@@ -448,7 +635,7 @@ def LR_and_reliability( band, band_dat, radio_dat, qm_nm, sigma_pos, mag_bins, r
     band_name_sep = band + '_separation'
     t[band_name_sep] = separation
 
-    print( 'Found a total of %s candidates'%str(n_cand) )
+    print( 'Found a total of %s candidates'%str(count) )
     outfile = os.path.join(outdir, band + '_LR_matches.dat')
     #outfile = band + '_LR_matches.xml' #updated to output VOTab for EMUcat - yg
     print( 'Saving matches to %s'%outfile )
@@ -488,7 +675,7 @@ def main( multiwave_cat, radio_cat, mask_image, config_file='lr_config.txt', ove
             dec_col=dec_col, mask_col=mask_col, sg_col=sg_col, mag_col=mag_col, mag_err_col=mag_err_col )
 
     ## mask the master cat just to be sure it's right
-    masked_master = apply_mask( master_cat, mask_image, ra_col=ra_col, dec_col=dec_col, overwrite=overwrite )
+    masked_master = apply_mask( master_cat, mask_image, ra_col=ra_col, dec_col=dec_col )
     master_cat = masked_master
 
     ## read in the master catalogue
@@ -500,7 +687,7 @@ def main( multiwave_cat, radio_cat, mask_image, config_file='lr_config.txt', ove
     area_asec = get_unmasked_area( mask_image, outdir=outdir, overwrite=overwrite )
 
     ## mask the radio data
-    masked_radio_cat = apply_mask( radio_cat, mask_image, ra_col=radio_ra_col, dec_col=radio_dec_col, overwrite=overwrite )
+    masked_radio_cat = apply_mask( radio_cat, mask_image, ra_col=radio_ra_col, dec_col=radio_dec_col )
 
     ## read in the masked radio data
     radio_hdul = fits.open( masked_radio_cat )

@@ -1,5 +1,5 @@
 parameter	value
-outdir		'./output'
+outdir		'./new_output'
 bands		'w1'
 id_col		'designation'
 ra_col		'ra'
@@ -8,10 +8,10 @@ mask_col	'Mask'
 sg_col		'stargal'
 mag_col		'Xmpro'
 mag_err_col	'Xsigmpro'
-flux_col	'col_flux_int'
-flux_err_col	'col_flux_int_err'
-radio_ra_col    'col_ra_deg_cont'
-radio_dec_col   'col_dec_deg_cont'
-radio_id_col    'col_component_id'
+flux_col	'flux_int'
+flux_err_col	'flux_int_err'
+radio_ra_col    'ra_deg_cont'
+radio_dec_col   'dec_deg_cont'
+radio_id_col    'id'
 beam_size	10
 cal_errors	0.1
