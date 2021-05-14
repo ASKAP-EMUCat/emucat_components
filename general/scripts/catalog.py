@@ -96,6 +96,15 @@ async def db_match_nearest_neighbour_with_allwise(conn, ser_name: str, max_separ
     return await conn.fetch(sql, ser_name, max_separation_rads)
 
 
+async def db_insert_extended_doubles(conn, rows):
+    await conn.executemany('INSERT INTO emucat.source_extended_doubles ("pair_name", "comp_id_1",'
+                           '"comp_id_2", "cen_ra_dec")'
+                           'VALUES($1, $2, $3, $4) '
+                           'ON CONFLICT ("pair_name", "comp_id_1", "comp_id_2") '
+                           'DO NOTHING',
+                           rows)
+
+
 def convert(value, datatype):
     if datatype == 'float':
         return float(value)
@@ -177,9 +186,10 @@ async def import_selavy_catalog(conn, ser_name: str, filename: str):
         island_rows.append([row[1]])
         source_island_rows.append([row[0], row[1]])
 
-    await db_mosaic_island_upsert_many(conn, island_rows)
-    await db_sources_island_upsert_many(conn, source_island_rows)
-    await db_components_upsert_many(conn, rows)
+    async with conn.transaction():
+        await db_mosaic_island_upsert_many(conn, island_rows)
+        await db_sources_island_upsert_many(conn, source_island_rows)
+        await db_components_upsert_many(conn, rows)
 
 
 async def import_lhr_catalog(conn, filename: str):
@@ -207,11 +217,62 @@ async def import_lhr_catalog(conn, filename: str):
                 row = []
                 type_count = 0
 
-    await db_lhr_upsert_many(conn, rows)
+    async with conn.transaction():
+        await db_lhr_upsert_many(conn, rows)
 
 
 def import_lhr(args):
     asyncio.run(import_lhr_votable(args.input, args.credentials))
+
+
+async def import_extended_double_catalog(conn, filename):
+    ns = '{http://www.ivoa.net/xml/VOTable/v1.4}'
+
+    data_types = [str, int, int, float, float]
+    rows = []
+    row = []
+    type_count = 0
+
+    for event, elem in ET.iterparse(filename, events=('start', 'end', 'start-ns', 'end-ns')):
+        if event == 'end':
+            if elem.tag == f"{ns}TR":
+                dec = row.pop()
+                ra = row.pop()
+                point = f"({ra}d, {dec}d)"
+                row.append(point)
+                rows.append(row)
+                elem.clear()
+            elif elem.tag == f"{ns}TD":
+                value = data_types[type_count](elem.text)
+                row.append(value)
+                type_count += 1
+        elif event == 'start':
+            if elem.tag == f"{ns}TR":
+                row = []
+                type_count = 0
+
+    async with conn.transaction():
+        await db_insert_extended_doubles(conn, rows)
+
+
+async def _import_extended_doubles(filename: str, credentials: str):
+    config = configparser.ConfigParser()
+    config.read(credentials)
+    user = config['emucat_database']['user']
+    password = config['emucat_database']['password']
+    database = config['emucat_database']['database']
+    host = config['emucat_database']['host']
+    port = config['emucat_database'].getint('port', 5432)
+
+    conn = await asyncpg.connect(user=user, password=password, database=database, host=host, port=port)
+    try:
+        await import_extended_double_catalog(conn, filename)
+    finally:
+        await conn.close()
+
+
+def import_extended_doubles(args):
+    asyncio.run(_import_extended_doubles(args.input, args.credentials))
 
 
 async def import_lhr_votable(filename: str, credentials: str):
@@ -474,6 +535,13 @@ def main():
     import_des_from_lhr_parser.add_argument('-s', '--ser', help='Source extraction region.', type=str, required=True)
     import_des_from_lhr_parser.add_argument('-c', '--credentials', help='Credentials file.', required=True)
     import_des_from_lhr_parser.set_defaults(func=import_des_from_lhr)
+
+    import_extended_doubles_parser = subparsers.add_parser('import_extended_doubles',
+                                                       help='Import extended doubles into EMUCat.')
+    import_extended_doubles_parser.add_argument('-i', '--input', help='extended doubles votable.', type=str,
+                                                required=True)
+    import_extended_doubles_parser.add_argument('-c', '--credentials', help='Credentials file.', required=True)
+    import_extended_doubles_parser.set_defaults(func=import_extended_doubles)
 
     delete_components_parser = subparsers.add_parser('delete_components',
                                                      help='Delete all components of a SER.')
