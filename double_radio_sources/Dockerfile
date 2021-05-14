@@ -8,7 +8,7 @@ RUN apt install -y python3-setuptools
 RUN apt install -y python3
 RUN apt install -y wget
 RUN apt install -y python3-pip
-RUN pip3 install wheel numpy astropy numpy argparse pandas
+RUN pip3 install wheel numpy astropy numpy argparse pandas scipy
 
 RUN mkdir /input
 RUN mkdir /output
