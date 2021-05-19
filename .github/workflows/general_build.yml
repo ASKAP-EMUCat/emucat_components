@@ -34,4 +34,4 @@ jobs:
         with:
           context: general/
           push: true
-          tags: user/app:latest
+          tags: aussrc/emucat_scripts:latest
