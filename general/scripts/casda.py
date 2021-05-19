@@ -90,7 +90,7 @@ def download_casda_obscore_fits(rowset, check_exists, output_dir, timeout, crede
 
 def str2bool(v):
     if isinstance(v, bool):
-       return v
+        return v
     if v.lower() in ('yes', 'true', 't', 'y', '1'):
         return True
     elif v.lower() in ('no', 'false', 'f', 'n', '0'):
