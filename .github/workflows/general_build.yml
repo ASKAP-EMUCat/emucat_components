@@ -12,6 +12,7 @@ on:
 jobs:
   docker:
     runs-on: ubuntu-latest
+    environment: dockerhub
     steps:
       -
         name: Checkout
