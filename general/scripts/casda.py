@@ -143,10 +143,10 @@ def main():
                          f"does not match query result {len(rowset)}")
 
     result = download_casda_obscore_fits(rowset,
-                                            check_exists=args.check_exists,
-                                            output_dir=args.output,
-                                            timeout=args.timeout,
-                                            credentials=args.credentials)
+                                         check_exists=args.check_exists,
+                                         output_dir=args.output,
+                                         timeout=args.timeout,
+                                         credentials=args.credentials)
 
     with open(args.manifest, 'w') as json_file:
         json.dump(result, json_file)
