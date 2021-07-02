@@ -58,10 +58,10 @@ async def db_components_upsert_many(conn, rows):
                            '"pos_ang_deconv_err","chi_squared_fit","rms_fit_gauss","spectral_index",'
                            '"spectral_curvature","spectral_index_err","spectral_curvature_err",'
                            '"rms_image","has_siblings","fit_is_estimate","spectral_index_from_tt",'
-                           '"flag_c4","comment")'
+                           '"flag_c4","comment", "ra_dec")'
                            'VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15,'
                            '$16, $17, $18, $19, $20, $21, $22, $23, $24, $25, $26, $27, $28, $29,'
-                           '$30, $31, $32, $33, $34, $35, $36, $37, $38, $39) '
+                           '$30, $31, $32, $33, $34, $35, $36, $37, $38, $39, $40) '
                            'ON CONFLICT ("mosaic_id", "island_id", "component_name", '
                            '"ra_deg_cont", "dec_deg_cont") DO NOTHING',
                            rows)
@@ -177,6 +177,8 @@ async def import_selavy_catalog(conn, ser_name: str, filename: str):
     for i, tr in enumerate(root.findall('./ivoa:RESOURCE/ivoa:TABLE/ivoa:DATA/ivoa:TABLEDATA/ivoa:TR', ns)):
         cat = [convert(td.text.strip(), datatypes[j]) for j, td in enumerate(tr)]
         cat.insert(0, mosaic_id)
+        ra_dec = f"({cat[6]}d, {cat[7]}d)"
+        cat.append(ra_dec)
         rows.append(cat)
 
     island_rows = []
