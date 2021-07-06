@@ -17,6 +17,33 @@ logging.basicConfig(stream=sys.stdout,
                     format='[%(asctime)s] {%(filename)s:%(lineno)d} %(levelname)s - %(message)s')
 
 
+async def db_moasic_select(conn, ser_name: str):
+    mosaic_id = await conn.fetchrow('SELECT m.id '
+                                    'FROM emucat.source_extraction_regions as se '
+                                    'INNER JOIN emucat.mosaics as m '
+                                    'ON se.id = m.ser_id '
+                                    'where se.name = $1',
+                                    ser_name)
+    return mosaic_id
+
+
+async def db_island_upsert_many(conn, row):
+    await conn.executemany('INSERT INTO emucat.islands ('
+                           '"mosaic_id", "island_id", "island_name", "n_components", "ra_hms_cont", '
+                           '"dec_hms_cont", "ra_deg_cont", "dec_deg_cont", "freq", '
+                           '"maj_axis", "min_axis", "pos_ang", "flux_int", "flux_int_err", '
+                           '"flux_peak", "mean_background", "background_noise", "max_residual", '
+                           '"min_residual", "mean_residual", "rms_residual", "stdev_residual", '
+                           '"x_min", "x_max", "y_min", "y_max", "n_pix", '
+                           '"solid_angle", "beam_area", "x_ave", "y_ave", "x_cen", "y_cen", '
+                           '"x_peak", "y_peak", "flag_i1", "flag_i2", "flag_i3", "flag_i4", '
+                           '"comment", "ra_dec") '
+                           'VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15,'
+                           '$16, $17, $18, $19, $20, $21, $22, $23, $24, $25, $26, $27, $28, $29,'
+                           '$30, $31, $32, $33, $34, $35, $36, $37, $38, $39, $40, $41)',
+                           row)
+
+
 async def db_moasic_upsert(conn, row):
     mosaic_id = await conn.fetchrow('INSERT INTO emucat.mosaics ("ser_id", "table_version", "image_file", '
                                     '"flag_subsection",'
@@ -117,6 +144,29 @@ def convert(value, datatype):
     elif datatype == 'double':
         return float(value)
     return value
+
+
+async def import_selavy_island_catalog(conn, ser_name: str, filename: str):
+    mosaic_id = await db_moasic_select(conn, ser_name)
+    if not mosaic_id:
+        raise Exception(f'Mosaic not found for SER: {ser_name}')
+
+    ns = {'ivoa': 'http://www.ivoa.net/xml/VOTable/v1.3'}
+
+    root = await asyncio.get_event_loop().run_in_executor(None, ET.parse, filename)
+    datatypes = []
+    for field in root.findall('./ivoa:RESOURCE/ivoa:TABLE/ivoa:FIELD', ns):
+        datatypes.append(field.get('datatype'))
+
+    rows = []
+    for i, tr in enumerate(root.findall('./ivoa:RESOURCE/ivoa:TABLE/ivoa:DATA/ivoa:TABLEDATA/ivoa:TR', ns)):
+        cat = [convert(td.text.strip(), datatypes[j]) for j, td in enumerate(tr)]
+        cat.insert(0, mosaic_id[0])
+        rows.append(cat)
+        ra_dec = f"({cat[6]}d, {cat[7]}d)"
+        cat.append(ra_dec)
+
+    await db_island_upsert_many(conn, rows)
 
 
 async def import_selavy_catalog(conn, ser_name: str, filename: str):
@@ -289,6 +339,26 @@ async def import_lhr_votable(filename: str, credentials: str):
     conn = await asyncpg.connect(user=user, password=password, database=database, host=host, port=port)
     try:
         await import_lhr_catalog(conn, filename)
+    finally:
+        await conn.close()
+
+
+def import_selavy_island(args):
+    asyncio.run(import_selavy_island_votable(args.ser, args.input, args.credentials))
+
+
+async def import_selavy_island_votable(ser_name: str, filename: str, credentials: str):
+    config = configparser.ConfigParser()
+    config.read(credentials)
+    user = config['emucat_database']['user']
+    password = config['emucat_database']['password']
+    database = config['emucat_database']['database']
+    host = config['emucat_database']['host']
+    port = config['emucat_database'].getint('port', 5432)
+
+    conn = await asyncpg.connect(user=user, password=password, database=database, host=host, port=port)
+    try:
+        await import_selavy_island_catalog(conn, ser_name, filename)
     finally:
         await conn.close()
 
@@ -526,6 +596,13 @@ def main():
     input_selavy_parser.add_argument('-i', '--input', help='Selavy votable.', type=str, required=True)
     input_selavy_parser.add_argument('-c', '--credentials', help='Credentials file.', required=True)
     input_selavy_parser.set_defaults(func=import_selavy)
+
+    input_selavy_island_parser = subparsers.add_parser('import_selavy_island',
+                                                       help='Import selavy islands into EMUCat.')
+    input_selavy_island_parser.add_argument('-s', '--ser', help='Source extraction region.', type=str, required=True)
+    input_selavy_island_parser.add_argument('-i', '--input', help='Selavy island votable.', type=str, required=True)
+    input_selavy_island_parser.add_argument('-c', '--credentials', help='Credentials file.', required=True)
+    input_selavy_island_parser.set_defaults(func=import_selavy_island)
 
     input_lhr_parser = subparsers.add_parser('import_lhr', help='Import lhr results into EMUCat.')
     input_lhr_parser.add_argument('-i', '--input', help='lhr votable.', type=str, required=True)
