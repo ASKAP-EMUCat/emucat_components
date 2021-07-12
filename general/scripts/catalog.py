@@ -124,7 +124,7 @@ async def db_match_nearest_neighbour_with_allwise(conn, ser_name: str, max_separ
 
 
 async def db_insert_extended_doubles(conn, rows):
-    await conn.executemany('INSERT INTO emucat.source_extended_doubles ("pair_name", "comp_id_1",'
+    await conn.executemany('INSERT INTO emucat.sources_extended_doubles ("pair_name", "comp_id_1",'
                            '"comp_id_2", "cen_ra_dec")'
                            'VALUES($1, $2, $3, $4) '
                            'ON CONFLICT ("pair_name", "comp_id_1", "comp_id_2") '
