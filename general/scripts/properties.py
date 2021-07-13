@@ -60,7 +60,7 @@ def import_properties(args):
                  'ra', 'J2000 Right Ascension', 'deg', datatype['double'],
                  'dec', 'J2000 Declination', 'deg', datatype['double']]
 
-    properties = asyncio.run(db_properties_schema_upsert(db_rows,credentials))
+    properties = asyncio.run(db_properties_schema_upsert(db_rows,args.credentials))
 
 
     islands = asyncio.run(db_island_select(args.ser,args.credentials))
@@ -78,7 +78,7 @@ def import_properties(args):
             name = position_to_EMU_name(row['c_ra_deg_cont'],row['c_dec_deg_cont'],source='C')
 
         db_rows = [ name_id, row['sid'], name]
-        asyncio.run(db_island_properties_upsert(db_rows,credentials))
+        asyncio.run(db_island_properties_upsert(db_rows,args.credentials))
  
 
 
