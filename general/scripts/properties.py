@@ -56,20 +56,18 @@ def import_properties(args):
 
     datatype = dict(asyncio.run(db_property_datatypes_select(args.credentials)))
 
-    db_rows =  [['name', 'EMU IAU Name', '', datatype['string']],
-                 'ra', 'J2000 Right Ascension', 'deg', datatype['double'],
-                 'dec', 'J2000 Declination', 'deg', datatype['double']]
+    db_rows = [['name', 'EMU IAU Name', '', datatype['string']],
+               ['ra', 'J2000 Right Ascension', 'deg', datatype['double']],
+               ['dec', 'J2000 Declination', 'deg', datatype['double']]]
 
     properties = asyncio.run(db_properties_schema_upsert(db_rows,args.credentials))
 
-
     islands = asyncio.run(db_island_select(args.ser,args.credentials))
-
 
     # EMU IAU Name
 
     name_id = [p[0] for p in properties if p[1] == 'name'][0]
-
+    db_rows = []
     for row in islands:
         if row['n_components'] > 1:
             name = position_to_EMU_name(row['i_ra_deg_cont'],row['i_dec_deg_cont'],source='I')
@@ -77,8 +75,9 @@ def import_properties(args):
         elif row['n_components'] == 1:
             name = position_to_EMU_name(row['c_ra_deg_cont'],row['c_dec_deg_cont'],source='C')
 
-        db_rows = [ name_id, row['sid'], name]
-        asyncio.run(db_island_properties_upsert(db_rows,args.credentials))
+        db_rows.append([ name_id, row['sid'], name])
+
+    asyncio.run(db_island_properties_upsert(db_rows,args.credentials))
  
 
 
@@ -104,16 +103,16 @@ async def db_properties_schema_upsert(rows,credentials):
     conn = await asyncpg.connect(user=user, password=password, database=database, host=host, port=port)
     try:
         async with conn.transaction():
-            await conn.executemany('INSERT INTO emucat.properties_schema ("name", "description", "unit", "datatype_id") '
-                                'VALUES ($1, $2, $3, $4) '
-                                'ON CONFLICT ("name") DO NOTHING',
-                                rows)
+            await conn.executemany('INSERT INTO emucat.properties_schema '
+                                   '("name", "description", "unit", "datatype_id") '
+                                   'VALUES ($1, $2, $3, $4) '
+                                   'ON CONFLICT ("name", "unit", "datatype_id") DO NOTHING',
+                                   rows)
 
-            result = await conn.fetch("SELECT * from emucat.properties_schema")
+            return await conn.fetch("SELECT * from emucat.properties_schema")
 
     finally:
         await conn.close()
-    return results
 
 
 
@@ -150,10 +149,11 @@ async def db_island_properties_upsert(rows,credentials):
     conn = await asyncpg.connect(user=user, password=password, database=database, host=host, port=port)
     try:
         async with conn.transaction():
-            await conn.executemany('INSERT INTO emucat.sources_selavy_islands_properties ("property_id", "source_id", "val") '
-                           'VALUES ($1, $2, $3) '
-                           'ON CONFLICT ("property_id", "source_id") DO NOTHING',
-                           rows)
+            await conn.executemany('INSERT INTO emucat.sources_selavy_islands_properties '
+                                   '("property_id", "source_id", "val") '
+                                   'VALUES ($1, $2, $3) '
+                                   'ON CONFLICT ("property_id", "source_id") DO NOTHING',
+                                   rows)
     finally:
         await conn.close()
 
