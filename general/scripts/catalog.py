@@ -6,10 +6,12 @@ import os
 import sys
 import random
 import string
+import json
 import logging
 import argparse
 import configparser
 import pyvo as vo
+import astropy
 
 
 logging.basicConfig(stream=sys.stdout,
@@ -25,6 +27,11 @@ async def db_moasic_select(conn, ser_name: str):
                                     'where se.name = $1',
                                     ser_name)
     return mosaic_id
+
+
+async def db_update_mosaic_header(conn, mosaic_id, json_hdr):
+    await conn.fetchrow('UPDATE emucat.mosaics SET fits_header=$2 WHERE id=$1',
+                        mosaic_id, json_hdr)
 
 
 async def db_island_upsert_many(conn, row):
@@ -144,6 +151,17 @@ def convert(value, datatype):
     elif datatype == 'double':
         return float(value)
     return value
+
+
+def read_credentials(credentials: str):
+    config = configparser.ConfigParser()
+    config.read(credentials)
+    user = config['emucat_database']['user']
+    password = config['emucat_database']['password']
+    database = config['emucat_database']['database']
+    host = config['emucat_database']['host']
+    port = config['emucat_database'].getint('port', 5432)
+    return user, password, database, host, port
 
 
 async def import_selavy_island_catalog(conn, ser_name: str, filename: str):
@@ -308,14 +326,7 @@ async def import_extended_double_catalog(conn, filename):
 
 
 async def _import_extended_doubles(filename: str, credentials: str):
-    config = configparser.ConfigParser()
-    config.read(credentials)
-    user = config['emucat_database']['user']
-    password = config['emucat_database']['password']
-    database = config['emucat_database']['database']
-    host = config['emucat_database']['host']
-    port = config['emucat_database'].getint('port', 5432)
-
+    user, password, database, host, port = read_credentials(credentials)
     conn = await asyncpg.connect(user=user, password=password, database=database, host=host, port=port)
     try:
         await import_extended_double_catalog(conn, filename)
@@ -328,14 +339,7 @@ def import_extended_doubles(args):
 
 
 async def import_lhr_votable(filename: str, credentials: str):
-    config = configparser.ConfigParser()
-    config.read(credentials)
-    user = config['emucat_database']['user']
-    password = config['emucat_database']['password']
-    database = config['emucat_database']['database']
-    host = config['emucat_database']['host']
-    port = config['emucat_database'].getint('port', 5432)
-
+    user, password, database, host, port = read_credentials(credentials)
     conn = await asyncpg.connect(user=user, password=password, database=database, host=host, port=port)
     try:
         await import_lhr_catalog(conn, filename)
@@ -348,14 +352,7 @@ def import_selavy_island(args):
 
 
 async def import_selavy_island_votable(ser_name: str, filename: str, credentials: str):
-    config = configparser.ConfigParser()
-    config.read(credentials)
-    user = config['emucat_database']['user']
-    password = config['emucat_database']['password']
-    database = config['emucat_database']['database']
-    host = config['emucat_database']['host']
-    port = config['emucat_database'].getint('port', 5432)
-
+    user, password, database, host, port = read_credentials(credentials)
     conn = await asyncpg.connect(user=user, password=password, database=database, host=host, port=port)
     try:
         await import_selavy_island_catalog(conn, ser_name, filename)
@@ -368,14 +365,7 @@ def import_selavy(args):
 
 
 async def import_selavy_votable(ser_name: str, filename: str, credentials: str):
-    config = configparser.ConfigParser()
-    config.read(credentials)
-    user = config['emucat_database']['user']
-    password = config['emucat_database']['password']
-    database = config['emucat_database']['database']
-    host = config['emucat_database']['host']
-    port = config['emucat_database'].getint('port', 5432)
-
+    user, password, database, host, port = read_credentials(credentials)
     conn = await asyncpg.connect(user=user, password=password, database=database, host=host, port=port)
     try:
         await import_selavy_catalog(conn, ser_name, filename)
@@ -409,13 +399,7 @@ def connect_to_noao():
 async def _import_des_from_lhr(ser: str, credentials: str):
     loop = asyncio.get_event_loop()
 
-    config = configparser.ConfigParser()
-    config.read(credentials)
-    user = config['emucat_database']['user']
-    password = config['emucat_database']['password']
-    database = config['emucat_database']['database']
-    host = config['emucat_database']['host']
-    port = config['emucat_database'].getint('port', 5432)
+    user, password, database, host, port = read_credentials(credentials)
 
     # Get the lhr sources that dont already exist in des_dr1
     fetch = 'SELECT distinct(lhr.wise_id) ' \
@@ -482,13 +466,7 @@ async def _import_des_from_lhr(ser: str, credentials: str):
 
 
 async def _delete_components(ser: str, credentials: str):
-    config = configparser.ConfigParser()
-    config.read(credentials)
-    user = config['emucat_database']['user']
-    password = config['emucat_database']['password']
-    database = config['emucat_database']['database']
-    host = config['emucat_database']['host']
-    port = config['emucat_database'].getint('port', 5432)
+    user, password, database, host, port = read_credentials(credentials)
 
     sql = 'DELETE FROM emucat.mosaics m WHERE m.ser_id IN ' \
           '(SELECT s.id FROM emucat.source_extraction_regions s WHERE s.name=$1)'
@@ -503,13 +481,7 @@ async def _delete_components(ser: str, credentials: str):
 
 
 async def _match_nearest_neighbour_with_allwise(ser: str, credentials: str):
-    config = configparser.ConfigParser()
-    config.read(credentials)
-    user = config['emucat_database']['user']
-    password = config['emucat_database']['password']
-    database = config['emucat_database']['database']
-    host = config['emucat_database']['host']
-    port = config['emucat_database'].getint('port', 5432)
+    user, password, database, host, port = read_credentials(credentials)
 
     conn = await asyncpg.connect(user=user, password=password, database=database, host=host, port=port)
     try:
@@ -523,13 +495,7 @@ async def _match_nearest_neighbour_with_allwise(ser: str, credentials: str):
 
 
 async def _check_preconditions(sbid: int, credentials: str):
-    config = configparser.ConfigParser()
-    config.read(credentials)
-    user = config['emucat_database']['user']
-    password = config['emucat_database']['password']
-    database = config['emucat_database']['database']
-    host = config['emucat_database']['host']
-    port = config['emucat_database'].getint('port', 5432)
+    user, password, database, host, port = read_credentials(credentials)
 
     sql_update = 'UPDATE emucat.scheduling_blocks SET deposited = true WHERE sb_num = $1'
     sql_select = 'SELECT ser.name, ' \
@@ -561,6 +527,27 @@ async def _check_preconditions(sbid: int, credentials: str):
         await conn.close()
 
 
+async def _extract_insert_mosaic_header(ser: str, filename: str, credentials: str):
+    json_hdr = {}
+    with astropy.io.fits.open(filename) as hdu:
+        for head in hdu[0].header:
+            if isinstance(hdu[0].header[head], astropy.io.fits.header._HeaderCommentaryCards):
+                json_hdr[head] = repr(hdu[0].header[head])
+            else:
+                json_hdr[head] = hdu[0].header[head]
+
+    user, password, database, host, port = read_credentials(credentials)
+    conn = await asyncpg.connect(user=user, password=password, database=database, host=host, port=port)
+    try:
+        async with conn.transaction():
+            mosaic_id = await db_moasic_select(conn, ser)
+            if not mosaic_id:
+                raise Exception(f'Mosaic not found for SER: {ser}')
+            await db_update_mosaic_header(conn, mosaic_id[0], json.dumps(json_hdr))
+    finally:
+        await conn.close()
+
+
 def import_des_from_lhr(args):
     asyncio.run(_import_des_from_lhr(args.ser, args.credentials))
 
@@ -575,6 +562,10 @@ def match_nearest_neighbour_with_allwise(args):
 
 def check_preconditions(args):
     asyncio.run(_check_preconditions(int(args.sbid), args.credentials))
+
+
+def extract_insert_mosaic_header(args):
+    asyncio.run(_extract_insert_mosaic_header(args.ser, args.input, args.credentials))
 
 
 def main():
@@ -635,6 +626,16 @@ def main():
     match_nearest_neighbour_with_allwise_parser.add_argument('-c', '--credentials',
                                                              help='Credentials file.', required=True)
     match_nearest_neighbour_with_allwise_parser.set_defaults(func=match_nearest_neighbour_with_allwise)
+
+    extract_insert_mosaic_header_parser = subparsers.add_parser('extract_insert_mosaic_header',
+                                                                help='Extract mosaic header and insert into Emucat.')
+    extract_insert_mosaic_header_parser.add_argument('-s', '--ser', help='Source extraction region.',
+                                                     type=str, required=True)
+    extract_insert_mosaic_header_parser.add_argument('-i', '--input', help='Mosaic fits file.', type=str,
+                                                     required=True)
+    extract_insert_mosaic_header_parser.add_argument('-c', '--credentials',
+                                                     help='Credentials file.', required=True)
+    extract_insert_mosaic_header_parser.set_defaults(func=extract_insert_mosaic_header)
 
     args = parser.parse_args()
     args.func(args)
