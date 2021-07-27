@@ -15,6 +15,7 @@ RUN mkdir /output
 RUN mkdir /scripts
 COPY ./scripts/casda.py /scripts
 COPY ./scripts/catalog.py /scripts
+COPY ./scripts/properties.py /scripts
 WORKDIR /scripts
 RUN chmod +x casda.py
 RUN chmod +x catalog.py
