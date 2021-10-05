@@ -21,7 +21,7 @@ logging.basicConfig(stream=sys.stdout,
 
 async def db_moasic_select(conn, ser_name: str):
     mosaic_id = await conn.fetchrow('SELECT m.id '
-                                    'FROM emucat.source_extraction_regions as se '
+                                    'FROM emucat.regions as se '
                                     'INNER JOIN emucat.mosaics as m '
                                     'ON se.id = m.ser_id '
                                     'where se.name = $1',
@@ -117,7 +117,7 @@ async def db_lhr_upsert_many(conn, rows):
 async def db_match_nearest_neighbour_with_allwise(conn, ser_name: str, max_separation_rads: float):
     sql = "INSERT INTO emucat.sources_nearest_allwise (component_id, wise_id, separation) " \
           "select c.id, a.designation, a.distance " \
-          "from emucat.components c, emucat.mosaics m, emucat.source_extraction_regions s,  " \
+          "from emucat.components c, emucat.mosaics m, emucat.regions s,  " \
           "lateral " \
           "(select aw.designation, aw.ra_dec, " \
           "aw.ra_dec <-> spoint(c.ra_deg_cont*pi()/180.0, c.dec_deg_cont*pi()/180.0) distance " \
@@ -188,7 +188,7 @@ async def import_selavy_island_catalog(conn, ser_name: str, filename: str):
 
 
 async def import_selavy_catalog(conn, ser_name: str, filename: str):
-    ser_id = await conn.fetchrow('SELECT id from emucat.source_extraction_regions where name=$1', ser_name)
+    ser_id = await conn.fetchrow('SELECT id from emucat.regions where name=$1', ser_name)
     if not ser_id:
         raise Exception('Source extraction region not found')
 
@@ -403,7 +403,7 @@ async def _import_des_from_lhr(ser: str, credentials: str):
 
     # Get the lhr sources that dont already exist in des_dr1
     fetch = 'SELECT distinct(lhr.wise_id) ' \
-            'FROM emucat.components c, emucat.mosaics m, emucat.source_extraction_regions s, ' \
+            'FROM emucat.components c, emucat.mosaics m, emucat.regions s, ' \
             'emucat.sources_lhr_allwise lhr ' \
             'LEFT JOIN emucat.allwise as aw on lhr.wise_id = aw.designation ' \
             'LEFT JOIN emucat.des_dr1 as des on aw.designation = des.wise_id ' \
@@ -469,7 +469,7 @@ async def _delete_components(ser: str, credentials: str):
     user, password, database, host, port = read_credentials(credentials)
 
     sql = 'DELETE FROM emucat.mosaics m WHERE m.ser_id IN ' \
-          '(SELECT s.id FROM emucat.source_extraction_regions s WHERE s.name=$1)'
+          '(SELECT s.id FROM emucat.regions s WHERE s.name=$1)'
 
     conn = await asyncpg.connect(user=user, password=password, database=database, host=host, port=port)
     try:
@@ -501,7 +501,7 @@ async def _check_preconditions(sbid: int, credentials: str):
     sql_select = 'SELECT ser.name, ' \
                  'count(sb.sb_num) as sbid_count, ' \
                  'sum(case when sb.deposited = true then 1 else 0 end) as deposited_count ' \
-                 'FROM emucat.source_extraction_regions as ser, ' \
+                 'FROM emucat.regions as ser, ' \
                  'emucat.mosaic_prerequisites as mp, ' \
                  'emucat.scheduling_blocks as sb ' \
                  'WHERE ser.id = mp.ser_id and mp.sb_id = sb.id ' \

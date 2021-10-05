@@ -126,7 +126,7 @@ async def db_island_select(ser,credentials):
                   c.dec_deg_cont AS c_dec_deg_cont, \
                   i.n_components \
             FROM emucat.islands i, emucat.components c, emucat.sources_selavy_islands s, \
-                emucat.source_extraction_regions ser, emucat.mosaics m  \
+                emucat.regions ser, emucat.mosaics m  \
             WHERE i.mosaic_id = m.id AND c.mosaic_id = m.id AND s.mosaic_id = m.id \
             AND m.ser_id = ser.id AND c.component_id like '%a' AND s.island_id = i.island_id \
             AND c.island_id = i.island_id AND ser.name = '{0}' LIMIT 10".format(ser)
