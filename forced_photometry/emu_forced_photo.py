@@ -7,6 +7,7 @@
 
 
 import numpy as np, matplotlib.pyplot as plt, os
+from distutils.util import strtobool
 from astropy.io import fits
 from astropy.table import Table
 from astropy.wcs import WCS
@@ -52,28 +53,33 @@ def radio_image_as_2d(file):
     
     hdu = fits.open(file)
     
+    imdata = hdu[0].data
     ###extract 2D image array
-    imdata = hdu[0].data[0][0]
+    if hdu[0].data.ndim == 4:
+        imdata = imdata[0][0]
     
-    ###extract header info for 2D
-    head2d = hdu[0].header.copy()
+        ###extract header info for 2D
+        head2d = hdu[0].header.copy()
     
-    hkeys = list(head2d.keys())
+        hkeys = list(head2d.keys())
     
-    crkeys = ['CTYPE', 'CRVAL', 'CDELT', 'CRPIX', 'CUNIT']
-    cr3 = [c + '3' for c in crkeys]
-    cr4 = [c + '4' for c in crkeys]
-    badkeys = cr3 + cr4 + ['NAXIS3', 'NAXIS4']
+        crkeys = ['CTYPE', 'CRVAL', 'CDELT', 'CRPIX', 'CUNIT']
+        cr3 = [c + '3' for c in crkeys]
+        cr4 = [c + '4' for c in crkeys]
+        badkeys = cr3 + cr4 + ['NAXIS3', 'NAXIS4']
     
-    for key in hkeys:
-        if 'PC3' in key or 'PC4' in key or '_3' in key or '_4' in key:
-            badkeys.append(key)
-        if 'PC03' in key or 'PC04' in key or '_03' in key or '_04' in key:
-            badkeys.append(key)
-        if key in badkeys:
-            del(head2d[key])
+        for key in hkeys:
+            if 'PC3' in key or 'PC4' in key or '_3' in key or '_4' in key:
+                badkeys.append(key)
+            if 'PC03' in key or 'PC04' in key or '_03' in key or '_04' in key:
+                badkeys.append(key)
+            if key in badkeys:
+                del(head2d[key])
 
-    head2d['NAXIS'] = 2
+        head2d['NAXIS'] = 2
+
+    else:
+        head2d = hdu[0].header
 
     ###create new 2D hdu
     hdu2d = fits.PrimaryHDU(imdata)
@@ -165,7 +171,7 @@ class ForcedPhoto:
     
         ###obtain maximum pixel value in cutout defined by mask
         statpx = np.array([stat(i.cutout(image)) for i in pixmasks])
-    
+
         return(statpx)
 
 
@@ -277,8 +283,9 @@ class ForcedPhoto:
 
 
     def psf_measurements(self, targets,
-                         osamp=4, iters=3,
+                         osamp=2, iters=3,
                          n_beams=3):
+        ###too high a value for osamp will cause ePSF fitting to fail
         'obtain flux by modelling beam psf as gaussian'
         t0 = time.time()
 
@@ -362,9 +369,13 @@ def parse_args():
     parser.add_argument("targets", help="file with list of sky coords to perform forced photometry on")
     parser.add_argument("image", help="image file")
     parser.add_argument("noise", help="noise file")
+    parser.add_argument("--model_psf", action="store", type=str,
+                        default='True', )
                         
     args = parser.parse_args()
-
+    
+    ###convert arg.model_psf to bool
+    args.model_psf = bool(strtobool(args.model_psf))
 
     return args
 
@@ -382,11 +393,11 @@ if __name__ == '__main__':
     targets = Table.read(args.targets)
     targetids = targets[namecol]
     targetpos = SkyCoord(ra=targets[acol], dec=targets[dcol], unit=tposunits)
-    
+
     ##perform photometry
     photo = ForcedPhoto(image_file=args.image, rms_file=args.noise, load_method=radio_image_as_2d)
-    phototab = photo.photoTable(targets=targetpos, include_psf=False)
-    
+    phototab = photo.photoTable(targets=targetpos, include_psf=args.model_psf)
+
     ##finalise table and write to file
     phototab.add_column(col=targetids, index=0) ##adds ID column
     phototab.write(outname, format=outformat)
