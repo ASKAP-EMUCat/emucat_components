@@ -54,7 +54,6 @@ async def _import_des_dr1_from_lhr(ser: str, output: str, credentials: str):
     except OSError:
         pass
 
-
     user, password, database, host, port = read_credentials(credentials)
 
     # Get the lhr sources that dont already exist in des_dr1
@@ -62,12 +61,12 @@ async def _import_des_dr1_from_lhr(ser: str, output: str, credentials: str):
             'FROM emucat.components c, emucat.mosaics m, emucat.regions s, ' \
             'emucat.sources_lhr_allwise lhr ' \
             'LEFT JOIN emucat.allwise as aw on lhr.wise_id = aw.designation ' \
-            'LEFT JOIN emucat.des_dr1 as des on aw.designation = des.wise_id ' \
+            'LEFT JOIN emucat.des_dr1_allwise as des on aw.designation = des.wise_id ' \
             'WHERE c.mosaic_id=m.id ' \
             'AND m.ser_id=s.id ' \
             'AND lhr.component_id=c.id ' \
             'AND s.name=$1 ' \
-            'AND des.wise_id is NULL'
+            'AND des.wise_id is NULL '
 
     insert_conn = None
     conn = None
@@ -78,68 +77,86 @@ async def _import_des_dr1_from_lhr(ser: str, output: str, credentials: str):
         async with conn.transaction():
             records = await conn.fetch(sql, ser)
 
-            if not records:
-                return
+        if not records:
+            return
 
-            logging.info(f'Getting des_dr1 records from {len(records)} lhr matches.')
+        logging.info(f'Getting des_dr1 records from {len(records)} lhr matches.')
 
-            sources = set()
-            for row in records:
-                sources.add((row['designation'], f"{row['source_id'].strip()}", row['ra'], row['dec']))
+        sources = set()
+        for row in records:
+            sources.add((row['designation'], f"{row['source_id'].strip()}", row['ra'], row['dec']))
 
-            with open(f"{output}/{in_table}.csv", 'w') as csvfile:
-                filewriter = csv.writer(csvfile)
-                filewriter.writerow(["designation", "source_id", "ra", "dec"])
-                for s in sources:
-                    filewriter.writerow([s[0],s[1],s[2],s[3]])
-            
-            with open(f"{output}/{in_table}_schema.txt", 'w') as csvfile:
-                filewriter = csv.writer(csvfile)
-                filewriter.writerow(["designation", "text"])
-                filewriter.writerow(["source_id", "text"])
-                filewriter.writerow(["ra", "double precision"])
-                filewriter.writerow(["dec", "double precision"])
+        with open(f"{output}/{in_table}.csv", 'w') as csvfile:
+            filewriter = csv.writer(csvfile)
+            filewriter.writerow(["designation", "source_id", "ra", "dec"])
+            for s in sources:
+                filewriter.writerow([s[0],s[1],s[2],s[3]])
+        
+        with open(f"{output}/{in_table}_schema.txt", 'w') as csvfile:
+            filewriter = csv.writer(csvfile)
+            filewriter.writerow(["designation", "text"])
+            filewriter.writerow(["source_id", "text"])
+            filewriter.writerow(["ra", "double precision"])
+            filewriter.writerow(["dec", "double precision"])
 
-            user, password = read_noao_credentials(credentials)
-            ac.login(user, password)
+        user, password = read_noao_credentials(credentials)
+        token = ac.login(user, password)
 
-            # create remote table at noao and import data
-            resp = qc.mydb_create(in_table, f"{output}/{in_table}_schema.txt")
-            if resp != 'OK':
-                raise Exception('mydb_create failed')
+        # create remote table at noao and import data
+        resp = qc.mydb_create(in_table, f"{output}/{in_table}_schema.txt", drop=True)
+        if resp != 'OK':
+            raise Exception('mydb_create failed')
 
-            resp = qc.mydb_import(in_table, f"{output}/{in_table}.csv", drop=True)
-            if resp != 'OK':
-                raise Exception('mydb_import failed')
+        resp = qc.mydb_import(in_table, f"{output}/{in_table}.csv", drop=True)
+        if resp != 'OK':
+            raise Exception('mydb_import failed')
 
-            sql = "SELECT aw.designation, des.mag_auto_g, des.mag_auto_r, des.mag_auto_i, des.mag_auto_z, des.mag_auto_y "\
-                 f"FROM mydb://{in_table} as aw, des_dr1.mag des, des_dr1.x1p5__main__allwise__source xm " \
-                  "WHERE aw.source_id=xm.id2 AND xm.id1=des.coadd_object_id"
+        #qc.mydb_flush()
 
-            logging.info(f'Cross matching with des_dr1.')
+        query = "SELECT aw.designation, xm.id1, xm.distance, " \
+                "des.ra, des.dec, des.mag_auto_g, des.mag_auto_r, " \
+                "des.mag_auto_i, des.mag_auto_z, des.mag_auto_y " \
+                f"FROM des_dr1.mag as des, des_dr1.x1p5__main__allwise__source as xm, mydb://{in_table} as aw " \
+                "WHERE aw.source_id=xm.id2 AND xm.id1=des.coadd_object_id"
 
-            qc.query(sql=sql, fmt='csv', out=f"vos://{out_table}")
-            sc.get(f"vos://{out_table}", f"{output}/{out_table}")
+        logging.info(f'Cross matching with des_dr1.')
+        print(query)
+        a=qc.query(sql=query, fmt='csv', out=f"vos://{out_table}", drop=True,
+        async_=True, wait=True, timeout=3000, poll=1)
+        print(a)
+        sc.get(f"vos://{out_table}", f"{output}/{out_table}")
 
-            logging.info(f'Cross matching with des_dr1 complete.')
+        logging.info(f'Cross matching with des_dr1 complete.')
 
-            insert_rows = []
-            with open(f"{output}/{out_table}") as csv_file:
-                csv_reader = csv.reader(csv_file, delimiter=',')
-                # skip header
-                next(csv_reader)
-                for row in csv_reader:
-                    insert_rows.append([row[0], float(row[1]), float(row[2]), float(row[3]), float(row[4]), float(row[5])])
+        des_rows = []
+        xmatch_rows = []
+        with open(f"{output}/{out_table}") as csv_file:
+            csv_reader = csv.reader(csv_file, delimiter=',')
+            # skip header
+            next(csv_reader)
+            for row in csv_reader:
+                des_rows.append([int(row[1]), float(row[3]), float(row[4]), 
+                                    float(row[5]), float(row[6]), float(row[7]),
+                                    float(row[8]), float(row[9])])
+                xmatch_rows.append([row[0], int(row[1]), float(row[2])])
 
-            logging.info(f'Inserting {len(insert_rows)} into des_dr1.')
+        logging.info(f'Inserting {len(xmatch_rows)} into des_dr1.')
 
-            async with insert_conn.transaction():
-                await insert_conn.executemany('INSERT INTO emucat.des_dr1 ("wise_id", "mag_auto_g", "mag_auto_r", '
-                                              '"mag_auto_i", "mag_auto_z", "mag_auto_y") '
-                                              'VALUES($1, $2, $3, $4, $5, $6) '
-                                              'ON CONFLICT ("wise_id") '
-                                              'DO NOTHING',
-                                              insert_rows)
+        async with insert_conn.transaction():
+            await insert_conn.executemany('INSERT INTO emucat.des_dr1 ("coadd_object_id", '
+                                            '"ra", "dec", "mag_auto_g", "mag_auto_r", '
+                                            '"mag_auto_i", "mag_auto_z", "mag_auto_y") '
+                                            'VALUES($1, $2, $3, $4, $5, $6, $7, $8) '
+                                            'ON CONFLICT ("coadd_object_id") '
+                                            'DO NOTHING',
+                                            des_rows)
+
+            await insert_conn.executemany('INSERT INTO emucat.des_dr1_allwise '
+                                            '("wise_id", "coadd_object_id", "separation") '
+                                            'VALUES($1, $2, $3) '
+                                            'ON CONFLICT ("wise_id", "coadd_object_id") '
+                                            'DO NOTHING',
+                                            xmatch_rows)
     finally:
         if insert_conn:
             await insert_conn.close()
