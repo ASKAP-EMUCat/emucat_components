@@ -120,9 +120,10 @@ async def _import_des_dr1_from_lhr(ser: str, output: str, credentials: str):
                 "WHERE aw.source_id=xm.id2 AND xm.id1=des.coadd_object_id"
 
         logging.info(f'Cross matching with des_dr1.')
-        print(query)
-        a=qc.query(sql=query, fmt='csv', out=f"vos://{out_table}", drop=True, timeout=600) #async_=True, wait=True, timeout=3000, poll=1)
-        print(a)
+        resp = qc.query(sql=query, fmt='csv', out=f"vos://{out_table}", drop=True, timeout=600) #async_=True, wait=True, timeout=3000, poll=1)
+        if resp != 'OK':
+            raise Exception(f'query: {resp}')
+            
         sc.get(f"vos://{out_table}", f"{output}/{out_table}")
 
         logging.info(f'Cross matching with des_dr1 complete.')
@@ -193,7 +194,7 @@ async def _import_des_dr2_from_lhr(ser: str, output: str, credentials: str):
             'AND m.ser_id=s.id ' \
             'AND lhr.component_id=c.id ' \
             'AND s.name=$1 ' \
-            'AND des.wise_id is NULL limit 10'
+            'AND des.wise_id is NULL'
 
     insert_conn = None
     conn = None
@@ -256,9 +257,10 @@ async def _import_des_dr2_from_lhr(ser: str, output: str, credentials: str):
                 "WHERE aw.source_id=xm.id2 AND xm.id1=des.coadd_object_id"
 
         logging.info(f'Cross matching with des_dr2.')
-        print(query)
-        a=qc.query(sql=query, fmt='csv', out=f"vos://{out_table}", drop=True, timeout=600) #async_=True, wait=True, timeout=3000, poll=1)
-        print(a)
+        resp = qc.query(sql=query, fmt='csv', out=f"vos://{out_table}", drop=True, timeout=600) #async_=True, wait=True, timeout=3000, poll=1)
+        if resp != 'OK':
+            raise Exception(f'query: {resp}')
+
         sc.get(f"vos://{out_table}", f"{output}/{out_table}")
 
         logging.info(f'Cross matching with des_dr2 complete.')
@@ -304,8 +306,7 @@ async def _import_des_dr2_from_lhr(ser: str, output: str, credentials: str):
                                             'fluxerr_auto_z, flags_g, flags_i, flags_r, '
                                             'flags_y, flags_z, flux_radius_g, flux_radius_i, '
                                             'flux_radius_r, flux_radius_y, flux_radius_z, '
-                                            'a_image, b_image, theta_j2000, '
-                                            ') '
+                                            'a_image, b_image, theta_j2000) '
                                             'VALUES($1, $2, $3, $4, $5, $6, $7, $8, '
                                             '$9, $10, $11, $12, $13, $14, $15, $16, '
                                             '$17, $18, $19, $20, $21, $22, $23, $24, '
