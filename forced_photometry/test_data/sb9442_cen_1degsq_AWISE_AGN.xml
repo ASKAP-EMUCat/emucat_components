@@ -3,35 +3,28 @@
  xmlns="http://www.ivoa.net/xml/VOTable/v1.3">
 <!--
  !  VOTable written by STIL version 4.0-2 (uk.ac.starlink.votable.VOTableWriter)
- !  at 2021-10-14T16:47:05
+ !  at 2021-10-28T19:15:46
  !-->
 <RESOURCE>
-<TABLE name="/Users/yjangordon/Documents/science/CIRADA/EMUcat_cirada/forced_photo_testing/data/sb9442_cen_1degsq_AWISE_AGN.tbl" nrows="103">
+<TABLE name="/Users/yjangordon/Documents/science/CIRADA/EMUcat_cirada/forced_photo_testing/data/sb9442_AllWISE_cen1sqdeg_goodmags.tbl" nrows="226">
 <PARAM datatype="boolean" name="fixlen" value="T"/>
-<PARAM datatype="int" name="RowsRetrieved" value="145"/>
+<PARAM datatype="int" name="RowsRetrieved" value="2935"/>
 <PARAM arraysize="49" datatype="char" name="ORIGIN" value="IPAC Infrared Science Archive (IRSA), Caltech/JPL"/>
 <PARAM arraysize="1" datatype="char" name="SIMULATED_TABLE" value="n"/>
-<PARAM arraysize="19" datatype="char" name="DATETIME" value="2021-10-14 08:43:19"/>
-<PARAM arraysize="37" datatype="char" name="DataTag" value="ADS/IRSA.Gator#2021/1014/084319_23382"/>
+<PARAM arraysize="19" datatype="char" name="DATETIME" value="2021-10-28 12:09:30"/>
+<PARAM arraysize="37" datatype="char" name="DataTag" value="ADS/IRSA.Gator#2021/1028/120930_20898"/>
 <PARAM arraysize="41" datatype="char" name="DATABASE" value="AllWISE Source Catalog (allwise_p3as_psd)"/>
 <PARAM arraysize="5" datatype="char" name="EQUINOX" value="J2000"/>
-<PARAM arraysize="67" datatype="char" name="SKYAREA" value="polygon(320.13 -55.15, 320.27 -56.16, 318.46 -56.22, 318.37 -55.21)"/>
-<PARAM arraysize="59" datatype="char" name="StatusFile" value="/workspace/TMP_uPuvXf_15251/Gator/irsa/23382/log.23382.html"/>
-<PARAM arraysize="87" datatype="char" name="SQL" value="WHERE  ((w2mpro-w3mpro)&gt;2 and (w2mpro-w3mpro)&lt;4 and (w1mpro-w2mpro)&gt;0.8 and w1sigmpro&gt;0"/>
-<PARAM arraysize="44" datatype="char" name="SQL" value="SELECT (45 column names follow in next row.)"/>
-<PARAM arraysize="3047" datatype="char" name="Ipac_Comments" value="Cont.  = 'and w2sigmpro&gt;0 and w3sigmpro&gt;0) '
-designation
+<PARAM arraysize="63" datatype="char" name="SKYAREA" value="polygon(318.3 -56.25, 318.3 -55.15, 320.3 -55.15, 320.3 -56.25)"/>
+<PARAM arraysize="58" datatype="char" name="StatusFile" value="/workspace/TMP_F6HJ2q_4392/Gator/irsa/20898/log.20898.html"/>
+<PARAM arraysize="52" datatype="char" name="SQL" value="WHERE  (w1sigmpro&gt;0 AND w2sigmpro&gt;0 AND w3sigmpro&gt;0)"/>
+<PARAM arraysize="44" datatype="char" name="SQL" value="SELECT (19 column names follow in next row.)"/>
+<PARAM arraysize="1313" datatype="char" name="Ipac_Comments" value="designation
 ___ unique WISE source designation
 ra (deg)
 ___ right ascension (J2000)
 dec (deg)
 ___ declination (J2000)
-sigra (arcsec)
-___ uncertainty in RA
-sigdec (arcsec)
-___ uncertainty in DEC
-sigradec (arcsec)
-___ cross-term of RA and Dec uncertainties
 w1mpro (mag)
 ___ instrumental profile-fit photometry magnitude, band 1
 w1sigmpro (mag)
@@ -63,61 +56,12 @@ ___ instrumental profile-fit photometry flux uncertainty in mag units, band 4
 w4snr
 ___ instrumental profile-fit photometry S/N ratio, band 4
 w4rchi2
-___ instrumental profile-fit photometry reduced chi^2, band 4
-nb
-___ number of blend components used in each fit
-na
-___ active deblend flag (=1 if actively deblended)
-w1sat
-___ fraction of pixels affected by saturation, band 1
-w2sat
-___ fraction of pixels affected by saturation, band 2
-w3sat
-___ fraction of pixels affected by saturation, band 3
-w4sat
-___ fraction of pixels affected by saturation, band 4
-pmra (maspyr)
-___ Apparent motion in RA
-sigpmra (maspyr)
-___ Uncertainty in the RA motion estimate
-pmdec (maspyr)
-___ Apparent motion in Dec
-sigpmdec (maspyr)
-___ Uncertainty in the Dec  motion estimate
-cc_flags
-___ prioritized artifacts affecting the source in each band
-ext_flg
-___ probability that source morphology is not consistent with single PSF
-var_flg
-___ probability that flux varied in any band greater than amount expected from unc.s
-ph_qual
-___ photometric quality of each band (A=highest, U=upper limit)
-moon_lev
-___ level of moon contamination in coadd (ceiling(#frmmoon/#frames*10)), 1 per band
-w1nm
-___ number of profile-fit flux measurements for source with SNR &gt;= 3, band 1
-w1m
-___ number of profile-fit flux measurements for source, band 1
-w2nm
-___ number of profile-fit flux measurements for source with SNR &gt;= 3, band 2
-w2m
-___ number of profile-fit flux measurements for source, band 2
-w3nm
-___ number of profile-fit flux measurements for source with SNR &gt;= 3, band 3
-w3m
-___ number of profile-fit flux measurements for source, band 3
-w4nm
-___ number of profile-fit flux measurements for source with SNR &gt;= 3, band 4
-w4m
-___ number of profile-fit flux measurements for source, band 4">
+___ instrumental profile-fit photometry reduced chi^2, band 4">
 <DESCRIPTION>IPAC format comment lines</DESCRIPTION>
 </PARAM>
 <FIELD arraysize="21" datatype="char" name="designation"/>
 <FIELD datatype="double" name="ra" unit="deg"/>
 <FIELD datatype="double" name="dec" unit="deg"/>
-<FIELD datatype="double" name="sigra" unit="arcsec"/>
-<FIELD datatype="double" name="sigdec" unit="arcsec"/>
-<FIELD datatype="double" name="sigradec" unit="arcsec"/>
 <FIELD datatype="double" name="w1mpro" unit="mag"/>
 <FIELD datatype="double" name="w1sigmpro" unit="mag"/>
 <FIELD datatype="double" name="w1snr"/>
@@ -134,38 +78,75 @@ ___ number of profile-fit flux measurements for source, band 4">
 <FIELD datatype="double" name="w4sigmpro" unit="mag"/>
 <FIELD datatype="double" name="w4snr"/>
 <FIELD datatype="double" name="w4rchi2"/>
-<FIELD datatype="int" name="nb"/>
-<FIELD datatype="int" name="na"/>
-<FIELD datatype="double" name="w1sat"/>
-<FIELD datatype="double" name="w2sat"/>
-<FIELD datatype="double" name="w3sat"/>
-<FIELD datatype="double" name="w4sat"/>
-<FIELD datatype="int" name="pmra" unit="maspyr"/>
-<FIELD datatype="int" name="sigpmra" unit="maspyr"/>
-<FIELD datatype="int" name="pmdec" unit="maspyr"/>
-<FIELD datatype="int" name="sigpmdec" unit="maspyr"/>
-<FIELD arraysize="9" datatype="char" name="cc_flags"/>
-<FIELD datatype="int" name="ext_flg"/>
-<FIELD arraysize="8" datatype="char" name="var_flg"/>
-<FIELD arraysize="8" datatype="char" name="ph_qual"/>
-<FIELD arraysize="9" datatype="char" name="moon_lev"/>
-<FIELD datatype="int" name="w1nm"/>
-<FIELD datatype="int" name="w1m"/>
-<FIELD datatype="int" name="w2nm"/>
-<FIELD datatype="int" name="w2m"/>
-<FIELD datatype="int" name="w3nm"/>
-<FIELD datatype="int" name="w3m"/>
-<FIELD datatype="int" name="w4nm"/>
-<FIELD datatype="int" name="w4m"/>
 <DATA>
 <TABLEDATA>
+  <TR>
+    <TD>J211413.14-560601.0</TD>
+    <TD>318.5547656</TD>
+    <TD>-56.1002931</TD>
+    <TD>16.971</TD>
+    <TD>0.092</TD>
+    <TD>11.8</TD>
+    <TD>0.9816</TD>
+    <TD>16.018</TD>
+    <TD>0.14</TD>
+    <TD>7.8</TD>
+    <TD>0.9624</TD>
+    <TD>12.815</TD>
+    <TD>0.536</TD>
+    <TD>2.0</TD>
+    <TD>0.943</TD>
+    <TD>9.188</TD>
+    <TD>NaN</TD>
+    <TD>-2.3</TD>
+    <TD>1.031</TD>
+  </TR>
+  <TR>
+    <TD>J211332.07-555300.5</TD>
+    <TD>318.3836456</TD>
+    <TD>-55.8834789</TD>
+    <TD>16.933</TD>
+    <TD>0.094</TD>
+    <TD>11.5</TD>
+    <TD>1.009</TD>
+    <TD>16.019</TD>
+    <TD>0.154</TD>
+    <TD>7.1</TD>
+    <TD>0.8936</TD>
+    <TD>12.873</TD>
+    <TD>0.523</TD>
+    <TD>2.1</TD>
+    <TD>0.8854</TD>
+    <TD>8.738</TD>
+    <TD>NaN</TD>
+    <TD>1.2</TD>
+    <TD>0.8645</TD>
+  </TR>
+  <TR>
+    <TD>J211431.13-554527.6</TD>
+    <TD>318.6297461</TD>
+    <TD>-55.7576723</TD>
+    <TD>17.859</TD>
+    <TD>0.212</TD>
+    <TD>5.1</TD>
+    <TD>0.9665</TD>
+    <TD>16.667</TD>
+    <TD>0.287</TD>
+    <TD>3.8</TD>
+    <TD>1.031</TD>
+    <TD>12.641</TD>
+    <TD>0.534</TD>
+    <TD>2.0</TD>
+    <TD>0.9158</TD>
+    <TD>9.164</TD>
+    <TD>NaN</TD>
+    <TD>-0.1</TD>
+    <TD>0.8999</TD>
+  </TR>
   <TR>
     <TD>J211430.94-554423.5</TD>
     <TD>318.628945</TD>
     <TD>-55.739866</TD>
-    <TD>0.2811</TD>
-    <TD>0.3012</TD>
-    <TD>-0.089</TD>
     <TD>17.488</TD>
     <TD>0.154</TD>
     <TD>7.0</TD>
@@ -182,37 +163,200 @@ ___ number of profile-fit flux measurements for source, band 4">
     <TD>NaN</TD>
     <TD>1.0</TD>
     <TD>0.8579</TD>
-    <TD>1</TD>
-    <TD>0</TD>
+  </TR>
+  <TR>
+    <TD>J211356.44-552129.3</TD>
+    <TD>318.4851917</TD>
+    <TD>-55.3581552</TD>
+    <TD>15.129</TD>
+    <TD>0.034</TD>
+    <TD>31.8</TD>
+    <TD>2.395</TD>
+    <TD>14.038</TD>
+    <TD>0.04</TD>
+    <TD>27.4</TD>
+    <TD>1.202</TD>
+    <TD>11.16</TD>
+    <TD>0.129</TD>
+    <TD>8.4</TD>
+    <TD>0.9727</TD>
+    <TD>8.718</TD>
+    <TD>0.364</TD>
+    <TD>3.0</TD>
+    <TD>1.085</TD>
+  </TR>
+  <TR>
+    <TD>J211352.26-555753.8</TD>
+    <TD>318.467775</TD>
+    <TD>-55.9649679</TD>
+    <TD>17.317</TD>
+    <TD>0.129</TD>
+    <TD>8.4</TD>
+    <TD>1.005</TD>
+    <TD>16.409</TD>
+    <TD>0.201</TD>
+    <TD>5.4</TD>
+    <TD>0.8571</TD>
+    <TD>12.138</TD>
+    <TD>0.324</TD>
+    <TD>3.3</TD>
+    <TD>0.9753</TD>
+    <TD>9.118</TD>
+    <TD>NaN</TD>
+    <TD>-0.5</TD>
+    <TD>0.9002</TD>
+  </TR>
+  <TR>
+    <TD>J211343.55-555543.2</TD>
+    <TD>318.4314867</TD>
+    <TD>-55.928672</TD>
+    <TD>17.422</TD>
+    <TD>0.143</TD>
+    <TD>7.6</TD>
+    <TD>0.9164</TD>
+    <TD>16.324</TD>
+    <TD>0.2</TD>
+    <TD>5.4</TD>
+    <TD>0.9009</TD>
+    <TD>12.644</TD>
+    <TD>0.478</TD>
+    <TD>2.3</TD>
+    <TD>1.048</TD>
+    <TD>8.928</TD>
+    <TD>NaN</TD>
+    <TD>0.4</TD>
+    <TD>0.7395</TD>
+  </TR>
+  <TR>
+    <TD>J211316.17-553929.6</TD>
+    <TD>318.3173999</TD>
+    <TD>-55.6582406</TD>
+    <TD>17.04</TD>
+    <TD>0.112</TD>
+    <TD>9.7</TD>
+    <TD>1.068</TD>
+    <TD>16.069</TD>
+    <TD>0.161</TD>
+    <TD>6.7</TD>
+    <TD>0.985</TD>
+    <TD>12.157</TD>
+    <TD>0.322</TD>
+    <TD>3.4</TD>
+    <TD>0.8947</TD>
+    <TD>8.985</TD>
+    <TD>NaN</TD>
+    <TD>0.1</TD>
+    <TD>0.889</TD>
+  </TR>
+  <TR>
+    <TD>J211358.42-560812.0</TD>
+    <TD>318.4934402</TD>
+    <TD>-56.136689</TD>
+    <TD>17.807</TD>
+    <TD>0.197</TD>
+    <TD>5.5</TD>
+    <TD>1.003</TD>
+    <TD>16.995</TD>
+    <TD>0.361</TD>
+    <TD>3.0</TD>
+    <TD>0.9561</TD>
+    <TD>12.797</TD>
+    <TD>0.536</TD>
+    <TD>2.0</TD>
+    <TD>0.9802</TD>
+    <TD>9.138</TD>
+    <TD>NaN</TD>
+    <TD>-0.4</TD>
+    <TD>0.8713</TD>
+  </TR>
+  <TR>
+    <TD>J211321.94-561157.8</TD>
+    <TD>318.3414295</TD>
+    <TD>-56.1993932</TD>
+    <TD>17.486</TD>
+    <TD>0.152</TD>
+    <TD>7.2</TD>
+    <TD>1.075</TD>
+    <TD>16.339</TD>
+    <TD>0.207</TD>
+    <TD>5.3</TD>
+    <TD>0.9345</TD>
+    <TD>12.548</TD>
+    <TD>0.469</TD>
+    <TD>2.3</TD>
+    <TD>0.9542</TD>
+    <TD>8.583</TD>
+    <TD>NaN</TD>
+    <TD>1.5</TD>
+    <TD>0.9984</TD>
+  </TR>
+  <TR>
+    <TD>J211354.29-552749.3</TD>
+    <TD>318.4762336</TD>
+    <TD>-55.4637185</TD>
+    <TD>15.972</TD>
+    <TD>0.051</TD>
+    <TD>21.3</TD>
+    <TD>0.9799</TD>
+    <TD>14.98</TD>
+    <TD>0.069</TD>
+    <TD>15.7</TD>
+    <TD>1.039</TD>
+    <TD>11.652</TD>
+    <TD>0.206</TD>
+    <TD>5.3</TD>
+    <TD>0.9463</TD>
+    <TD>8.295</TD>
+    <TD>NaN</TD>
+    <TD>1.9</TD>
+    <TD>1.03</TD>
+  </TR>
+  <TR>
+    <TD>J211341.58-554248.6</TD>
+    <TD>318.423279</TD>
+    <TD>-55.7135119</TD>
+    <TD>17.428</TD>
+    <TD>0.143</TD>
+    <TD>7.6</TD>
+    <TD>1.1</TD>
+    <TD>16.341</TD>
+    <TD>0.193</TD>
+    <TD>5.6</TD>
+    <TD>0.8916</TD>
+    <TD>12.68</TD>
+    <TD>0.479</TD>
+    <TD>2.3</TD>
+    <TD>0.9347</TD>
+    <TD>8.961</TD>
+    <TD>NaN</TD>
+    <TD>0.6</TD>
+    <TD>0.9601</TD>
+  </TR>
+  <TR>
+    <TD>J211357.22-555338.8</TD>
+    <TD>318.4884432</TD>
+    <TD>-55.8941123</TD>
+    <TD>16.957</TD>
+    <TD>0.102</TD>
+    <TD>10.7</TD>
+    <TD>1.011</TD>
+    <TD>15.86</TD>
+    <TD>0.143</TD>
+    <TD>7.6</TD>
+    <TD>0.9734</TD>
+    <TD>12.653</TD>
+    <TD>0.476</TD>
+    <TD>2.3</TD>
+    <TD>0.9008</TD>
+    <TD>9.088</TD>
+    <TD>NaN</TD>
     <TD>0.0</TD>
-    <TD>0.0</TD>
-    <TD>0.0</TD>
-    <TD>0.0</TD>
-    <TD>-428</TD>
-    <TD>1191</TD>
-    <TD>-469</TD>
-    <TD>1286</TD>
-    <TD>0000</TD>
-    <TD>0</TD>
-    <TD>nnnn</TD>
-    <TD>BABU</TD>
-    <TD>0000</TD>
-    <TD>3</TD>
-    <TD>30</TD>
-    <TD>7</TD>
-    <TD>30</TD>
-    <TD>0</TD>
-    <TD>15</TD>
-    <TD>0</TD>
-    <TD>15</TD>
+    <TD>1.083</TD>
   </TR>
   <TR>
     <TD>J211438.96-555733.8</TD>
     <TD>318.6623371</TD>
     <TD>-55.9594004</TD>
-    <TD>0.3978</TD>
-    <TD>0.425</TD>
-    <TD>-0.1232</TD>
     <TD>17.671</TD>
     <TD>0.181</TD>
     <TD>6.0</TD>
@@ -229,37 +373,284 @@ ___ number of profile-fit flux measurements for source, band 4">
     <TD>NaN</TD>
     <TD>0.6</TD>
     <TD>1.03</TD>
-    <TD>1</TD>
-    <TD>0</TD>
+  </TR>
+  <TR>
+    <TD>J211335.76-552619.7</TD>
+    <TD>318.3990052</TD>
+    <TD>-55.4388203</TD>
+    <TD>17.288</TD>
+    <TD>0.124</TD>
+    <TD>8.8</TD>
+    <TD>1.011</TD>
+    <TD>14.887</TD>
+    <TD>0.06</TD>
+    <TD>18.0</TD>
+    <TD>0.9568</TD>
+    <TD>10.476</TD>
+    <TD>0.066</TD>
+    <TD>16.4</TD>
+    <TD>1.093</TD>
+    <TD>8.724</TD>
+    <TD>NaN</TD>
+    <TD>1.1</TD>
+    <TD>1.11</TD>
+  </TR>
+  <TR>
+    <TD>J211329.97-553520.2</TD>
+    <TD>318.374898</TD>
+    <TD>-55.5889539</TD>
+    <TD>17.01</TD>
+    <TD>0.112</TD>
+    <TD>9.7</TD>
+    <TD>0.8738</TD>
+    <TD>16.051</TD>
+    <TD>0.151</TD>
+    <TD>7.2</TD>
+    <TD>0.9803</TD>
+    <TD>12.426</TD>
+    <TD>0.392</TD>
+    <TD>2.8</TD>
+    <TD>1.068</TD>
+    <TD>8.821</TD>
+    <TD>NaN</TD>
+    <TD>0.9</TD>
+    <TD>1.088</TD>
+  </TR>
+  <TR>
+    <TD>J211418.70-555123.5</TD>
+    <TD>318.5779212</TD>
+    <TD>-55.8565386</TD>
+    <TD>17.556</TD>
+    <TD>0.169</TD>
+    <TD>6.4</TD>
+    <TD>1.017</TD>
+    <TD>16.133</TD>
+    <TD>0.176</TD>
+    <TD>6.2</TD>
+    <TD>0.8871</TD>
+    <TD>12.415</TD>
+    <TD>0.365</TD>
+    <TD>3.0</TD>
+    <TD>0.8624</TD>
+    <TD>8.863</TD>
+    <TD>NaN</TD>
+    <TD>1.1</TD>
+    <TD>1.105</TD>
+  </TR>
+  <TR>
+    <TD>J211417.52-552755.3</TD>
+    <TD>318.5730359</TD>
+    <TD>-55.4653855</TD>
+    <TD>16.28</TD>
+    <TD>0.135</TD>
+    <TD>8.0</TD>
+    <TD>0.9911</TD>
+    <TD>15.051</TD>
+    <TD>0.141</TD>
+    <TD>7.7</TD>
+    <TD>0.9611</TD>
+    <TD>12.261</TD>
+    <TD>0.458</TD>
+    <TD>2.4</TD>
+    <TD>0.832</TD>
+    <TD>9.023</TD>
+    <TD>NaN</TD>
+    <TD>0.1</TD>
+    <TD>1.179</TD>
+  </TR>
+  <TR>
+    <TD>J211401.21-555139.5</TD>
+    <TD>318.5050745</TD>
+    <TD>-55.8609783</TD>
+    <TD>17.778</TD>
+    <TD>0.207</TD>
+    <TD>5.2</TD>
+    <TD>0.9526</TD>
+    <TD>16.775</TD>
+    <TD>0.277</TD>
+    <TD>3.9</TD>
+    <TD>0.8724</TD>
+    <TD>12.855</TD>
+    <TD>0.537</TD>
+    <TD>2.0</TD>
+    <TD>0.9059</TD>
+    <TD>9.185</TD>
+    <TD>NaN</TD>
+    <TD>-0.1</TD>
+    <TD>0.9323</TD>
+  </TR>
+  <TR>
+    <TD>J211412.97-552914.0</TD>
+    <TD>318.554044</TD>
+    <TD>-55.4872269</TD>
+    <TD>17.479</TD>
+    <TD>0.152</TD>
+    <TD>7.1</TD>
+    <TD>0.8515</TD>
+    <TD>16.676</TD>
+    <TD>0.282</TD>
+    <TD>3.8</TD>
+    <TD>0.8692</TD>
+    <TD>12.488</TD>
+    <TD>0.438</TD>
+    <TD>2.5</TD>
+    <TD>0.865</TD>
+    <TD>9.019</TD>
+    <TD>NaN</TD>
+    <TD>-0.6</TD>
+    <TD>0.9278</TD>
+  </TR>
+  <TR>
+    <TD>J211342.33-555623.6</TD>
+    <TD>318.4263996</TD>
+    <TD>-55.9399025</TD>
+    <TD>16.0</TD>
+    <TD>0.049</TD>
+    <TD>22.0</TD>
+    <TD>1.05</TD>
+    <TD>14.939</TD>
+    <TD>0.064</TD>
+    <TD>17.0</TD>
+    <TD>0.9712</TD>
+    <TD>12.166</TD>
+    <TD>0.34</TD>
+    <TD>3.2</TD>
+    <TD>0.8738</TD>
+    <TD>9.196</TD>
+    <TD>NaN</TD>
     <TD>0.0</TD>
-    <TD>0.0</TD>
-    <TD>0.0</TD>
-    <TD>0.0</TD>
-    <TD>-644</TD>
-    <TD>1839</TD>
-    <TD>-828</TD>
-    <TD>1979</TD>
-    <TD>0000</TD>
-    <TD>0</TD>
-    <TD>nnnn</TD>
-    <TD>BBCU</TD>
-    <TD>0000</TD>
-    <TD>3</TD>
-    <TD>30</TD>
-    <TD>2</TD>
-    <TD>30</TD>
-    <TD>0</TD>
-    <TD>15</TD>
-    <TD>0</TD>
-    <TD>15</TD>
+    <TD>0.8929</TD>
+  </TR>
+  <TR>
+    <TD>J211351.94-554710.3</TD>
+    <TD>318.4664506</TD>
+    <TD>-55.7862121</TD>
+    <TD>14.753</TD>
+    <TD>0.031</TD>
+    <TD>35.1</TD>
+    <TD>1.132</TD>
+    <TD>13.395</TD>
+    <TD>0.031</TD>
+    <TD>35.4</TD>
+    <TD>1.021</TD>
+    <TD>10.41</TD>
+    <TD>0.063</TD>
+    <TD>17.2</TD>
+    <TD>1.096</TD>
+    <TD>8.269</TD>
+    <TD>0.225</TD>
+    <TD>4.8</TD>
+    <TD>1.025</TD>
+  </TR>
+  <TR>
+    <TD>J211325.46-554651.2</TD>
+    <TD>318.3561175</TD>
+    <TD>-55.780891</TD>
+    <TD>17.481</TD>
+    <TD>0.158</TD>
+    <TD>6.9</TD>
+    <TD>0.9537</TD>
+    <TD>16.433</TD>
+    <TD>0.228</TD>
+    <TD>4.8</TD>
+    <TD>0.9722</TD>
+    <TD>12.639</TD>
+    <TD>0.509</TD>
+    <TD>2.1</TD>
+    <TD>0.9817</TD>
+    <TD>9.146</TD>
+    <TD>NaN</TD>
+    <TD>-0.5</TD>
+    <TD>0.927</TD>
+  </TR>
+  <TR>
+    <TD>J211358.27-553100.3</TD>
+    <TD>318.4927962</TD>
+    <TD>-55.5167606</TD>
+    <TD>17.777</TD>
+    <TD>0.202</TD>
+    <TD>5.4</TD>
+    <TD>1.098</TD>
+    <TD>16.907</TD>
+    <TD>0.331</TD>
+    <TD>3.3</TD>
+    <TD>0.7825</TD>
+    <TD>12.499</TD>
+    <TD>0.452</TD>
+    <TD>2.4</TD>
+    <TD>1.092</TD>
+    <TD>9.116</TD>
+    <TD>NaN</TD>
+    <TD>0.2</TD>
+    <TD>0.9112</TD>
+  </TR>
+  <TR>
+    <TD>J211341.80-553733.7</TD>
+    <TD>318.4241826</TD>
+    <TD>-55.6260342</TD>
+    <TD>15.884</TD>
+    <TD>0.047</TD>
+    <TD>22.9</TD>
+    <TD>1.091</TD>
+    <TD>14.459</TD>
+    <TD>0.05</TD>
+    <TD>21.8</TD>
+    <TD>1.108</TD>
+    <TD>11.101</TD>
+    <TD>0.139</TD>
+    <TD>7.8</TD>
+    <TD>0.9637</TD>
+    <TD>8.668</TD>
+    <TD>0.399</TD>
+    <TD>2.7</TD>
+    <TD>1.011</TD>
+  </TR>
+  <TR>
+    <TD>J211314.86-552036.9</TD>
+    <TD>318.3119186</TD>
+    <TD>-55.3435897</TD>
+    <TD>16.94</TD>
+    <TD>0.096</TD>
+    <TD>11.4</TD>
+    <TD>1.016</TD>
+    <TD>15.464</TD>
+    <TD>0.096</TD>
+    <TD>11.3</TD>
+    <TD>0.8985</TD>
+    <TD>12.858</TD>
+    <TD>0.527</TD>
+    <TD>2.1</TD>
+    <TD>0.8883</TD>
+    <TD>8.65</TD>
+    <TD>NaN</TD>
+    <TD>0.9</TD>
+    <TD>0.9714</TD>
+  </TR>
+  <TR>
+    <TD>J211337.51-551918.1</TD>
+    <TD>318.4063148</TD>
+    <TD>-55.3217021</TD>
+    <TD>17.805</TD>
+    <TD>0.198</TD>
+    <TD>5.5</TD>
+    <TD>0.9481</TD>
+    <TD>16.349</TD>
+    <TD>0.189</TD>
+    <TD>5.7</TD>
+    <TD>0.9806</TD>
+    <TD>12.037</TD>
+    <TD>0.295</TD>
+    <TD>3.7</TD>
+    <TD>0.8265</TD>
+    <TD>8.451</TD>
+    <TD>0.299</TD>
+    <TD>3.6</TD>
+    <TD>0.99</TD>
   </TR>
   <TR>
     <TD>J211435.46-560039.6</TD>
     <TD>318.6477791</TD>
     <TD>-56.0110155</TD>
-    <TD>0.0778</TD>
-    <TD>0.0799</TD>
-    <TD>-0.0201</TD>
     <TD>15.393</TD>
     <TD>0.036</TD>
     <TD>29.9</TD>
@@ -276,37 +667,95 @@ ___ number of profile-fit flux measurements for source, band 4">
     <TD>0.271</TD>
     <TD>4.0</TD>
     <TD>1.004</TD>
-    <TD>1</TD>
-    <TD>0</TD>
-    <TD>0.0</TD>
-    <TD>0.0</TD>
-    <TD>0.0</TD>
-    <TD>0.0</TD>
-    <TD>-187</TD>
-    <TD>279</TD>
-    <TD>-431</TD>
-    <TD>293</TD>
-    <TD>0000</TD>
-    <TD>0</TD>
-    <TD>00nn</TD>
-    <TD>AABB</TD>
-    <TD>0000</TD>
-    <TD>30</TD>
-    <TD>30</TD>
-    <TD>30</TD>
-    <TD>30</TD>
-    <TD>6</TD>
-    <TD>16</TD>
-    <TD>1</TD>
-    <TD>16</TD>
+  </TR>
+  <TR>
+    <TD>J211438.19-561009.8</TD>
+    <TD>318.6591648</TD>
+    <TD>-56.1693947</TD>
+    <TD>16.52</TD>
+    <TD>0.073</TD>
+    <TD>14.9</TD>
+    <TD>1.019</TD>
+    <TD>15.273</TD>
+    <TD>0.095</TD>
+    <TD>11.4</TD>
+    <TD>1.044</TD>
+    <TD>12.14</TD>
+    <TD>0.341</TD>
+    <TD>3.2</TD>
+    <TD>0.8545</TD>
+    <TD>8.718</TD>
+    <TD>0.389</TD>
+    <TD>2.8</TD>
+    <TD>0.9352</TD>
+  </TR>
+  <TR>
+    <TD>J211434.24-554626.6</TD>
+    <TD>318.6426723</TD>
+    <TD>-55.7740828</TD>
+    <TD>17.769</TD>
+    <TD>0.185</TD>
+    <TD>5.9</TD>
+    <TD>0.944</TD>
+    <TD>16.96</TD>
+    <TD>0.331</TD>
+    <TD>3.3</TD>
+    <TD>0.9093</TD>
+    <TD>12.719</TD>
+    <TD>0.464</TD>
+    <TD>2.3</TD>
+    <TD>0.8994</TD>
+    <TD>9.154</TD>
+    <TD>NaN</TD>
+    <TD>0.1</TD>
+    <TD>0.9823</TD>
+  </TR>
+  <TR>
+    <TD>J211424.99-560811.9</TD>
+    <TD>318.6041275</TD>
+    <TD>-56.1366448</TD>
+    <TD>16.953</TD>
+    <TD>0.098</TD>
+    <TD>11.1</TD>
+    <TD>0.8559</TD>
+    <TD>15.739</TD>
+    <TD>0.129</TD>
+    <TD>8.4</TD>
+    <TD>0.9628</TD>
+    <TD>12.603</TD>
+    <TD>0.506</TD>
+    <TD>2.1</TD>
+    <TD>0.8944</TD>
+    <TD>8.638</TD>
+    <TD>NaN</TD>
+    <TD>1.3</TD>
+    <TD>0.8051</TD>
+  </TR>
+  <TR>
+    <TD>J211314.89-553157.4</TD>
+    <TD>318.3120678</TD>
+    <TD>-55.5326328</TD>
+    <TD>16.776</TD>
+    <TD>0.085</TD>
+    <TD>12.8</TD>
+    <TD>1.119</TD>
+    <TD>15.496</TD>
+    <TD>0.105</TD>
+    <TD>10.3</TD>
+    <TD>1.055</TD>
+    <TD>12.096</TD>
+    <TD>0.315</TD>
+    <TD>3.4</TD>
+    <TD>0.9862</TD>
+    <TD>8.845</TD>
+    <TD>NaN</TD>
+    <TD>0.1</TD>
+    <TD>0.8606</TD>
   </TR>
   <TR>
     <TD>J211436.45-552742.5</TD>
     <TD>318.6518986</TD>
     <TD>-55.4618082</TD>
-    <TD>0.2049</TD>
-    <TD>0.2106</TD>
-    <TD>-0.067</TD>
     <TD>16.631</TD>
     <TD>0.078</TD>
     <TD>13.8</TD>
@@ -323,37 +772,137 @@ ___ number of profile-fit flux measurements for source, band 4">
     <TD>NaN</TD>
     <TD>1.5</TD>
     <TD>1.09</TD>
-    <TD>1</TD>
-    <TD>0</TD>
-    <TD>0.0</TD>
-    <TD>0.0</TD>
-    <TD>0.0</TD>
-    <TD>0.0</TD>
-    <TD>481</TD>
-    <TD>838</TD>
-    <TD>963</TD>
-    <TD>859</TD>
-    <TD>0000</TD>
-    <TD>0</TD>
-    <TD>1nnn</TD>
-    <TD>ABCU</TD>
-    <TD>0000</TD>
-    <TD>13</TD>
-    <TD>28</TD>
-    <TD>3</TD>
-    <TD>28</TD>
-    <TD>0</TD>
-    <TD>14</TD>
-    <TD>0</TD>
-    <TD>14</TD>
+  </TR>
+  <TR>
+    <TD>J211331.52-553439.4</TD>
+    <TD>318.3813699</TD>
+    <TD>-55.5776198</TD>
+    <TD>15.956</TD>
+    <TD>0.049</TD>
+    <TD>22.3</TD>
+    <TD>1.148</TD>
+    <TD>15.025</TD>
+    <TD>0.074</TD>
+    <TD>14.7</TD>
+    <TD>0.8997</TD>
+    <TD>11.527</TD>
+    <TD>0.198</TD>
+    <TD>5.5</TD>
+    <TD>0.9299</TD>
+    <TD>8.932</TD>
+    <TD>0.446</TD>
+    <TD>2.4</TD>
+    <TD>1.012</TD>
+  </TR>
+  <TR>
+    <TD>J211323.56-554703.8</TD>
+    <TD>318.3482006</TD>
+    <TD>-55.7843963</TD>
+    <TD>15.633</TD>
+    <TD>0.043</TD>
+    <TD>25.5</TD>
+    <TD>1.993</TD>
+    <TD>14.568</TD>
+    <TD>0.051</TD>
+    <TD>21.4</TD>
+    <TD>1.107</TD>
+    <TD>12.145</TD>
+    <TD>0.3</TD>
+    <TD>3.6</TD>
+    <TD>0.9271</TD>
+    <TD>8.802</TD>
+    <TD>NaN</TD>
+    <TD>0.9</TD>
+    <TD>0.824</TD>
+  </TR>
+  <TR>
+    <TD>J211316.69-560923.4</TD>
+    <TD>318.3195706</TD>
+    <TD>-56.156512</TD>
+    <TD>16.139</TD>
+    <TD>0.055</TD>
+    <TD>19.6</TD>
+    <TD>0.9733</TD>
+    <TD>15.138</TD>
+    <TD>0.074</TD>
+    <TD>14.8</TD>
+    <TD>1.116</TD>
+    <TD>12.088</TD>
+    <TD>0.288</TD>
+    <TD>3.8</TD>
+    <TD>0.961</TD>
+    <TD>8.954</TD>
+    <TD>NaN</TD>
+    <TD>0.5</TD>
+    <TD>0.9562</TD>
+  </TR>
+  <TR>
+    <TD>J211346.83-560017.5</TD>
+    <TD>318.4451383</TD>
+    <TD>-56.0048645</TD>
+    <TD>17.379</TD>
+    <TD>0.138</TD>
+    <TD>7.9</TD>
+    <TD>0.9615</TD>
+    <TD>16.077</TD>
+    <TD>0.145</TD>
+    <TD>7.5</TD>
+    <TD>1.047</TD>
+    <TD>12.73</TD>
+    <TD>0.523</TD>
+    <TD>2.1</TD>
+    <TD>1.04</TD>
+    <TD>8.362</TD>
+    <TD>NaN</TD>
+    <TD>1.9</TD>
+    <TD>0.9495</TD>
+  </TR>
+  <TR>
+    <TD>J211414.94-551121.5</TD>
+    <TD>318.5622553</TD>
+    <TD>-55.189322</TD>
+    <TD>16.318</TD>
+    <TD>0.063</TD>
+    <TD>17.3</TD>
+    <TD>0.9745</TD>
+    <TD>14.956</TD>
+    <TD>0.064</TD>
+    <TD>17.1</TD>
+    <TD>0.9722</TD>
+    <TD>11.816</TD>
+    <TD>0.231</TD>
+    <TD>4.7</TD>
+    <TD>0.8637</TD>
+    <TD>8.518</TD>
+    <TD>NaN</TD>
+    <TD>1.0</TD>
+    <TD>0.8187</TD>
+  </TR>
+  <TR>
+    <TD>J211325.29-551326.4</TD>
+    <TD>318.3553783</TD>
+    <TD>-55.2240135</TD>
+    <TD>17.782</TD>
+    <TD>0.195</TD>
+    <TD>5.6</TD>
+    <TD>0.967</TD>
+    <TD>16.306</TD>
+    <TD>0.186</TD>
+    <TD>5.8</TD>
+    <TD>0.9791</TD>
+    <TD>12.58</TD>
+    <TD>0.419</TD>
+    <TD>2.6</TD>
+    <TD>0.9976</TD>
+    <TD>8.879</TD>
+    <TD>NaN</TD>
+    <TD>0.8</TD>
+    <TD>1.087</TD>
   </TR>
   <TR>
     <TD>J211524.06-551600.0</TD>
     <TD>318.8502912</TD>
     <TD>-55.2666925</TD>
-    <TD>0.1192</TD>
-    <TD>0.1208</TD>
-    <TD>-0.0339</TD>
     <TD>15.939</TD>
     <TD>0.049</TD>
     <TD>22.0</TD>
@@ -370,37 +919,53 @@ ___ number of profile-fit flux measurements for source, band 4">
     <TD>NaN</TD>
     <TD>0.3</TD>
     <TD>0.8244</TD>
-    <TD>1</TD>
-    <TD>0</TD>
-    <TD>0.0</TD>
-    <TD>0.0</TD>
-    <TD>0.0</TD>
-    <TD>0.0</TD>
-    <TD>220</TD>
-    <TD>446</TD>
-    <TD>-859</TD>
-    <TD>454</TD>
-    <TD>0000</TD>
-    <TD>0</TD>
-    <TD>00nn</TD>
-    <TD>AABU</TD>
-    <TD>0000</TD>
-    <TD>26</TD>
-    <TD>28</TD>
-    <TD>22</TD>
-    <TD>28</TD>
-    <TD>3</TD>
-    <TD>14</TD>
-    <TD>0</TD>
-    <TD>14</TD>
+  </TR>
+  <TR>
+    <TD>J211356.69-551434.7</TD>
+    <TD>318.4862095</TD>
+    <TD>-55.2429906</TD>
+    <TD>15.946</TD>
+    <TD>0.048</TD>
+    <TD>22.5</TD>
+    <TD>0.9555</TD>
+    <TD>14.643</TD>
+    <TD>0.056</TD>
+    <TD>19.3</TD>
+    <TD>1.031</TD>
+    <TD>12.01</TD>
+    <TD>0.254</TD>
+    <TD>4.3</TD>
+    <TD>0.9457</TD>
+    <TD>8.988</TD>
+    <TD>0.471</TD>
+    <TD>2.3</TD>
+    <TD>1.046</TD>
+  </TR>
+  <TR>
+    <TD>J211658.05-551005.6</TD>
+    <TD>319.2419121</TD>
+    <TD>-55.1682229</TD>
+    <TD>16.131</TD>
+    <TD>0.056</TD>
+    <TD>19.5</TD>
+    <TD>1.086</TD>
+    <TD>14.912</TD>
+    <TD>0.073</TD>
+    <TD>15.0</TD>
+    <TD>0.8861</TD>
+    <TD>11.706</TD>
+    <TD>0.201</TD>
+    <TD>5.4</TD>
+    <TD>0.8543</TD>
+    <TD>8.878</TD>
+    <TD>0.429</TD>
+    <TD>2.5</TD>
+    <TD>1.21</TD>
   </TR>
   <TR>
     <TD>J211526.20-551601.4</TD>
     <TD>318.8591731</TD>
     <TD>-55.2670568</TD>
-    <TD>0.4332</TD>
-    <TD>0.447</TD>
-    <TD>-0.1315</TD>
     <TD>17.627</TD>
     <TD>0.18</TD>
     <TD>6.0</TD>
@@ -417,37 +982,74 @@ ___ number of profile-fit flux measurements for source, band 4">
     <TD>NaN</TD>
     <TD>-0.7</TD>
     <TD>1.06</TD>
-    <TD>1</TD>
-    <TD>0</TD>
-    <TD>0.0</TD>
-    <TD>0.0</TD>
-    <TD>0.0</TD>
-    <TD>0.0</TD>
-    <TD>-2188</TD>
-    <TD>2054</TD>
-    <TD>1407</TD>
-    <TD>2100</TD>
-    <TD>0000</TD>
-    <TD>0</TD>
-    <TD>nnnn</TD>
-    <TD>BBCU</TD>
-    <TD>0000</TD>
-    <TD>1</TD>
-    <TD>28</TD>
-    <TD>0</TD>
-    <TD>28</TD>
-    <TD>0</TD>
-    <TD>14</TD>
-    <TD>0</TD>
-    <TD>14</TD>
+  </TR>
+  <TR>
+    <TD>J211654.94-551046.1</TD>
+    <TD>319.2289327</TD>
+    <TD>-55.1794894</TD>
+    <TD>16.622</TD>
+    <TD>0.076</TD>
+    <TD>14.4</TD>
+    <TD>1.157</TD>
+    <TD>15.341</TD>
+    <TD>0.089</TD>
+    <TD>12.2</TD>
+    <TD>1.117</TD>
+    <TD>11.97</TD>
+    <TD>0.263</TD>
+    <TD>4.1</TD>
+    <TD>0.9268</TD>
+    <TD>9.086</TD>
+    <TD>NaN</TD>
+    <TD>0.2</TD>
+    <TD>0.8553</TD>
+  </TR>
+  <TR>
+    <TD>J212054.09-551617.4</TD>
+    <TD>320.2254133</TD>
+    <TD>-55.2715149</TD>
+    <TD>17.603</TD>
+    <TD>0.171</TD>
+    <TD>6.3</TD>
+    <TD>0.864</TD>
+    <TD>16.442</TD>
+    <TD>0.222</TD>
+    <TD>4.9</TD>
+    <TD>0.8718</TD>
+    <TD>12.122</TD>
+    <TD>0.3</TD>
+    <TD>3.6</TD>
+    <TD>0.9487</TD>
+    <TD>9.035</TD>
+    <TD>NaN</TD>
+    <TD>-0.4</TD>
+    <TD>0.8014</TD>
+  </TR>
+  <TR>
+    <TD>J211414.46-551135.5</TD>
+    <TD>318.5602518</TD>
+    <TD>-55.1932169</TD>
+    <TD>16.876</TD>
+    <TD>0.097</TD>
+    <TD>11.2</TD>
+    <TD>0.8764</TD>
+    <TD>15.887</TD>
+    <TD>0.134</TD>
+    <TD>8.1</TD>
+    <TD>0.8737</TD>
+    <TD>11.981</TD>
+    <TD>0.264</TD>
+    <TD>4.1</TD>
+    <TD>0.943</TD>
+    <TD>8.749</TD>
+    <TD>NaN</TD>
+    <TD>1.0</TD>
+    <TD>1.001</TD>
   </TR>
   <TR>
     <TD>J211644.70-551512.3</TD>
     <TD>319.1862565</TD>
     <TD>-55.2534332</TD>
-    <TD>0.2907</TD>
-    <TD>0.3041</TD>
-    <TD>-0.0882</TD>
     <TD>17.016</TD>
     <TD>0.11</TD>
     <TD>9.9</TD>
@@ -464,37 +1066,11 @@ ___ number of profile-fit flux measurements for source, band 4">
     <TD>NaN</TD>
     <TD>1.5</TD>
     <TD>1.088</TD>
-    <TD>1</TD>
-    <TD>0</TD>
-    <TD>0.0</TD>
-    <TD>0.0</TD>
-    <TD>0.0</TD>
-    <TD>0.0</TD>
-    <TD>-108</TD>
-    <TD>1204</TD>
-    <TD>681</TD>
-    <TD>1262</TD>
-    <TD>0000</TD>
-    <TD>0</TD>
-    <TD>nnnn</TD>
-    <TD>BBCU</TD>
-    <TD>0000</TD>
-    <TD>7</TD>
-    <TD>29</TD>
-    <TD>1</TD>
-    <TD>29</TD>
-    <TD>0</TD>
-    <TD>15</TD>
-    <TD>1</TD>
-    <TD>15</TD>
   </TR>
   <TR>
     <TD>J211819.40-551323.8</TD>
     <TD>319.580861</TD>
     <TD>-55.2233039</TD>
-    <TD>0.2022</TD>
-    <TD>0.2116</TD>
-    <TD>-0.0644</TD>
     <TD>16.674</TD>
     <TD>0.078</TD>
     <TD>13.9</TD>
@@ -511,37 +1087,179 @@ ___ number of profile-fit flux measurements for source, band 4">
     <TD>NaN</TD>
     <TD>-0.1</TD>
     <TD>0.9494</TD>
-    <TD>1</TD>
-    <TD>0</TD>
-    <TD>0.0</TD>
-    <TD>0.0</TD>
-    <TD>0.0</TD>
-    <TD>0.003</TD>
-    <TD>-715</TD>
-    <TD>821</TD>
-    <TD>564</TD>
-    <TD>859</TD>
-    <TD>0000</TD>
-    <TD>0</TD>
-    <TD>1nnn</TD>
-    <TD>ABCU</TD>
-    <TD>0000</TD>
-    <TD>16</TD>
-    <TD>29</TD>
-    <TD>5</TD>
-    <TD>29</TD>
-    <TD>1</TD>
-    <TD>15</TD>
-    <TD>0</TD>
-    <TD>15</TD>
+  </TR>
+  <TR>
+    <TD>J211611.32-551058.2</TD>
+    <TD>319.0471884</TD>
+    <TD>-55.1828348</TD>
+    <TD>16.44</TD>
+    <TD>0.07</TD>
+    <TD>15.5</TD>
+    <TD>0.843</TD>
+    <TD>15.318</TD>
+    <TD>0.094</TD>
+    <TD>11.5</TD>
+    <TD>0.8592</TD>
+    <TD>12.259</TD>
+    <TD>0.367</TD>
+    <TD>3.0</TD>
+    <TD>0.9224</TD>
+    <TD>9.054</TD>
+    <TD>NaN</TD>
+    <TD>-0.5</TD>
+    <TD>0.8257</TD>
+  </TR>
+  <TR>
+    <TD>J212054.14-551346.8</TD>
+    <TD>320.225621</TD>
+    <TD>-55.2296799</TD>
+    <TD>16.914</TD>
+    <TD>0.094</TD>
+    <TD>11.5</TD>
+    <TD>1.017</TD>
+    <TD>16.1</TD>
+    <TD>0.167</TD>
+    <TD>6.5</TD>
+    <TD>0.9848</TD>
+    <TD>12.299</TD>
+    <TD>0.348</TD>
+    <TD>3.1</TD>
+    <TD>0.8933</TD>
+    <TD>8.63</TD>
+    <TD>0.333</TD>
+    <TD>3.3</TD>
+    <TD>0.9424</TD>
+  </TR>
+  <TR>
+    <TD>J211806.19-551155.5</TD>
+    <TD>319.5257949</TD>
+    <TD>-55.1987547</TD>
+    <TD>15.555</TD>
+    <TD>0.041</TD>
+    <TD>26.8</TD>
+    <TD>1.037</TD>
+    <TD>14.525</TD>
+    <TD>0.047</TD>
+    <TD>23.0</TD>
+    <TD>0.9885</TD>
+    <TD>11.458</TD>
+    <TD>0.162</TD>
+    <TD>6.7</TD>
+    <TD>0.995</TD>
+    <TD>9.087</TD>
+    <TD>0.471</TD>
+    <TD>2.3</TD>
+    <TD>1.004</TD>
+  </TR>
+  <TR>
+    <TD>J211930.44-551135.4</TD>
+    <TD>319.8768379</TD>
+    <TD>-55.193174</TD>
+    <TD>15.993</TD>
+    <TD>0.048</TD>
+    <TD>22.7</TD>
+    <TD>0.9744</TD>
+    <TD>14.163</TD>
+    <TD>0.042</TD>
+    <TD>25.7</TD>
+    <TD>0.9183</TD>
+    <TD>10.123</TD>
+    <TD>0.066</TD>
+    <TD>16.4</TD>
+    <TD>1.02</TD>
+    <TD>7.832</TD>
+    <TD>0.164</TD>
+    <TD>6.6</TD>
+    <TD>0.9771</TD>
+  </TR>
+  <TR>
+    <TD>J211955.33-551058.1</TD>
+    <TD>319.9805796</TD>
+    <TD>-55.1828273</TD>
+    <TD>16.668</TD>
+    <TD>0.078</TD>
+    <TD>13.9</TD>
+    <TD>1.009</TD>
+    <TD>15.776</TD>
+    <TD>0.121</TD>
+    <TD>8.9</TD>
+    <TD>0.9542</TD>
+    <TD>12.526</TD>
+    <TD>0.45</TD>
+    <TD>2.4</TD>
+    <TD>0.9459</TD>
+    <TD>9.006</TD>
+    <TD>NaN</TD>
+    <TD>0.2</TD>
+    <TD>0.8957</TD>
+  </TR>
+  <TR>
+    <TD>J211844.81-550916.1</TD>
+    <TD>319.6867323</TD>
+    <TD>-55.1544986</TD>
+    <TD>16.291</TD>
+    <TD>0.064</TD>
+    <TD>16.9</TD>
+    <TD>0.9427</TD>
+    <TD>15.169</TD>
+    <TD>0.074</TD>
+    <TD>14.8</TD>
+    <TD>0.9444</TD>
+    <TD>12.254</TD>
+    <TD>0.334</TD>
+    <TD>3.2</TD>
+    <TD>1.01</TD>
+    <TD>8.748</TD>
+    <TD>NaN</TD>
+    <TD>1.3</TD>
+    <TD>1.082</TD>
+  </TR>
+  <TR>
+    <TD>J212017.33-551226.6</TD>
+    <TD>320.07223</TD>
+    <TD>-55.2073899</TD>
+    <TD>16.466</TD>
+    <TD>0.07</TD>
+    <TD>15.5</TD>
+    <TD>0.9196</TD>
+    <TD>15.652</TD>
+    <TD>0.111</TD>
+    <TD>9.8</TD>
+    <TD>1.017</TD>
+    <TD>11.718</TD>
+    <TD>0.213</TD>
+    <TD>5.1</TD>
+    <TD>0.9341</TD>
+    <TD>8.488</TD>
+    <TD>NaN</TD>
+    <TD>1.7</TD>
+    <TD>1.018</TD>
+  </TR>
+  <TR>
+    <TD>J211807.28-551009.2</TD>
+    <TD>319.5303383</TD>
+    <TD>-55.1692317</TD>
+    <TD>16.426</TD>
+    <TD>0.064</TD>
+    <TD>17.1</TD>
+    <TD>1.084</TD>
+    <TD>15.525</TD>
+    <TD>0.097</TD>
+    <TD>11.2</TD>
+    <TD>1.013</TD>
+    <TD>12.6</TD>
+    <TD>0.422</TD>
+    <TD>2.6</TD>
+    <TD>0.9759</TD>
+    <TD>9.344</TD>
+    <TD>NaN</TD>
+    <TD>-0.6</TD>
+    <TD>1.039</TD>
   </TR>
   <TR>
     <TD>J211455.93-551233.9</TD>
     <TD>318.7330731</TD>
     <TD>-55.2094381</TD>
-    <TD>0.0694</TD>
-    <TD>0.0686</TD>
-    <TD>-0.0159</TD>
     <TD>15.017</TD>
     <TD>0.032</TD>
     <TD>33.9</TD>
@@ -558,37 +1276,11 @@ ___ number of profile-fit flux measurements for source, band 4">
     <TD>0.427</TD>
     <TD>2.5</TD>
     <TD>1.11</TD>
-    <TD>1</TD>
-    <TD>0</TD>
-    <TD>0.0</TD>
-    <TD>0.0</TD>
-    <TD>0.0</TD>
-    <TD>0.0</TD>
-    <TD>108</TD>
-    <TD>263</TD>
-    <TD>19</TD>
-    <TD>241</TD>
-    <TD>0000</TD>
-    <TD>0</TD>
-    <TD>000n</TD>
-    <TD>AAAC</TD>
-    <TD>0000</TD>
-    <TD>30</TD>
-    <TD>30</TD>
-    <TD>30</TD>
-    <TD>30</TD>
-    <TD>8</TD>
-    <TD>15</TD>
-    <TD>0</TD>
-    <TD>15</TD>
   </TR>
   <TR>
     <TD>J211611.05-551233.4</TD>
     <TD>319.0460711</TD>
     <TD>-55.2092811</TD>
-    <TD>0.0933</TD>
-    <TD>0.0953</TD>
-    <TD>-0.0229</TD>
     <TD>15.431</TD>
     <TD>0.039</TD>
     <TD>27.6</TD>
@@ -605,37 +1297,11 @@ ___ number of profile-fit flux measurements for source, band 4">
     <TD>NaN</TD>
     <TD>1.7</TD>
     <TD>0.7946</TD>
-    <TD>1</TD>
-    <TD>0</TD>
-    <TD>0.0</TD>
-    <TD>0.0</TD>
-    <TD>0.0</TD>
-    <TD>0.0</TD>
-    <TD>93</TD>
-    <TD>338</TD>
-    <TD>-434</TD>
-    <TD>339</TD>
-    <TD>0000</TD>
-    <TD>0</TD>
-    <TD>00nn</TD>
-    <TD>AABU</TD>
-    <TD>0000</TD>
-    <TD>27</TD>
-    <TD>27</TD>
-    <TD>26</TD>
-    <TD>27</TD>
-    <TD>1</TD>
-    <TD>13</TD>
-    <TD>0</TD>
-    <TD>13</TD>
   </TR>
   <TR>
     <TD>J211842.09-551351.4</TD>
     <TD>319.6753969</TD>
     <TD>-55.2309528</TD>
-    <TD>0.1847</TD>
-    <TD>0.194</TD>
-    <TD>-0.0596</TD>
     <TD>16.631</TD>
     <TD>0.078</TD>
     <TD>14.0</TD>
@@ -652,37 +1318,11 @@ ___ number of profile-fit flux measurements for source, band 4">
     <TD>NaN</TD>
     <TD>0.4</TD>
     <TD>0.923</TD>
-    <TD>1</TD>
-    <TD>0</TD>
-    <TD>0.0</TD>
-    <TD>0.0</TD>
-    <TD>0.0</TD>
-    <TD>0.0</TD>
-    <TD>1127</TD>
-    <TD>739</TD>
-    <TD>-844</TD>
-    <TD>781</TD>
-    <TD>0000</TD>
-    <TD>0</TD>
-    <TD>1nnn</TD>
-    <TD>AACU</TD>
-    <TD>0000</TD>
-    <TD>18</TD>
-    <TD>31</TD>
-    <TD>11</TD>
-    <TD>31</TD>
-    <TD>0</TD>
-    <TD>15</TD>
-    <TD>0</TD>
-    <TD>15</TD>
   </TR>
   <TR>
     <TD>J211926.12-551220.7</TD>
     <TD>319.8588682</TD>
     <TD>-55.2057582</TD>
-    <TD>0.0562</TD>
-    <TD>0.0568</TD>
-    <TD>-0.0114</TD>
     <TD>14.623</TD>
     <TD>0.029</TD>
     <TD>37.0</TD>
@@ -699,37 +1339,53 @@ ___ number of profile-fit flux measurements for source, band 4">
     <TD>0.288</TD>
     <TD>3.8</TD>
     <TD>0.8892</TD>
-    <TD>1</TD>
-    <TD>0</TD>
-    <TD>0.0</TD>
-    <TD>0.0</TD>
-    <TD>0.0</TD>
-    <TD>0.0</TD>
-    <TD>-15</TD>
-    <TD>204</TD>
-    <TD>-82</TD>
-    <TD>199</TD>
-    <TD>0000</TD>
-    <TD>0</TD>
-    <TD>000n</TD>
-    <TD>AAAB</TD>
-    <TD>0000</TD>
-    <TD>31</TD>
-    <TD>31</TD>
-    <TD>31</TD>
-    <TD>31</TD>
-    <TD>10</TD>
-    <TD>16</TD>
-    <TD>3</TD>
-    <TD>16</TD>
+  </TR>
+  <TR>
+    <TD>J211341.85-550941.0</TD>
+    <TD>318.4244062</TD>
+    <TD>-55.1613948</TD>
+    <TD>15.499</TD>
+    <TD>0.039</TD>
+    <TD>27.6</TD>
+    <TD>1.038</TD>
+    <TD>14.699</TD>
+    <TD>0.055</TD>
+    <TD>19.8</TD>
+    <TD>1.031</TD>
+    <TD>10.973</TD>
+    <TD>0.107</TD>
+    <TD>10.2</TD>
+    <TD>0.924</TD>
+    <TD>8.655</TD>
+    <TD>0.336</TD>
+    <TD>3.2</TD>
+    <TD>1.146</TD>
+  </TR>
+  <TR>
+    <TD>J211748.18-550944.5</TD>
+    <TD>319.450766</TD>
+    <TD>-55.1623822</TD>
+    <TD>16.071</TD>
+    <TD>0.055</TD>
+    <TD>19.8</TD>
+    <TD>0.909</TD>
+    <TD>14.788</TD>
+    <TD>0.06</TD>
+    <TD>18.1</TD>
+    <TD>0.8885</TD>
+    <TD>11.794</TD>
+    <TD>0.202</TD>
+    <TD>5.4</TD>
+    <TD>0.9758</TD>
+    <TD>8.441</TD>
+    <TD>NaN</TD>
+    <TD>1.6</TD>
+    <TD>0.8174</TD>
   </TR>
   <TR>
     <TD>J211540.92-551528.3</TD>
     <TD>318.9205224</TD>
     <TD>-55.2578652</TD>
-    <TD>0.2152</TD>
-    <TD>0.2204</TD>
-    <TD>-0.0681</TD>
     <TD>16.802</TD>
     <TD>0.084</TD>
     <TD>12.9</TD>
@@ -746,37 +1402,53 @@ ___ number of profile-fit flux measurements for source, band 4">
     <TD>NaN</TD>
     <TD>0.2</TD>
     <TD>0.9634</TD>
-    <TD>1</TD>
-    <TD>0</TD>
+  </TR>
+  <TR>
+    <TD>J211543.98-551007.0</TD>
+    <TD>318.9332599</TD>
+    <TD>-55.1686356</TD>
+    <TD>16.833</TD>
+    <TD>0.096</TD>
+    <TD>11.3</TD>
+    <TD>0.9954</TD>
+    <TD>15.926</TD>
+    <TD>0.14</TD>
+    <TD>7.8</TD>
+    <TD>0.9868</TD>
+    <TD>12.396</TD>
+    <TD>0.443</TD>
+    <TD>2.5</TD>
+    <TD>0.9036</TD>
+    <TD>9.118</TD>
+    <TD>NaN</TD>
+    <TD>-0.6</TD>
+    <TD>1.033</TD>
+  </TR>
+  <TR>
+    <TD>J211729.61-550952.7</TD>
+    <TD>319.3733947</TD>
+    <TD>-55.1646507</TD>
+    <TD>17.613</TD>
+    <TD>0.17</TD>
+    <TD>6.4</TD>
+    <TD>0.9613</TD>
+    <TD>16.151</TD>
+    <TD>0.177</TD>
+    <TD>6.1</TD>
+    <TD>0.8733</TD>
+    <TD>12.537</TD>
+    <TD>0.434</TD>
+    <TD>2.5</TD>
+    <TD>1.104</TD>
+    <TD>9.136</TD>
+    <TD>NaN</TD>
     <TD>0.0</TD>
-    <TD>0.0</TD>
-    <TD>0.0</TD>
-    <TD>0.0</TD>
-    <TD>59</TD>
-    <TD>907</TD>
-    <TD>-826</TD>
-    <TD>928</TD>
-    <TD>0000</TD>
-    <TD>0</TD>
-    <TD>nnnn</TD>
-    <TD>ABCU</TD>
-    <TD>0000</TD>
-    <TD>10</TD>
-    <TD>29</TD>
-    <TD>5</TD>
-    <TD>29</TD>
-    <TD>0</TD>
-    <TD>14</TD>
-    <TD>0</TD>
-    <TD>14</TD>
+    <TD>1.023</TD>
   </TR>
   <TR>
     <TD>J211944.44-551422.1</TD>
     <TD>319.9352014</TD>
     <TD>-55.2394895</TD>
-    <TD>0.1263</TD>
-    <TD>0.1313</TD>
-    <TD>-0.0361</TD>
     <TD>15.957</TD>
     <TD>0.053</TD>
     <TD>20.6</TD>
@@ -793,37 +1465,11 @@ ___ number of profile-fit flux measurements for source, band 4">
     <TD>NaN</TD>
     <TD>0.2</TD>
     <TD>0.8501</TD>
-    <TD>1</TD>
-    <TD>0</TD>
-    <TD>0.0</TD>
-    <TD>0.0</TD>
-    <TD>0.0</TD>
-    <TD>0.0</TD>
-    <TD>220</TD>
-    <TD>472</TD>
-    <TD>-840</TD>
-    <TD>497</TD>
-    <TD>hh00</TD>
-    <TD>0</TD>
-    <TD>11nn</TD>
-    <TD>AACU</TD>
-    <TD>0000</TD>
-    <TD>25</TD>
-    <TD>27</TD>
-    <TD>21</TD>
-    <TD>27</TD>
-    <TD>0</TD>
-    <TD>14</TD>
-    <TD>0</TD>
-    <TD>14</TD>
   </TR>
   <TR>
     <TD>J211745.47-560319.8</TD>
     <TD>319.4394598</TD>
     <TD>-56.0555224</TD>
-    <TD>0.4188</TD>
-    <TD>0.4375</TD>
-    <TD>-0.1295</TD>
     <TD>17.604</TD>
     <TD>0.161</TD>
     <TD>6.7</TD>
@@ -840,37 +1486,11 @@ ___ number of profile-fit flux measurements for source, band 4">
     <TD>NaN</TD>
     <TD>0.4</TD>
     <TD>0.8229</TD>
-    <TD>1</TD>
-    <TD>0</TD>
-    <TD>0.0</TD>
-    <TD>0.0</TD>
-    <TD>0.0</TD>
-    <TD>0.0</TD>
-    <TD>-550</TD>
-    <TD>1913</TD>
-    <TD>-185</TD>
-    <TD>1994</TD>
-    <TD>0000</TD>
-    <TD>0</TD>
-    <TD>nnnn</TD>
-    <TD>BBCU</TD>
-    <TD>0000</TD>
-    <TD>5</TD>
-    <TD>29</TD>
-    <TD>1</TD>
-    <TD>29</TD>
-    <TD>0</TD>
-    <TD>15</TD>
-    <TD>0</TD>
-    <TD>15</TD>
   </TR>
   <TR>
     <TD>J211702.08-555213.8</TD>
     <TD>319.2586957</TD>
     <TD>-55.8705119</TD>
-    <TD>0.3333</TD>
-    <TD>0.3391</TD>
-    <TD>-0.1</TD>
     <TD>17.192</TD>
     <TD>0.123</TD>
     <TD>8.8</TD>
@@ -887,37 +1507,11 @@ ___ number of profile-fit flux measurements for source, band 4">
     <TD>NaN</TD>
     <TD>0.2</TD>
     <TD>0.6186</TD>
-    <TD>1</TD>
-    <TD>0</TD>
-    <TD>0.0</TD>
-    <TD>0.0</TD>
-    <TD>0.0</TD>
-    <TD>0.0</TD>
-    <TD>1051</TD>
-    <TD>1453</TD>
-    <TD>664</TD>
-    <TD>1470</TD>
-    <TD>0000</TD>
-    <TD>0</TD>
-    <TD>nnnn</TD>
-    <TD>BBCU</TD>
-    <TD>0000</TD>
-    <TD>7</TD>
-    <TD>29</TD>
-    <TD>4</TD>
-    <TD>29</TD>
-    <TD>0</TD>
-    <TD>14</TD>
-    <TD>0</TD>
-    <TD>14</TD>
   </TR>
   <TR>
     <TD>J211945.56-553913.8</TD>
     <TD>319.9398563</TD>
     <TD>-55.6538552</TD>
-    <TD>0.2236</TD>
-    <TD>0.2301</TD>
-    <TD>-0.067</TD>
     <TD>16.73</TD>
     <TD>0.089</TD>
     <TD>12.3</TD>
@@ -934,37 +1528,11 @@ ___ number of profile-fit flux measurements for source, band 4">
     <TD>NaN</TD>
     <TD>0.5</TD>
     <TD>0.7689</TD>
-    <TD>1</TD>
-    <TD>0</TD>
-    <TD>0.0</TD>
-    <TD>0.0</TD>
-    <TD>0.0</TD>
-    <TD>0.0</TD>
-    <TD>-457</TD>
-    <TD>934</TD>
-    <TD>-848</TD>
-    <TD>956</TD>
-    <TD>0000</TD>
-    <TD>0</TD>
-    <TD>0nnn</TD>
-    <TD>ABBU</TD>
-    <TD>0000</TD>
-    <TD>11</TD>
-    <TD>28</TD>
-    <TD>6</TD>
-    <TD>28</TD>
-    <TD>0</TD>
-    <TD>13</TD>
-    <TD>0</TD>
-    <TD>13</TD>
   </TR>
   <TR>
     <TD>J211653.48-555135.1</TD>
     <TD>319.2228667</TD>
     <TD>-55.8597635</TD>
-    <TD>0.2673</TD>
-    <TD>0.2776</TD>
-    <TD>-0.0809</TD>
     <TD>17.235</TD>
     <TD>0.121</TD>
     <TD>9.0</TD>
@@ -981,37 +1549,53 @@ ___ number of profile-fit flux measurements for source, band 4">
     <TD>NaN</TD>
     <TD>0.6</TD>
     <TD>0.9282</TD>
-    <TD>1</TD>
-    <TD>0</TD>
-    <TD>0.0</TD>
-    <TD>0.0</TD>
-    <TD>0.0</TD>
-    <TD>0.0</TD>
-    <TD>119</TD>
-    <TD>1167</TD>
-    <TD>339</TD>
-    <TD>1212</TD>
-    <TD>0000</TD>
-    <TD>0</TD>
-    <TD>nnnn</TD>
-    <TD>BBCU</TD>
-    <TD>0000</TD>
-    <TD>5</TD>
-    <TD>29</TD>
-    <TD>6</TD>
-    <TD>29</TD>
-    <TD>0</TD>
-    <TD>13</TD>
-    <TD>0</TD>
-    <TD>13</TD>
+  </TR>
+  <TR>
+    <TD>J211609.53-561318.0</TD>
+    <TD>319.03972</TD>
+    <TD>-56.2216892</TD>
+    <TD>18.206</TD>
+    <TD>0.275</TD>
+    <TD>3.9</TD>
+    <TD>1.032</TD>
+    <TD>16.317</TD>
+    <TD>0.197</TD>
+    <TD>5.5</TD>
+    <TD>0.9718</TD>
+    <TD>12.618</TD>
+    <TD>0.541</TD>
+    <TD>2.0</TD>
+    <TD>0.9683</TD>
+    <TD>9.139</TD>
+    <TD>NaN</TD>
+    <TD>0.1</TD>
+    <TD>1.021</TD>
+  </TR>
+  <TR>
+    <TD>J211750.12-561430.3</TD>
+    <TD>319.4588375</TD>
+    <TD>-56.2417677</TD>
+    <TD>17.015</TD>
+    <TD>0.107</TD>
+    <TD>10.2</TD>
+    <TD>1.089</TD>
+    <TD>16.0</TD>
+    <TD>0.144</TD>
+    <TD>7.5</TD>
+    <TD>1.045</TD>
+    <TD>12.563</TD>
+    <TD>0.392</TD>
+    <TD>2.8</TD>
+    <TD>1.006</TD>
+    <TD>9.031</TD>
+    <TD>0.491</TD>
+    <TD>2.2</TD>
+    <TD>0.9565</TD>
   </TR>
   <TR>
     <TD>J211907.44-555929.0</TD>
     <TD>319.7810226</TD>
     <TD>-55.9914107</TD>
-    <TD>0.3674</TD>
-    <TD>0.3876</TD>
-    <TD>-0.1171</TD>
     <TD>17.451</TD>
     <TD>0.139</TD>
     <TD>7.8</TD>
@@ -1028,37 +1612,11 @@ ___ number of profile-fit flux measurements for source, band 4">
     <TD>0.384</TD>
     <TD>2.8</TD>
     <TD>1.051</TD>
-    <TD>1</TD>
-    <TD>0</TD>
-    <TD>0.001</TD>
-    <TD>0.0</TD>
-    <TD>0.0</TD>
-    <TD>0.0</TD>
-    <TD>-192</TD>
-    <TD>1594</TD>
-    <TD>-1032</TD>
-    <TD>1683</TD>
-    <TD>0000</TD>
-    <TD>0</TD>
-    <TD>nnnn</TD>
-    <TD>BBCC</TD>
-    <TD>0000</TD>
-    <TD>3</TD>
-    <TD>32</TD>
-    <TD>0</TD>
-    <TD>32</TD>
-    <TD>0</TD>
-    <TD>16</TD>
-    <TD>0</TD>
-    <TD>16</TD>
   </TR>
   <TR>
     <TD>J211607.13-555449.3</TD>
     <TD>319.0297405</TD>
     <TD>-55.9137221</TD>
-    <TD>0.0843</TD>
-    <TD>0.0851</TD>
-    <TD>-0.0217</TD>
     <TD>15.371</TD>
     <TD>0.038</TD>
     <TD>28.9</TD>
@@ -1075,37 +1633,11 @@ ___ number of profile-fit flux measurements for source, band 4">
     <TD>0.52</TD>
     <TD>2.1</TD>
     <TD>0.8772</TD>
-    <TD>1</TD>
-    <TD>0</TD>
-    <TD>0.0</TD>
-    <TD>0.0</TD>
-    <TD>0.0</TD>
-    <TD>0.0</TD>
-    <TD>328</TD>
-    <TD>282</TD>
-    <TD>-41</TD>
-    <TD>286</TD>
-    <TD>0000</TD>
-    <TD>0</TD>
-    <TD>01nn</TD>
-    <TD>AABC</TD>
-    <TD>0000</TD>
-    <TD>30</TD>
-    <TD>30</TD>
-    <TD>30</TD>
-    <TD>30</TD>
-    <TD>0</TD>
-    <TD>15</TD>
-    <TD>0</TD>
-    <TD>15</TD>
   </TR>
   <TR>
     <TD>J211640.67-553438.9</TD>
     <TD>319.1694638</TD>
     <TD>-55.5774819</TD>
-    <TD>0.171</TD>
-    <TD>0.1806</TD>
-    <TD>-0.0517</TD>
     <TD>16.806</TD>
     <TD>0.09</TD>
     <TD>12.0</TD>
@@ -1122,37 +1654,32 @@ ___ number of profile-fit flux measurements for source, band 4">
     <TD>NaN</TD>
     <TD>1.1</TD>
     <TD>0.9936</TD>
-    <TD>1</TD>
-    <TD>0</TD>
-    <TD>0.0</TD>
-    <TD>0.0</TD>
-    <TD>0.0</TD>
-    <TD>0.0</TD>
-    <TD>74</TD>
-    <TD>687</TD>
-    <TD>179</TD>
-    <TD>730</TD>
-    <TD>0000</TD>
-    <TD>0</TD>
-    <TD>n1nn</TD>
-    <TD>AABU</TD>
-    <TD>0000</TD>
-    <TD>11</TD>
-    <TD>30</TD>
-    <TD>23</TD>
-    <TD>30</TD>
-    <TD>2</TD>
-    <TD>16</TD>
-    <TD>0</TD>
-    <TD>16</TD>
+  </TR>
+  <TR>
+    <TD>J212045.07-553657.5</TD>
+    <TD>320.1878204</TD>
+    <TD>-55.6159976</TD>
+    <TD>16.932</TD>
+    <TD>0.096</TD>
+    <TD>11.3</TD>
+    <TD>1.075</TD>
+    <TD>15.801</TD>
+    <TD>0.133</TD>
+    <TD>8.2</TD>
+    <TD>0.9564</TD>
+    <TD>12.754</TD>
+    <TD>0.495</TD>
+    <TD>2.2</TD>
+    <TD>0.9699</TD>
+    <TD>9.028</TD>
+    <TD>NaN</TD>
+    <TD>0.2</TD>
+    <TD>0.9222</TD>
   </TR>
   <TR>
     <TD>J211830.99-560155.4</TD>
     <TD>319.6291627</TD>
     <TD>-56.032074</TD>
-    <TD>0.3423</TD>
-    <TD>0.3536</TD>
-    <TD>-0.0973</TD>
     <TD>17.245</TD>
     <TD>0.126</TD>
     <TD>8.6</TD>
@@ -1169,37 +1696,32 @@ ___ number of profile-fit flux measurements for source, band 4">
     <TD>NaN</TD>
     <TD>0.6</TD>
     <TD>0.8759</TD>
-    <TD>1</TD>
-    <TD>0</TD>
-    <TD>0.0</TD>
-    <TD>0.0</TD>
-    <TD>0.0</TD>
-    <TD>0.0</TD>
-    <TD>187</TD>
-    <TD>1519</TD>
-    <TD>-117</TD>
-    <TD>1575</TD>
-    <TD>0000</TD>
-    <TD>0</TD>
-    <TD>nnnn</TD>
-    <TD>BBCU</TD>
-    <TD>0000</TD>
-    <TD>5</TD>
-    <TD>31</TD>
-    <TD>0</TD>
-    <TD>31</TD>
-    <TD>0</TD>
-    <TD>16</TD>
-    <TD>0</TD>
-    <TD>16</TD>
+  </TR>
+  <TR>
+    <TD>J212052.15-552330.6</TD>
+    <TD>320.217321</TD>
+    <TD>-55.3918382</TD>
+    <TD>16.949</TD>
+    <TD>0.098</TD>
+    <TD>11.1</TD>
+    <TD>0.9664</TD>
+    <TD>15.962</TD>
+    <TD>0.143</TD>
+    <TD>7.6</TD>
+    <TD>1.089</TD>
+    <TD>12.271</TD>
+    <TD>0.367</TD>
+    <TD>3.0</TD>
+    <TD>0.8311</TD>
+    <TD>9.088</TD>
+    <TD>NaN</TD>
+    <TD>0.2</TD>
+    <TD>1.191</TD>
   </TR>
   <TR>
     <TD>J211755.79-554027.1</TD>
     <TD>319.4824685</TD>
     <TD>-55.6742007</TD>
-    <TD>0.1248</TD>
-    <TD>0.1289</TD>
-    <TD>-0.035</TD>
     <TD>16.132</TD>
     <TD>0.056</TD>
     <TD>19.3</TD>
@@ -1216,37 +1738,11 @@ ___ number of profile-fit flux measurements for source, band 4">
     <TD>NaN</TD>
     <TD>-0.4</TD>
     <TD>0.9947</TD>
-    <TD>1</TD>
-    <TD>0</TD>
-    <TD>0.0</TD>
-    <TD>0.0</TD>
-    <TD>0.0</TD>
-    <TD>0.0</TD>
-    <TD>-230</TD>
-    <TD>475</TD>
-    <TD>94</TD>
-    <TD>492</TD>
-    <TD>0000</TD>
-    <TD>0</TD>
-    <TD>001n</TD>
-    <TD>AABU</TD>
-    <TD>0000</TD>
-    <TD>27</TD>
-    <TD>29</TD>
-    <TD>27</TD>
-    <TD>29</TD>
-    <TD>6</TD>
-    <TD>15</TD>
-    <TD>0</TD>
-    <TD>15</TD>
   </TR>
   <TR>
     <TD>J211703.99-560230.7</TD>
     <TD>319.2666658</TD>
     <TD>-56.0418708</TD>
-    <TD>0.1222</TD>
-    <TD>0.1261</TD>
-    <TD>-0.0358</TD>
     <TD>16.029</TD>
     <TD>0.053</TD>
     <TD>20.5</TD>
@@ -1263,37 +1759,53 @@ ___ number of profile-fit flux measurements for source, band 4">
     <TD>0.378</TD>
     <TD>2.9</TD>
     <TD>1.012</TD>
-    <TD>1</TD>
-    <TD>0</TD>
-    <TD>0.0</TD>
-    <TD>0.0</TD>
-    <TD>0.0</TD>
-    <TD>0.0</TD>
-    <TD>-359</TD>
-    <TD>465</TD>
-    <TD>6</TD>
-    <TD>478</TD>
-    <TD>0000</TD>
-    <TD>0</TD>
-    <TD>00nn</TD>
-    <TD>AABC</TD>
-    <TD>0000</TD>
-    <TD>28</TD>
-    <TD>29</TD>
-    <TD>24</TD>
-    <TD>29</TD>
-    <TD>3</TD>
-    <TD>14</TD>
-    <TD>0</TD>
-    <TD>14</TD>
+  </TR>
+  <TR>
+    <TD>J211605.08-552852.6</TD>
+    <TD>319.0212075</TD>
+    <TD>-55.4812897</TD>
+    <TD>17.829</TD>
+    <TD>0.202</TD>
+    <TD>5.4</TD>
+    <TD>0.997</TD>
+    <TD>16.941</TD>
+    <TD>0.351</TD>
+    <TD>3.1</TD>
+    <TD>0.883</TD>
+    <TD>12.689</TD>
+    <TD>0.489</TD>
+    <TD>2.2</TD>
+    <TD>1.007</TD>
+    <TD>9.229</TD>
+    <TD>NaN</TD>
+    <TD>-0.2</TD>
+    <TD>0.891</TD>
+  </TR>
+  <TR>
+    <TD>J211907.44-552328.9</TD>
+    <TD>319.7810003</TD>
+    <TD>-55.3913706</TD>
+    <TD>17.788</TD>
+    <TD>0.19</TD>
+    <TD>5.7</TD>
+    <TD>1.111</TD>
+    <TD>16.824</TD>
+    <TD>0.333</TD>
+    <TD>3.3</TD>
+    <TD>0.9539</TD>
+    <TD>12.356</TD>
+    <TD>0.387</TD>
+    <TD>2.8</TD>
+    <TD>0.9677</TD>
+    <TD>9.047</TD>
+    <TD>NaN</TD>
+    <TD>0.2</TD>
+    <TD>0.8616</TD>
   </TR>
   <TR>
     <TD>J211549.46-553831.4</TD>
     <TD>318.9561059</TD>
     <TD>-55.6420794</TD>
-    <TD>0.423</TD>
-    <TD>0.4498</TD>
-    <TD>-0.1308</TD>
     <TD>17.598</TD>
     <TD>0.174</TD>
     <TD>6.2</TD>
@@ -1310,37 +1822,53 @@ ___ number of profile-fit flux measurements for source, band 4">
     <TD>0.505</TD>
     <TD>2.2</TD>
     <TD>0.922</TD>
-    <TD>1</TD>
-    <TD>0</TD>
-    <TD>0.0</TD>
-    <TD>0.0</TD>
-    <TD>0.0</TD>
-    <TD>0.0</TD>
-    <TD>-778</TD>
-    <TD>1883</TD>
-    <TD>-1370</TD>
-    <TD>2020</TD>
-    <TD>0000</TD>
-    <TD>0</TD>
-    <TD>nnnn</TD>
-    <TD>BBCC</TD>
-    <TD>0000</TD>
-    <TD>6</TD>
-    <TD>31</TD>
-    <TD>0</TD>
-    <TD>31</TD>
-    <TD>1</TD>
-    <TD>15</TD>
-    <TD>0</TD>
-    <TD>15</TD>
+  </TR>
+  <TR>
+    <TD>J212031.90-552303.7</TD>
+    <TD>320.1329498</TD>
+    <TD>-55.3843635</TD>
+    <TD>16.901</TD>
+    <TD>0.098</TD>
+    <TD>11.0</TD>
+    <TD>0.8446</TD>
+    <TD>15.76</TD>
+    <TD>0.123</TD>
+    <TD>8.8</TD>
+    <TD>0.9082</TD>
+    <TD>12.464</TD>
+    <TD>0.475</TD>
+    <TD>2.3</TD>
+    <TD>0.8993</TD>
+    <TD>8.388</TD>
+    <TD>NaN</TD>
+    <TD>2.0</TD>
+    <TD>0.8329</TD>
+  </TR>
+  <TR>
+    <TD>J211607.33-560629.0</TD>
+    <TD>319.030576</TD>
+    <TD>-56.1080821</TD>
+    <TD>17.705</TD>
+    <TD>0.174</TD>
+    <TD>6.2</TD>
+    <TD>1.023</TD>
+    <TD>16.687</TD>
+    <TD>0.287</TD>
+    <TD>3.8</TD>
+    <TD>0.8562</TD>
+    <TD>12.044</TD>
+    <TD>0.29</TD>
+    <TD>3.7</TD>
+    <TD>0.995</TD>
+    <TD>8.527</TD>
+    <TD>0.377</TD>
+    <TD>2.9</TD>
+    <TD>1.004</TD>
   </TR>
   <TR>
     <TD>J211638.31-553853.4</TD>
     <TD>319.1596608</TD>
     <TD>-55.6481919</TD>
-    <TD>0.1335</TD>
-    <TD>0.1412</TD>
-    <TD>-0.0376</TD>
     <TD>16.053</TD>
     <TD>0.055</TD>
     <TD>19.8</TD>
@@ -1357,37 +1885,32 @@ ___ number of profile-fit flux measurements for source, band 4">
     <TD>0.409</TD>
     <TD>2.7</TD>
     <TD>1.118</TD>
-    <TD>1</TD>
-    <TD>0</TD>
-    <TD>0.0</TD>
-    <TD>0.0</TD>
-    <TD>0.0</TD>
-    <TD>0.0</TD>
-    <TD>-1006</TD>
-    <TD>501</TD>
-    <TD>238</TD>
-    <TD>532</TD>
-    <TD>0000</TD>
-    <TD>0</TD>
-    <TD>00nn</TD>
-    <TD>AABC</TD>
-    <TD>0000</TD>
-    <TD>25</TD>
-    <TD>29</TD>
-    <TD>17</TD>
-    <TD>29</TD>
-    <TD>1</TD>
-    <TD>15</TD>
-    <TD>1</TD>
-    <TD>15</TD>
+  </TR>
+  <TR>
+    <TD>J211930.06-552325.1</TD>
+    <TD>319.8752753</TD>
+    <TD>-55.3903109</TD>
+    <TD>17.716</TD>
+    <TD>0.185</TD>
+    <TD>5.9</TD>
+    <TD>1.096</TD>
+    <TD>16.861</TD>
+    <TD>0.328</TD>
+    <TD>3.3</TD>
+    <TD>0.8918</TD>
+    <TD>12.354</TD>
+    <TD>0.362</TD>
+    <TD>3.0</TD>
+    <TD>0.8728</TD>
+    <TD>9.14</TD>
+    <TD>NaN</TD>
+    <TD>-0.5</TD>
+    <TD>1.012</TD>
   </TR>
   <TR>
     <TD>J211522.30-553109.3</TD>
     <TD>318.8429498</TD>
     <TD>-55.519253</TD>
-    <TD>0.0562</TD>
-    <TD>0.0565</TD>
-    <TD>-0.0105</TD>
     <TD>14.424</TD>
     <TD>0.029</TD>
     <TD>38.0</TD>
@@ -1404,37 +1927,32 @@ ___ number of profile-fit flux measurements for source, band 4">
     <TD>0.272</TD>
     <TD>4.0</TD>
     <TD>0.8384</TD>
-    <TD>1</TD>
-    <TD>0</TD>
-    <TD>0.0</TD>
-    <TD>0.0</TD>
-    <TD>0.0</TD>
-    <TD>0.0</TD>
-    <TD>-71</TD>
-    <TD>284</TD>
-    <TD>-149</TD>
-    <TD>245</TD>
-    <TD>0000</TD>
-    <TD>0</TD>
-    <TD>000n</TD>
-    <TD>AAAB</TD>
-    <TD>0000</TD>
-    <TD>30</TD>
-    <TD>30</TD>
-    <TD>30</TD>
-    <TD>30</TD>
-    <TD>14</TD>
-    <TD>15</TD>
-    <TD>0</TD>
-    <TD>15</TD>
+  </TR>
+  <TR>
+    <TD>J212054.70-552550.7</TD>
+    <TD>320.22795</TD>
+    <TD>-55.4307568</TD>
+    <TD>18.736</TD>
+    <TD>0.448</TD>
+    <TD>2.4</TD>
+    <TD>0.9526</TD>
+    <TD>16.821</TD>
+    <TD>0.283</TD>
+    <TD>3.8</TD>
+    <TD>0.9906</TD>
+    <TD>11.651</TD>
+    <TD>0.197</TD>
+    <TD>5.5</TD>
+    <TD>1.011</TD>
+    <TD>8.817</TD>
+    <TD>0.431</TD>
+    <TD>2.5</TD>
+    <TD>0.8874</TD>
   </TR>
   <TR>
     <TD>J211544.52-552939.3</TD>
     <TD>318.9355058</TD>
     <TD>-55.4942776</TD>
-    <TD>0.4048</TD>
-    <TD>0.4268</TD>
-    <TD>-0.1256</TD>
     <TD>17.629</TD>
     <TD>0.169</TD>
     <TD>6.4</TD>
@@ -1451,37 +1969,32 @@ ___ number of profile-fit flux measurements for source, band 4">
     <TD>NaN</TD>
     <TD>0.8</TD>
     <TD>1.004</TD>
-    <TD>1</TD>
-    <TD>0</TD>
-    <TD>0.001</TD>
-    <TD>0.0</TD>
-    <TD>0.0</TD>
-    <TD>0.0</TD>
-    <TD>-381</TD>
-    <TD>1861</TD>
-    <TD>-222</TD>
-    <TD>1973</TD>
-    <TD>0000</TD>
-    <TD>0</TD>
-    <TD>nnnn</TD>
-    <TD>BBCU</TD>
-    <TD>0000</TD>
-    <TD>4</TD>
-    <TD>31</TD>
-    <TD>1</TD>
-    <TD>31</TD>
-    <TD>0</TD>
-    <TD>16</TD>
-    <TD>0</TD>
-    <TD>16</TD>
+  </TR>
+  <TR>
+    <TD>J212103.17-554321.0</TD>
+    <TD>320.2632438</TD>
+    <TD>-55.7225116</TD>
+    <TD>16.886</TD>
+    <TD>0.093</TD>
+    <TD>11.6</TD>
+    <TD>1.036</TD>
+    <TD>15.878</TD>
+    <TD>0.144</TD>
+    <TD>7.5</TD>
+    <TD>0.8528</TD>
+    <TD>12.528</TD>
+    <TD>0.474</TD>
+    <TD>2.3</TD>
+    <TD>0.8749</TD>
+    <TD>8.906</TD>
+    <TD>NaN</TD>
+    <TD>-0.6</TD>
+    <TD>0.9395</TD>
   </TR>
   <TR>
     <TD>J211513.86-555803.4</TD>
     <TD>318.8077866</TD>
     <TD>-55.9676379</TD>
-    <TD>0.4376</TD>
-    <TD>0.4624</TD>
-    <TD>-0.1448</TD>
     <TD>17.562</TD>
     <TD>0.161</TD>
     <TD>6.7</TD>
@@ -1498,37 +2011,32 @@ ___ number of profile-fit flux measurements for source, band 4">
     <TD>NaN</TD>
     <TD>0.4</TD>
     <TD>0.8015</TD>
-    <TD>1</TD>
-    <TD>0</TD>
-    <TD>0.0</TD>
-    <TD>0.0</TD>
-    <TD>0.0</TD>
-    <TD>0.0</TD>
-    <TD>2117</TD>
-    <TD>2262</TD>
-    <TD>15479</TD>
-    <TD>2347</TD>
-    <TD>0000</TD>
-    <TD>0</TD>
-    <TD>nnnn</TD>
-    <TD>BBCU</TD>
-    <TD>0000</TD>
-    <TD>4</TD>
-    <TD>30</TD>
-    <TD>0</TD>
-    <TD>30</TD>
-    <TD>0</TD>
-    <TD>16</TD>
-    <TD>0</TD>
-    <TD>16</TD>
+  </TR>
+  <TR>
+    <TD>J211824.66-553232.0</TD>
+    <TD>319.6027576</TD>
+    <TD>-55.5422271</TD>
+    <TD>17.753</TD>
+    <TD>0.191</TD>
+    <TD>5.7</TD>
+    <TD>1.023</TD>
+    <TD>16.895</TD>
+    <TD>0.301</TD>
+    <TD>3.6</TD>
+    <TD>0.9814</TD>
+    <TD>12.617</TD>
+    <TD>0.434</TD>
+    <TD>2.5</TD>
+    <TD>0.8402</TD>
+    <TD>8.923</TD>
+    <TD>NaN</TD>
+    <TD>0.3</TD>
+    <TD>0.9507</TD>
   </TR>
   <TR>
     <TD>J211915.59-555625.1</TD>
     <TD>319.8149872</TD>
     <TD>-55.9403298</TD>
-    <TD>0.3955</TD>
-    <TD>0.4198</TD>
-    <TD>-0.1272</TD>
     <TD>17.491</TD>
     <TD>0.16</TD>
     <TD>6.8</TD>
@@ -1545,37 +2053,32 @@ ___ number of profile-fit flux measurements for source, band 4">
     <TD>NaN</TD>
     <TD>0.0</TD>
     <TD>1.064</TD>
-    <TD>1</TD>
-    <TD>0</TD>
-    <TD>0.001</TD>
-    <TD>0.0</TD>
-    <TD>0.0</TD>
-    <TD>0.0</TD>
-    <TD>-456</TD>
-    <TD>1749</TD>
-    <TD>-259</TD>
-    <TD>1854</TD>
-    <TD>0000</TD>
-    <TD>0</TD>
-    <TD>nnnn</TD>
-    <TD>BBCU</TD>
-    <TD>0000</TD>
-    <TD>3</TD>
-    <TD>29</TD>
-    <TD>1</TD>
-    <TD>29</TD>
-    <TD>0</TD>
-    <TD>15</TD>
-    <TD>0</TD>
-    <TD>15</TD>
+  </TR>
+  <TR>
+    <TD>J211855.46-560632.5</TD>
+    <TD>319.7310971</TD>
+    <TD>-56.1090281</TD>
+    <TD>16.103</TD>
+    <TD>0.053</TD>
+    <TD>20.4</TD>
+    <TD>1.056</TD>
+    <TD>14.823</TD>
+    <TD>0.061</TD>
+    <TD>17.8</TD>
+    <TD>0.8669</TD>
+    <TD>12.186</TD>
+    <TD>0.312</TD>
+    <TD>3.5</TD>
+    <TD>0.8997</TD>
+    <TD>8.771</TD>
+    <TD>NaN</TD>
+    <TD>1.1</TD>
+    <TD>0.9513</TD>
   </TR>
   <TR>
     <TD>J211523.37-551919.8</TD>
     <TD>318.847383</TD>
     <TD>-55.3221907</TD>
-    <TD>0.2287</TD>
-    <TD>0.2357</TD>
-    <TD>-0.0746</TD>
     <TD>16.741</TD>
     <TD>0.088</TD>
     <TD>12.3</TD>
@@ -1592,37 +2095,32 @@ ___ number of profile-fit flux measurements for source, band 4">
     <TD>NaN</TD>
     <TD>-0.2</TD>
     <TD>0.8597</TD>
-    <TD>1</TD>
-    <TD>0</TD>
-    <TD>0.0</TD>
-    <TD>0.0</TD>
-    <TD>0.0</TD>
-    <TD>0.0</TD>
-    <TD>-143</TD>
-    <TD>951</TD>
-    <TD>-703</TD>
-    <TD>973</TD>
-    <TD>0000</TD>
-    <TD>0</TD>
-    <TD>nnnn</TD>
-    <TD>ABCU</TD>
-    <TD>0000</TD>
-    <TD>10</TD>
-    <TD>28</TD>
-    <TD>4</TD>
-    <TD>28</TD>
-    <TD>0</TD>
-    <TD>13</TD>
-    <TD>0</TD>
-    <TD>13</TD>
+  </TR>
+  <TR>
+    <TD>J212051.90-553851.4</TD>
+    <TD>320.2162598</TD>
+    <TD>-55.647618</TD>
+    <TD>17.498</TD>
+    <TD>0.148</TD>
+    <TD>7.4</TD>
+    <TD>1.13</TD>
+    <TD>16.404</TD>
+    <TD>0.209</TD>
+    <TD>5.2</TD>
+    <TD>1.132</TD>
+    <TD>12.493</TD>
+    <TD>0.453</TD>
+    <TD>2.4</TD>
+    <TD>0.9565</TD>
+    <TD>8.945</TD>
+    <TD>NaN</TD>
+    <TD>-0.2</TD>
+    <TD>0.9162</TD>
   </TR>
   <TR>
     <TD>J211658.11-553713.8</TD>
     <TD>319.2421467</TD>
     <TD>-55.6205152</TD>
-    <TD>0.1479</TD>
-    <TD>0.1544</TD>
-    <TD>-0.0448</TD>
     <TD>16.221</TD>
     <TD>0.062</TD>
     <TD>17.5</TD>
@@ -1639,37 +2137,11 @@ ___ number of profile-fit flux measurements for source, band 4">
     <TD>NaN</TD>
     <TD>1.6</TD>
     <TD>1.0</TD>
-    <TD>1</TD>
-    <TD>0</TD>
-    <TD>0.0</TD>
-    <TD>0.0</TD>
-    <TD>0.0</TD>
-    <TD>0.0</TD>
-    <TD>165</TD>
-    <TD>546</TD>
-    <TD>-952</TD>
-    <TD>580</TD>
-    <TD>0000</TD>
-    <TD>0</TD>
-    <TD>00nn</TD>
-    <TD>AACU</TD>
-    <TD>0000</TD>
-    <TD>23</TD>
-    <TD>30</TD>
-    <TD>19</TD>
-    <TD>30</TD>
-    <TD>1</TD>
-    <TD>16</TD>
-    <TD>0</TD>
-    <TD>16</TD>
   </TR>
   <TR>
     <TD>J211507.97-552012.7</TD>
     <TD>318.7832226</TD>
     <TD>-55.3368727</TD>
-    <TD>0.2813</TD>
-    <TD>0.2957</TD>
-    <TD>-0.0371</TD>
     <TD>16.943</TD>
     <TD>0.109</TD>
     <TD>10.0</TD>
@@ -1686,37 +2158,32 @@ ___ number of profile-fit flux measurements for source, band 4">
     <TD>0.525</TD>
     <TD>2.1</TD>
     <TD>1.107</TD>
-    <TD>1</TD>
-    <TD>0</TD>
-    <TD>0.0</TD>
-    <TD>0.0</TD>
-    <TD>0.0</TD>
-    <TD>0.0</TD>
-    <TD>-166</TD>
-    <TD>1224</TD>
-    <TD>755</TD>
-    <TD>1286</TD>
-    <TD>0000</TD>
-    <TD>0</TD>
-    <TD>nnnn</TD>
-    <TD>ABBC</TD>
-    <TD>0000</TD>
-    <TD>8</TD>
-    <TD>28</TD>
-    <TD>2</TD>
-    <TD>28</TD>
-    <TD>1</TD>
-    <TD>14</TD>
-    <TD>0</TD>
-    <TD>14</TD>
+  </TR>
+  <TR>
+    <TD>J212107.16-553409.9</TD>
+    <TD>320.2798748</TD>
+    <TD>-55.5694376</TD>
+    <TD>17.232</TD>
+    <TD>0.132</TD>
+    <TD>8.2</TD>
+    <TD>0.9542</TD>
+    <TD>16.369</TD>
+    <TD>0.222</TD>
+    <TD>4.9</TD>
+    <TD>0.9678</TD>
+    <TD>12.31</TD>
+    <TD>0.333</TD>
+    <TD>3.3</TD>
+    <TD>0.9132</TD>
+    <TD>8.339</TD>
+    <TD>NaN</TD>
+    <TD>1.9</TD>
+    <TD>0.9422</TD>
   </TR>
   <TR>
     <TD>J211722.07-554643.5</TD>
     <TD>319.3419778</TD>
     <TD>-55.7787727</TD>
-    <TD>0.2437</TD>
-    <TD>0.2536</TD>
-    <TD>-0.0772</TD>
     <TD>16.985</TD>
     <TD>0.1</TD>
     <TD>10.9</TD>
@@ -1733,37 +2200,11 @@ ___ number of profile-fit flux measurements for source, band 4">
     <TD>NaN</TD>
     <TD>-0.6</TD>
     <TD>1.098</TD>
-    <TD>1</TD>
-    <TD>0</TD>
-    <TD>0.0</TD>
-    <TD>0.0</TD>
-    <TD>0.0</TD>
-    <TD>0.0</TD>
-    <TD>-285</TD>
-    <TD>1032</TD>
-    <TD>-261</TD>
-    <TD>1075</TD>
-    <TD>0000</TD>
-    <TD>0</TD>
-    <TD>nnnn</TD>
-    <TD>ABBU</TD>
-    <TD>0000</TD>
-    <TD>8</TD>
-    <TD>30</TD>
-    <TD>4</TD>
-    <TD>30</TD>
-    <TD>0</TD>
-    <TD>15</TD>
-    <TD>0</TD>
-    <TD>15</TD>
   </TR>
   <TR>
     <TD>J211745.32-553255.9</TD>
     <TD>319.4388717</TD>
     <TD>-55.5488881</TD>
-    <TD>0.2218</TD>
-    <TD>0.2338</TD>
-    <TD>-0.072</TD>
     <TD>16.781</TD>
     <TD>0.088</TD>
     <TD>12.3</TD>
@@ -1780,37 +2221,32 @@ ___ number of profile-fit flux measurements for source, band 4">
     <TD>NaN</TD>
     <TD>0.1</TD>
     <TD>0.9344</TD>
-    <TD>1</TD>
-    <TD>0</TD>
-    <TD>0.0</TD>
-    <TD>0.0</TD>
-    <TD>0.0</TD>
-    <TD>0.0</TD>
-    <TD>-591</TD>
-    <TD>911</TD>
-    <TD>-617</TD>
-    <TD>966</TD>
-    <TD>0000</TD>
-    <TD>0</TD>
-    <TD>nnnn</TD>
-    <TD>ABCU</TD>
-    <TD>0000</TD>
-    <TD>11</TD>
-    <TD>31</TD>
-    <TD>5</TD>
-    <TD>31</TD>
-    <TD>0</TD>
-    <TD>15</TD>
-    <TD>0</TD>
-    <TD>15</TD>
+  </TR>
+  <TR>
+    <TD>J211612.23-561337.3</TD>
+    <TD>319.05096</TD>
+    <TD>-56.227041</TD>
+    <TD>16.898</TD>
+    <TD>0.096</TD>
+    <TD>11.3</TD>
+    <TD>0.9411</TD>
+    <TD>15.977</TD>
+    <TD>0.142</TD>
+    <TD>7.6</TD>
+    <TD>0.9978</TD>
+    <TD>11.423</TD>
+    <TD>0.162</TD>
+    <TD>6.7</TD>
+    <TD>0.9184</TD>
+    <TD>8.49</TD>
+    <TD>NaN</TD>
+    <TD>1.8</TD>
+    <TD>1.02</TD>
   </TR>
   <TR>
     <TD>J211546.90-552305.0</TD>
     <TD>318.9454501</TD>
     <TD>-55.3847494</TD>
-    <TD>0.2863</TD>
-    <TD>0.2936</TD>
-    <TD>-0.0838</TD>
     <TD>17.018</TD>
     <TD>0.104</TD>
     <TD>10.4</TD>
@@ -1827,37 +2263,11 @@ ___ number of profile-fit flux measurements for source, band 4">
     <TD>NaN</TD>
     <TD>-0.7</TD>
     <TD>0.9613</TD>
-    <TD>1</TD>
-    <TD>0</TD>
-    <TD>0.001</TD>
-    <TD>0.0</TD>
-    <TD>0.0</TD>
-    <TD>0.0</TD>
-    <TD>-204</TD>
-    <TD>1194</TD>
-    <TD>-224</TD>
-    <TD>1221</TD>
-    <TD>0000</TD>
-    <TD>0</TD>
-    <TD>nnnn</TD>
-    <TD>ABCU</TD>
-    <TD>0000</TD>
-    <TD>7</TD>
-    <TD>31</TD>
-    <TD>3</TD>
-    <TD>31</TD>
-    <TD>0</TD>
-    <TD>16</TD>
-    <TD>0</TD>
-    <TD>16</TD>
   </TR>
   <TR>
     <TD>J211546.53-554614.4</TD>
     <TD>318.9438932</TD>
     <TD>-55.7706752</TD>
-    <TD>0.2961</TD>
-    <TD>0.3143</TD>
-    <TD>-0.0878</TD>
     <TD>17.121</TD>
     <TD>0.108</TD>
     <TD>10.1</TD>
@@ -1874,37 +2284,11 @@ ___ number of profile-fit flux measurements for source, band 4">
     <TD>NaN</TD>
     <TD>1.6</TD>
     <TD>0.9897</TD>
-    <TD>1</TD>
-    <TD>0</TD>
-    <TD>0.0</TD>
-    <TD>0.0</TD>
-    <TD>0.0</TD>
-    <TD>0.0</TD>
-    <TD>950</TD>
-    <TD>1301</TD>
-    <TD>-380</TD>
-    <TD>1382</TD>
-    <TD>0000</TD>
-    <TD>0</TD>
-    <TD>nnnn</TD>
-    <TD>ABCU</TD>
-    <TD>0000</TD>
-    <TD>8</TD>
-    <TD>29</TD>
-    <TD>0</TD>
-    <TD>29</TD>
-    <TD>0</TD>
-    <TD>14</TD>
-    <TD>0</TD>
-    <TD>14</TD>
   </TR>
   <TR>
     <TD>J211737.80-554136.0</TD>
     <TD>319.4075382</TD>
     <TD>-55.6933414</TD>
-    <TD>0.376</TD>
-    <TD>0.3957</TD>
-    <TD>-0.1211</TD>
     <TD>17.498</TD>
     <TD>0.164</TD>
     <TD>6.6</TD>
@@ -1921,37 +2305,11 @@ ___ number of profile-fit flux measurements for source, band 4">
     <TD>NaN</TD>
     <TD>0.4</TD>
     <TD>1.002</TD>
-    <TD>1</TD>
-    <TD>0</TD>
-    <TD>0.0</TD>
-    <TD>0.0</TD>
-    <TD>0.0</TD>
-    <TD>0.006</TD>
-    <TD>376</TD>
-    <TD>1671</TD>
-    <TD>-829</TD>
-    <TD>1760</TD>
-    <TD>000P</TD>
-    <TD>0</TD>
-    <TD>nnnn</TD>
-    <TD>BBCU</TD>
-    <TD>0000</TD>
-    <TD>4</TD>
-    <TD>28</TD>
-    <TD>1</TD>
-    <TD>28</TD>
-    <TD>0</TD>
-    <TD>14</TD>
-    <TD>0</TD>
-    <TD>14</TD>
   </TR>
   <TR>
     <TD>J211624.44-551734.5</TD>
     <TD>319.1018394</TD>
     <TD>-55.292922</TD>
-    <TD>0.21</TD>
-    <TD>0.2178</TD>
-    <TD>-0.0633</TD>
     <TD>16.693</TD>
     <TD>0.082</TD>
     <TD>13.2</TD>
@@ -1968,37 +2326,32 @@ ___ number of profile-fit flux measurements for source, band 4">
     <TD>0.458</TD>
     <TD>2.4</TD>
     <TD>0.9696</TD>
-    <TD>1</TD>
-    <TD>0</TD>
-    <TD>0.0</TD>
-    <TD>0.0</TD>
-    <TD>0.0</TD>
-    <TD>0.0</TD>
-    <TD>-283</TD>
-    <TD>873</TD>
-    <TD>659</TD>
-    <TD>905</TD>
-    <TD>0000</TD>
-    <TD>0</TD>
-    <TD>nnnn</TD>
-    <TD>ABBC</TD>
-    <TD>0000</TD>
-    <TD>11</TD>
-    <TD>30</TD>
-    <TD>3</TD>
-    <TD>29</TD>
-    <TD>1</TD>
-    <TD>15</TD>
-    <TD>1</TD>
-    <TD>15</TD>
+  </TR>
+  <TR>
+    <TD>J212015.31-553727.5</TD>
+    <TD>320.0638209</TD>
+    <TD>-55.6243228</TD>
+    <TD>13.699</TD>
+    <TD>0.024</TD>
+    <TD>45.3</TD>
+    <TD>1.034</TD>
+    <TD>12.676</TD>
+    <TD>0.024</TD>
+    <TD>44.4</TD>
+    <TD>1.058</TD>
+    <TD>9.503</TD>
+    <TD>0.042</TD>
+    <TD>25.9</TD>
+    <TD>0.8078</TD>
+    <TD>6.894</TD>
+    <TD>0.093</TD>
+    <TD>11.7</TD>
+    <TD>0.9907</TD>
   </TR>
   <TR>
     <TD>J211704.84-554145.2</TD>
     <TD>319.2701805</TD>
     <TD>-55.6958978</TD>
-    <TD>0.2284</TD>
-    <TD>0.2395</TD>
-    <TD>-0.0709</TD>
     <TD>16.946</TD>
     <TD>0.095</TD>
     <TD>11.4</TD>
@@ -2015,37 +2368,32 @@ ___ number of profile-fit flux measurements for source, band 4">
     <TD>NaN</TD>
     <TD>1.3</TD>
     <TD>1.141</TD>
-    <TD>1</TD>
-    <TD>0</TD>
-    <TD>0.0</TD>
-    <TD>0.0</TD>
-    <TD>0.0</TD>
-    <TD>0.0</TD>
-    <TD>-213</TD>
-    <TD>954</TD>
-    <TD>449</TD>
-    <TD>1006</TD>
-    <TD>0000</TD>
-    <TD>0</TD>
-    <TD>nnnn</TD>
-    <TD>AACU</TD>
-    <TD>0000</TD>
-    <TD>8</TD>
-    <TD>29</TD>
-    <TD>5</TD>
-    <TD>29</TD>
-    <TD>0</TD>
-    <TD>15</TD>
-    <TD>0</TD>
-    <TD>15</TD>
+  </TR>
+  <TR>
+    <TD>J212004.86-553448.6</TD>
+    <TD>320.020281</TD>
+    <TD>-55.580172</TD>
+    <TD>16.541</TD>
+    <TD>0.077</TD>
+    <TD>14.1</TD>
+    <TD>0.908</TD>
+    <TD>15.741</TD>
+    <TD>0.127</TD>
+    <TD>8.5</TD>
+    <TD>1.068</TD>
+    <TD>11.962</TD>
+    <TD>0.265</TD>
+    <TD>4.1</TD>
+    <TD>0.9793</TD>
+    <TD>8.523</TD>
+    <TD>NaN</TD>
+    <TD>1.1</TD>
+    <TD>0.9831</TD>
   </TR>
   <TR>
     <TD>J211845.82-553424.8</TD>
     <TD>319.6909234</TD>
     <TD>-55.5735613</TD>
-    <TD>0.2141</TD>
-    <TD>0.2218</TD>
-    <TD>-0.0653</TD>
     <TD>16.703</TD>
     <TD>0.081</TD>
     <TD>13.5</TD>
@@ -2062,37 +2410,53 @@ ___ number of profile-fit flux measurements for source, band 4">
     <TD>NaN</TD>
     <TD>0.3</TD>
     <TD>1.108</TD>
-    <TD>1</TD>
-    <TD>0</TD>
+  </TR>
+  <TR>
+    <TD>J211807.50-560815.7</TD>
+    <TD>319.53127</TD>
+    <TD>-56.1377057</TD>
+    <TD>16.293</TD>
+    <TD>0.064</TD>
+    <TD>16.9</TD>
+    <TD>1.249</TD>
+    <TD>15.458</TD>
+    <TD>0.097</TD>
+    <TD>11.2</TD>
+    <TD>1.034</TD>
+    <TD>12.497</TD>
+    <TD>0.424</TD>
+    <TD>2.6</TD>
+    <TD>0.9474</TD>
+    <TD>9.128</TD>
+    <TD>NaN</TD>
     <TD>0.0</TD>
-    <TD>0.0</TD>
-    <TD>0.0</TD>
-    <TD>0.0</TD>
-    <TD>206</TD>
-    <TD>886</TD>
-    <TD>421</TD>
-    <TD>924</TD>
-    <TD>0000</TD>
-    <TD>0</TD>
-    <TD>0nnn</TD>
-    <TD>ABBU</TD>
-    <TD>0000</TD>
-    <TD>13</TD>
-    <TD>30</TD>
-    <TD>1</TD>
-    <TD>30</TD>
-    <TD>0</TD>
-    <TD>15</TD>
-    <TD>1</TD>
-    <TD>15</TD>
+    <TD>0.9761</TD>
+  </TR>
+  <TR>
+    <TD>J211613.44-553711.3</TD>
+    <TD>319.0560403</TD>
+    <TD>-55.6198318</TD>
+    <TD>17.549</TD>
+    <TD>0.165</TD>
+    <TD>6.6</TD>
+    <TD>0.8753</TD>
+    <TD>16.637</TD>
+    <TD>0.25</TD>
+    <TD>4.3</TD>
+    <TD>0.8919</TD>
+    <TD>12.545</TD>
+    <TD>0.406</TD>
+    <TD>2.7</TD>
+    <TD>0.9463</TD>
+    <TD>9.078</TD>
+    <TD>NaN</TD>
+    <TD>-0.2</TD>
+    <TD>0.8151</TD>
   </TR>
   <TR>
     <TD>J211923.82-560053.6</TD>
     <TD>319.8492836</TD>
     <TD>-56.0149079</TD>
-    <TD>0.1699</TD>
-    <TD>0.1772</TD>
-    <TD>-0.0486</TD>
     <TD>16.493</TD>
     <TD>0.07</TD>
     <TD>15.4</TD>
@@ -2109,37 +2473,11 @@ ___ number of profile-fit flux measurements for source, band 4">
     <TD>NaN</TD>
     <TD>1.5</TD>
     <TD>0.8125</TD>
-    <TD>1</TD>
-    <TD>0</TD>
-    <TD>0.0</TD>
-    <TD>0.0</TD>
-    <TD>0.0</TD>
-    <TD>0.0</TD>
-    <TD>-632</TD>
-    <TD>670</TD>
-    <TD>-273</TD>
-    <TD>699</TD>
-    <TD>0000</TD>
-    <TD>0</TD>
-    <TD>01nn</TD>
-    <TD>AABU</TD>
-    <TD>0000</TD>
-    <TD>20</TD>
-    <TD>30</TD>
-    <TD>12</TD>
-    <TD>30</TD>
-    <TD>1</TD>
-    <TD>16</TD>
-    <TD>0</TD>
-    <TD>16</TD>
   </TR>
   <TR>
     <TD>J211932.99-552343.9</TD>
     <TD>319.8874781</TD>
     <TD>-55.395532</TD>
-    <TD>0.1298</TD>
-    <TD>0.1346</TD>
-    <TD>-0.0382</TD>
     <TD>16.07</TD>
     <TD>0.053</TD>
     <TD>20.6</TD>
@@ -2156,37 +2494,11 @@ ___ number of profile-fit flux measurements for source, band 4">
     <TD>NaN</TD>
     <TD>1.4</TD>
     <TD>1.042</TD>
-    <TD>1</TD>
-    <TD>0</TD>
-    <TD>0.0</TD>
-    <TD>0.0</TD>
-    <TD>0.0</TD>
-    <TD>0.003</TD>
-    <TD>883</TD>
-    <TD>490</TD>
-    <TD>-243</TD>
-    <TD>510</TD>
-    <TD>0000</TD>
-    <TD>0</TD>
-    <TD>00nn</TD>
-    <TD>AABU</TD>
-    <TD>0000</TD>
-    <TD>29</TD>
-    <TD>30</TD>
-    <TD>16</TD>
-    <TD>30</TD>
-    <TD>1</TD>
-    <TD>15</TD>
-    <TD>0</TD>
-    <TD>15</TD>
   </TR>
   <TR>
     <TD>J211751.71-552205.9</TD>
     <TD>319.4654836</TD>
     <TD>-55.3683198</TD>
-    <TD>0.175</TD>
-    <TD>0.1843</TD>
-    <TD>-0.0538</TD>
     <TD>16.523</TD>
     <TD>0.069</TD>
     <TD>15.6</TD>
@@ -2203,37 +2515,11 @@ ___ number of profile-fit flux measurements for source, band 4">
     <TD>NaN</TD>
     <TD>0.9</TD>
     <TD>1.067</TD>
-    <TD>1</TD>
-    <TD>0</TD>
-    <TD>0.0</TD>
-    <TD>0.0</TD>
-    <TD>0.0</TD>
-    <TD>0.0</TD>
-    <TD>-1253</TD>
-    <TD>680</TD>
-    <TD>873</TD>
-    <TD>720</TD>
-    <TD>0000</TD>
-    <TD>0</TD>
-    <TD>0nnn</TD>
-    <TD>AACU</TD>
-    <TD>0000</TD>
-    <TD>18</TD>
-    <TD>32</TD>
-    <TD>6</TD>
-    <TD>32</TD>
-    <TD>0</TD>
-    <TD>17</TD>
-    <TD>0</TD>
-    <TD>17</TD>
   </TR>
   <TR>
     <TD>J211944.58-554525.8</TD>
     <TD>319.935781</TD>
     <TD>-55.7571776</TD>
-    <TD>0.1123</TD>
-    <TD>0.116</TD>
-    <TD>-0.0336</TD>
     <TD>15.802</TD>
     <TD>0.049</TD>
     <TD>22.3</TD>
@@ -2250,37 +2536,32 @@ ___ number of profile-fit flux measurements for source, band 4">
     <TD>0.474</TD>
     <TD>2.3</TD>
     <TD>0.8604</TD>
-    <TD>1</TD>
-    <TD>0</TD>
-    <TD>0.0</TD>
-    <TD>0.0</TD>
-    <TD>0.0</TD>
-    <TD>0.0</TD>
-    <TD>-244</TD>
-    <TD>421</TD>
-    <TD>300</TD>
-    <TD>432</TD>
-    <TD>Dd00</TD>
-    <TD>0</TD>
-    <TD>n0nn</TD>
-    <TD>AABC</TD>
-    <TD>0000</TD>
-    <TD>30</TD>
-    <TD>30</TD>
-    <TD>27</TD>
-    <TD>30</TD>
-    <TD>0</TD>
-    <TD>15</TD>
-    <TD>0</TD>
-    <TD>15</TD>
+  </TR>
+  <TR>
+    <TD>J211921.20-560935.7</TD>
+    <TD>319.8383436</TD>
+    <TD>-56.1599408</TD>
+    <TD>14.748</TD>
+    <TD>0.032</TD>
+    <TD>34.2</TD>
+    <TD>0.9246</TD>
+    <TD>13.813</TD>
+    <TD>0.037</TD>
+    <TD>29.6</TD>
+    <TD>1.066</TD>
+    <TD>11.366</TD>
+    <TD>0.17</TD>
+    <TD>6.4</TD>
+    <TD>0.9765</TD>
+    <TD>8.761</TD>
+    <TD>0.453</TD>
+    <TD>2.4</TD>
+    <TD>1.095</TD>
   </TR>
   <TR>
     <TD>J211620.63-552845.7</TD>
     <TD>319.0859752</TD>
     <TD>-55.4793655</TD>
-    <TD>0.1461</TD>
-    <TD>0.1533</TD>
-    <TD>-0.0458</TD>
     <TD>16.239</TD>
     <TD>0.061</TD>
     <TD>17.8</TD>
@@ -2297,37 +2578,11 @@ ___ number of profile-fit flux measurements for source, band 4">
     <TD>0.42</TD>
     <TD>2.6</TD>
     <TD>1.079</TD>
-    <TD>1</TD>
-    <TD>0</TD>
-    <TD>0.0</TD>
-    <TD>0.0</TD>
-    <TD>0.0</TD>
-    <TD>0.0</TD>
-    <TD>-87</TD>
-    <TD>574</TD>
-    <TD>261</TD>
-    <TD>606</TD>
-    <TD>hh00</TD>
-    <TD>0</TD>
-    <TD>00nn</TD>
-    <TD>AABC</TD>
-    <TD>0000</TD>
-    <TD>24</TD>
-    <TD>31</TD>
-    <TD>18</TD>
-    <TD>31</TD>
-    <TD>1</TD>
-    <TD>16</TD>
-    <TD>0</TD>
-    <TD>16</TD>
   </TR>
   <TR>
     <TD>J211525.10-553245.4</TD>
     <TD>318.8545856</TD>
     <TD>-55.5459623</TD>
-    <TD>0.3494</TD>
-    <TD>0.3687</TD>
-    <TD>-0.1045</TD>
     <TD>17.376</TD>
     <TD>0.128</TD>
     <TD>8.5</TD>
@@ -2344,37 +2599,11 @@ ___ number of profile-fit flux measurements for source, band 4">
     <TD>NaN</TD>
     <TD>0.7</TD>
     <TD>0.8637</TD>
-    <TD>1</TD>
-    <TD>0</TD>
-    <TD>0.0</TD>
-    <TD>0.0</TD>
-    <TD>0.0</TD>
-    <TD>0.0</TD>
-    <TD>-850</TD>
-    <TD>1593</TD>
-    <TD>-396</TD>
-    <TD>1681</TD>
-    <TD>0000</TD>
-    <TD>0</TD>
-    <TD>nnnn</TD>
-    <TD>BBCU</TD>
-    <TD>0000</TD>
-    <TD>4</TD>
-    <TD>30</TD>
-    <TD>0</TD>
-    <TD>30</TD>
-    <TD>1</TD>
-    <TD>16</TD>
-    <TD>0</TD>
-    <TD>16</TD>
   </TR>
   <TR>
     <TD>J211656.36-553323.7</TD>
     <TD>319.2348576</TD>
     <TD>-55.5566032</TD>
-    <TD>0.3196</TD>
-    <TD>0.3348</TD>
-    <TD>-0.0952</TD>
     <TD>17.265</TD>
     <TD>0.128</TD>
     <TD>8.5</TD>
@@ -2391,37 +2620,11 @@ ___ number of profile-fit flux measurements for source, band 4">
     <TD>NaN</TD>
     <TD>-0.7</TD>
     <TD>0.9005</TD>
-    <TD>1</TD>
-    <TD>0</TD>
-    <TD>0.0</TD>
-    <TD>0.0</TD>
-    <TD>0.0</TD>
-    <TD>0.0</TD>
-    <TD>-3495</TD>
-    <TD>1355</TD>
-    <TD>-454</TD>
-    <TD>1426</TD>
-    <TD>0000</TD>
-    <TD>0</TD>
-    <TD>nnnn</TD>
-    <TD>BBCU</TD>
-    <TD>0000</TD>
-    <TD>5</TD>
-    <TD>29</TD>
-    <TD>1</TD>
-    <TD>29</TD>
-    <TD>0</TD>
-    <TD>14</TD>
-    <TD>0</TD>
-    <TD>14</TD>
   </TR>
   <TR>
     <TD>J211658.99-554439.3</TD>
     <TD>319.2458081</TD>
     <TD>-55.7442558</TD>
-    <TD>0.1499</TD>
-    <TD>0.1561</TD>
-    <TD>-0.0449</TD>
     <TD>16.487</TD>
     <TD>0.067</TD>
     <TD>16.1</TD>
@@ -2438,37 +2641,11 @@ ___ number of profile-fit flux measurements for source, band 4">
     <TD>NaN</TD>
     <TD>1.7</TD>
     <TD>0.925</TD>
-    <TD>1</TD>
-    <TD>0</TD>
-    <TD>0.0</TD>
-    <TD>0.0</TD>
-    <TD>0.0</TD>
-    <TD>0.0</TD>
-    <TD>-453</TD>
-    <TD>613</TD>
-    <TD>-265</TD>
-    <TD>643</TD>
-    <TD>0000</TD>
-    <TD>0</TD>
-    <TD>11nn</TD>
-    <TD>AABU</TD>
-    <TD>0000</TD>
-    <TD>18</TD>
-    <TD>30</TD>
-    <TD>20</TD>
-    <TD>31</TD>
-    <TD>1</TD>
-    <TD>14</TD>
-    <TD>0</TD>
-    <TD>15</TD>
   </TR>
   <TR>
     <TD>J211916.23-551824.5</TD>
     <TD>319.8176637</TD>
     <TD>-55.3068317</TD>
-    <TD>0.0966</TD>
-    <TD>0.0996</TD>
-    <TD>-0.0273</TD>
     <TD>15.702</TD>
     <TD>0.044</TD>
     <TD>24.6</TD>
@@ -2485,37 +2662,11 @@ ___ number of profile-fit flux measurements for source, band 4">
     <TD>0.206</TD>
     <TD>5.3</TD>
     <TD>1.021</TD>
-    <TD>1</TD>
-    <TD>0</TD>
-    <TD>0.0</TD>
-    <TD>0.0</TD>
-    <TD>0.0</TD>
-    <TD>0.0</TD>
-    <TD>281</TD>
-    <TD>378</TD>
-    <TD>-114</TD>
-    <TD>386</TD>
-    <TD>0000</TD>
-    <TD>0</TD>
-    <TD>000n</TD>
-    <TD>AAAB</TD>
-    <TD>0000</TD>
-    <TD>30</TD>
-    <TD>30</TD>
-    <TD>30</TD>
-    <TD>30</TD>
-    <TD>9</TD>
-    <TD>15</TD>
-    <TD>2</TD>
-    <TD>15</TD>
   </TR>
   <TR>
     <TD>J211844.27-554014.0</TD>
     <TD>319.6844792</TD>
     <TD>-55.6705754</TD>
-    <TD>0.5448</TD>
-    <TD>0.5791</TD>
-    <TD>-0.1805</TD>
     <TD>18.029</TD>
     <TD>0.276</TD>
     <TD>3.9</TD>
@@ -2532,37 +2683,32 @@ ___ number of profile-fit flux measurements for source, band 4">
     <TD>NaN</TD>
     <TD>0.2</TD>
     <TD>1.027</TD>
-    <TD>1</TD>
-    <TD>0</TD>
-    <TD>0.0</TD>
-    <TD>0.002</TD>
-    <TD>0.0</TD>
-    <TD>0.0</TD>
-    <TD>-2479</TD>
-    <TD>2673</TD>
-    <TD>382</TD>
-    <TD>2856</TD>
-    <TD>0000</TD>
-    <TD>0</TD>
-    <TD>nnnn</TD>
-    <TD>BBCU</TD>
-    <TD>0000</TD>
-    <TD>1</TD>
-    <TD>28</TD>
-    <TD>1</TD>
-    <TD>28</TD>
-    <TD>0</TD>
-    <TD>14</TD>
-    <TD>0</TD>
-    <TD>14</TD>
+  </TR>
+  <TR>
+    <TD>J212007.48-561044.4</TD>
+    <TD>320.0311771</TD>
+    <TD>-56.1790082</TD>
+    <TD>16.595</TD>
+    <TD>0.078</TD>
+    <TD>14.0</TD>
+    <TD>0.9674</TD>
+    <TD>15.661</TD>
+    <TD>0.11</TD>
+    <TD>9.9</TD>
+    <TD>0.9037</TD>
+    <TD>11.562</TD>
+    <TD>0.165</TD>
+    <TD>6.6</TD>
+    <TD>0.9832</TD>
+    <TD>8.576</TD>
+    <TD>NaN</TD>
+    <TD>1.4</TD>
+    <TD>0.8778</TD>
   </TR>
   <TR>
     <TD>J211446.78-560228.8</TD>
     <TD>318.6949527</TD>
     <TD>-56.0413564</TD>
-    <TD>0.47</TD>
-    <TD>0.4913</TD>
-    <TD>-0.1484</TD>
     <TD>17.785</TD>
     <TD>0.193</TD>
     <TD>5.6</TD>
@@ -2579,37 +2725,11 @@ ___ number of profile-fit flux measurements for source, band 4">
     <TD>NaN</TD>
     <TD>-0.6</TD>
     <TD>1.006</TD>
-    <TD>1</TD>
-    <TD>0</TD>
-    <TD>0.001</TD>
-    <TD>0.0</TD>
-    <TD>0.0</TD>
-    <TD>0.0</TD>
-    <TD>-3083</TD>
-    <TD>2175</TD>
-    <TD>560</TD>
-    <TD>2287</TD>
-    <TD>0000</TD>
-    <TD>0</TD>
-    <TD>nnnn</TD>
-    <TD>BBCU</TD>
-    <TD>0000</TD>
-    <TD>1</TD>
-    <TD>31</TD>
-    <TD>2</TD>
-    <TD>31</TD>
-    <TD>0</TD>
-    <TD>16</TD>
-    <TD>0</TD>
-    <TD>16</TD>
   </TR>
   <TR>
     <TD>J211559.82-554103.9</TD>
     <TD>318.9992741</TD>
     <TD>-55.6844347</TD>
-    <TD>0.1175</TD>
-    <TD>0.1215</TD>
-    <TD>-0.0351</TD>
     <TD>15.856</TD>
     <TD>0.049</TD>
     <TD>22.0</TD>
@@ -2626,37 +2746,11 @@ ___ number of profile-fit flux measurements for source, band 4">
     <TD>0.524</TD>
     <TD>2.1</TD>
     <TD>0.9971</TD>
-    <TD>1</TD>
-    <TD>0</TD>
-    <TD>0.0</TD>
-    <TD>0.0</TD>
-    <TD>0.0</TD>
-    <TD>0.0</TD>
-    <TD>-440</TD>
-    <TD>429</TD>
-    <TD>-63</TD>
-    <TD>446</TD>
-    <TD>0000</TD>
-    <TD>0</TD>
-    <TD>00nn</TD>
-    <TD>AABC</TD>
-    <TD>0000</TD>
-    <TD>31</TD>
-    <TD>31</TD>
-    <TD>22</TD>
-    <TD>31</TD>
-    <TD>0</TD>
-    <TD>16</TD>
-    <TD>0</TD>
-    <TD>16</TD>
   </TR>
   <TR>
     <TD>J211832.82-554412.1</TD>
     <TD>319.636757</TD>
     <TD>-55.7367143</TD>
-    <TD>0.1926</TD>
-    <TD>0.1953</TD>
-    <TD>-0.0577</TD>
     <TD>16.564</TD>
     <TD>0.072</TD>
     <TD>15.1</TD>
@@ -2673,37 +2767,11 @@ ___ number of profile-fit flux measurements for source, band 4">
     <TD>NaN</TD>
     <TD>-0.5</TD>
     <TD>1.039</TD>
-    <TD>1</TD>
-    <TD>0</TD>
-    <TD>0.0</TD>
-    <TD>0.0</TD>
-    <TD>0.0</TD>
-    <TD>0.0</TD>
-    <TD>-1002</TD>
-    <TD>797</TD>
-    <TD>307</TD>
-    <TD>808</TD>
-    <TD>0000</TD>
-    <TD>0</TD>
-    <TD>1nnn</TD>
-    <TD>ABBU</TD>
-    <TD>0000</TD>
-    <TD>19</TD>
-    <TD>28</TD>
-    <TD>3</TD>
-    <TD>28</TD>
-    <TD>2</TD>
-    <TD>14</TD>
-    <TD>0</TD>
-    <TD>14</TD>
   </TR>
   <TR>
     <TD>J211701.56-554635.6</TD>
     <TD>319.2565285</TD>
     <TD>-55.7765796</TD>
-    <TD>0.098</TD>
-    <TD>0.1021</TD>
-    <TD>-0.0258</TD>
     <TD>15.69</TD>
     <TD>0.046</TD>
     <TD>23.5</TD>
@@ -2720,37 +2788,11 @@ ___ number of profile-fit flux measurements for source, band 4">
     <TD>NaN</TD>
     <TD>1.8</TD>
     <TD>1.097</TD>
-    <TD>1</TD>
-    <TD>0</TD>
-    <TD>0.0</TD>
-    <TD>0.0</TD>
-    <TD>0.0</TD>
-    <TD>0.001</TD>
-    <TD>45</TD>
-    <TD>348</TD>
-    <TD>-412</TD>
-    <TD>363</TD>
-    <TD>0000</TD>
-    <TD>0</TD>
-    <TD>00nn</TD>
-    <TD>AABU</TD>
-    <TD>0000</TD>
-    <TD>29</TD>
-    <TD>29</TD>
-    <TD>29</TD>
-    <TD>29</TD>
-    <TD>2</TD>
-    <TD>15</TD>
-    <TD>0</TD>
-    <TD>15</TD>
   </TR>
   <TR>
     <TD>J211736.13-554336.3</TD>
     <TD>319.4005726</TD>
     <TD>-55.7267765</TD>
-    <TD>0.2011</TD>
-    <TD>0.2096</TD>
-    <TD>-0.0646</TD>
     <TD>16.818</TD>
     <TD>0.085</TD>
     <TD>12.8</TD>
@@ -2767,37 +2809,32 @@ ___ number of profile-fit flux measurements for source, band 4">
     <TD>0.473</TD>
     <TD>2.3</TD>
     <TD>1.013</TD>
-    <TD>1</TD>
-    <TD>0</TD>
-    <TD>0.0</TD>
-    <TD>0.0</TD>
-    <TD>0.0</TD>
-    <TD>0.004</TD>
-    <TD>-58</TD>
-    <TD>830</TD>
-    <TD>242</TD>
-    <TD>868</TD>
-    <TD>0000</TD>
-    <TD>0</TD>
-    <TD>01nn</TD>
-    <TD>AABC</TD>
-    <TD>0000</TD>
-    <TD>15</TD>
-    <TD>30</TD>
-    <TD>12</TD>
-    <TD>30</TD>
-    <TD>1</TD>
-    <TD>16</TD>
-    <TD>0</TD>
-    <TD>16</TD>
+  </TR>
+  <TR>
+    <TD>J211641.78-552006.5</TD>
+    <TD>319.1740944</TD>
+    <TD>-55.3351644</TD>
+    <TD>17.747</TD>
+    <TD>0.195</TD>
+    <TD>5.6</TD>
+    <TD>1.013</TD>
+    <TD>16.391</TD>
+    <TD>0.202</TD>
+    <TD>5.4</TD>
+    <TD>1.024</TD>
+    <TD>12.144</TD>
+    <TD>0.343</TD>
+    <TD>3.2</TD>
+    <TD>0.9334</TD>
+    <TD>8.868</TD>
+    <TD>NaN</TD>
+    <TD>0.5</TD>
+    <TD>1.006</TD>
   </TR>
   <TR>
     <TD>J211802.61-552153.3</TD>
     <TD>319.5108773</TD>
     <TD>-55.3648167</TD>
-    <TD>0.2055</TD>
-    <TD>0.2152</TD>
-    <TD>-0.0573</TD>
     <TD>16.818</TD>
     <TD>0.088</TD>
     <TD>12.4</TD>
@@ -2814,37 +2851,32 @@ ___ number of profile-fit flux measurements for source, band 4">
     <TD>NaN</TD>
     <TD>1.4</TD>
     <TD>0.9392</TD>
-    <TD>1</TD>
-    <TD>0</TD>
-    <TD>0.001</TD>
-    <TD>0.0</TD>
-    <TD>0.0</TD>
-    <TD>0.0</TD>
-    <TD>-753</TD>
-    <TD>835</TD>
-    <TD>1686</TD>
-    <TD>877</TD>
-    <TD>0000</TD>
-    <TD>0</TD>
-    <TD>nnnn</TD>
-    <TD>AABU</TD>
-    <TD>0000</TD>
-    <TD>12</TD>
-    <TD>31</TD>
-    <TD>7</TD>
-    <TD>31</TD>
-    <TD>1</TD>
-    <TD>15</TD>
-    <TD>0</TD>
-    <TD>15</TD>
+  </TR>
+  <TR>
+    <TD>J212108.04-554100.1</TD>
+    <TD>320.2835412</TD>
+    <TD>-55.6833666</TD>
+    <TD>16.508</TD>
+    <TD>0.072</TD>
+    <TD>15.2</TD>
+    <TD>1.133</TD>
+    <TD>15.683</TD>
+    <TD>0.108</TD>
+    <TD>10.1</TD>
+    <TD>0.8198</TD>
+    <TD>12.154</TD>
+    <TD>0.279</TD>
+    <TD>3.9</TD>
+    <TD>0.9246</TD>
+    <TD>9.167</TD>
+    <TD>NaN</TD>
+    <TD>-1.3</TD>
+    <TD>1.006</TD>
   </TR>
   <TR>
     <TD>J211730.92-555137.6</TD>
     <TD>319.378867</TD>
     <TD>-55.8604597</TD>
-    <TD>0.1106</TD>
-    <TD>0.1118</TD>
-    <TD>-0.0312</TD>
     <TD>15.78</TD>
     <TD>0.045</TD>
     <TD>24.3</TD>
@@ -2861,37 +2893,11 @@ ___ number of profile-fit flux measurements for source, band 4">
     <TD>NaN</TD>
     <TD>0.5</TD>
     <TD>0.9393</TD>
-    <TD>1</TD>
-    <TD>0</TD>
-    <TD>0.0</TD>
-    <TD>0.0</TD>
-    <TD>0.0</TD>
-    <TD>0.0</TD>
-    <TD>114</TD>
-    <TD>394</TD>
-    <TD>-484</TD>
-    <TD>400</TD>
-    <TD>0000</TD>
-    <TD>0</TD>
-    <TD>00nn</TD>
-    <TD>AACU</TD>
-    <TD>0000</TD>
-    <TD>27</TD>
-    <TD>28</TD>
-    <TD>24</TD>
-    <TD>28</TD>
-    <TD>0</TD>
-    <TD>14</TD>
-    <TD>0</TD>
-    <TD>14</TD>
   </TR>
   <TR>
     <TD>J211701.54-555930.1</TD>
     <TD>319.2564401</TD>
     <TD>-55.9917023</TD>
-    <TD>0.3253</TD>
-    <TD>0.3407</TD>
-    <TD>-0.1089</TD>
     <TD>17.343</TD>
     <TD>0.134</TD>
     <TD>8.1</TD>
@@ -2908,37 +2914,74 @@ ___ number of profile-fit flux measurements for source, band 4">
     <TD>NaN</TD>
     <TD>1.9</TD>
     <TD>0.9678</TD>
-    <TD>1</TD>
-    <TD>0</TD>
-    <TD>0.0</TD>
-    <TD>0.0</TD>
-    <TD>0.0</TD>
-    <TD>0.0</TD>
-    <TD>343</TD>
-    <TD>1408</TD>
-    <TD>397</TD>
-    <TD>1474</TD>
-    <TD>0000</TD>
-    <TD>0</TD>
-    <TD>nnnn</TD>
-    <TD>BBCU</TD>
-    <TD>0000</TD>
-    <TD>5</TD>
-    <TD>28</TD>
-    <TD>0</TD>
-    <TD>28</TD>
-    <TD>0</TD>
-    <TD>14</TD>
-    <TD>0</TD>
-    <TD>14</TD>
+  </TR>
+  <TR>
+    <TD>J211803.02-561333.9</TD>
+    <TD>319.5126162</TD>
+    <TD>-56.2261022</TD>
+    <TD>17.257</TD>
+    <TD>0.131</TD>
+    <TD>8.3</TD>
+    <TD>0.9584</TD>
+    <TD>16.419</TD>
+    <TD>0.207</TD>
+    <TD>5.3</TD>
+    <TD>0.8659</TD>
+    <TD>12.695</TD>
+    <TD>0.465</TD>
+    <TD>2.3</TD>
+    <TD>0.93</TD>
+    <TD>9.132</TD>
+    <TD>NaN</TD>
+    <TD>-0.9</TD>
+    <TD>1.041</TD>
+  </TR>
+  <TR>
+    <TD>J212028.09-552927.0</TD>
+    <TD>320.1170718</TD>
+    <TD>-55.4908532</TD>
+    <TD>15.067</TD>
+    <TD>0.032</TD>
+    <TD>33.5</TD>
+    <TD>1.238</TD>
+    <TD>13.185</TD>
+    <TD>0.028</TD>
+    <TD>38.6</TD>
+    <TD>0.9679</TD>
+    <TD>9.795</TD>
+    <TD>0.046</TD>
+    <TD>23.9</TD>
+    <TD>0.9475</TD>
+    <TD>7.626</TD>
+    <TD>0.175</TD>
+    <TD>6.2</TD>
+    <TD>0.9957</TD>
+  </TR>
+  <TR>
+    <TD>J211445.17-552941.1</TD>
+    <TD>318.6882436</TD>
+    <TD>-55.4947592</TD>
+    <TD>17.576</TD>
+    <TD>0.163</TD>
+    <TD>6.6</TD>
+    <TD>1.054</TD>
+    <TD>16.71</TD>
+    <TD>0.297</TD>
+    <TD>3.7</TD>
+    <TD>1.067</TD>
+    <TD>12.494</TD>
+    <TD>0.401</TD>
+    <TD>2.7</TD>
+    <TD>0.8225</TD>
+    <TD>9.123</TD>
+    <TD>NaN</TD>
+    <TD>-0.8</TD>
+    <TD>0.9411</TD>
   </TR>
   <TR>
     <TD>J211904.27-555114.3</TD>
     <TD>319.7678193</TD>
     <TD>-55.8539864</TD>
-    <TD>0.1259</TD>
-    <TD>0.1296</TD>
-    <TD>-0.0365</TD>
     <TD>16.123</TD>
     <TD>0.053</TD>
     <TD>20.4</TD>
@@ -2955,37 +2998,32 @@ ___ number of profile-fit flux measurements for source, band 4">
     <TD>NaN</TD>
     <TD>1.7</TD>
     <TD>0.7653</TD>
-    <TD>1</TD>
-    <TD>0</TD>
-    <TD>0.0</TD>
-    <TD>0.0</TD>
-    <TD>0.0</TD>
-    <TD>0.0</TD>
-    <TD>30</TD>
-    <TD>488</TD>
-    <TD>-135</TD>
-    <TD>503</TD>
-    <TD>0000</TD>
-    <TD>0</TD>
-    <TD>00nn</TD>
-    <TD>AACU</TD>
-    <TD>0000</TD>
-    <TD>26</TD>
-    <TD>31</TD>
-    <TD>22</TD>
-    <TD>31</TD>
-    <TD>0</TD>
-    <TD>16</TD>
-    <TD>1</TD>
-    <TD>16</TD>
+  </TR>
+  <TR>
+    <TD>J212054.35-560612.7</TD>
+    <TD>320.2264828</TD>
+    <TD>-56.103537</TD>
+    <TD>17.016</TD>
+    <TD>0.105</TD>
+    <TD>10.4</TD>
+    <TD>1.159</TD>
+    <TD>16.205</TD>
+    <TD>0.182</TD>
+    <TD>6.0</TD>
+    <TD>1.002</TD>
+    <TD>12.675</TD>
+    <TD>0.53</TD>
+    <TD>2.1</TD>
+    <TD>0.9494</TD>
+    <TD>9.085</TD>
+    <TD>0.52</TD>
+    <TD>2.1</TD>
+    <TD>0.9247</TD>
   </TR>
   <TR>
     <TD>J211744.60-552710.0</TD>
     <TD>319.4358703</TD>
     <TD>-55.4527943</TD>
-    <TD>0.3818</TD>
-    <TD>0.4046</TD>
-    <TD>-0.1212</TD>
     <TD>17.622</TD>
     <TD>0.175</TD>
     <TD>6.2</TD>
@@ -3002,37 +3040,74 @@ ___ number of profile-fit flux measurements for source, band 4">
     <TD>NaN</TD>
     <TD>-1.4</TD>
     <TD>0.8307</TD>
-    <TD>1</TD>
-    <TD>0</TD>
-    <TD>0.0</TD>
-    <TD>0.0</TD>
-    <TD>0.0</TD>
-    <TD>0.0</TD>
-    <TD>-1100</TD>
-    <TD>1680</TD>
-    <TD>360</TD>
-    <TD>1780</TD>
-    <TD>0000</TD>
-    <TD>0</TD>
-    <TD>nnnn</TD>
-    <TD>BBCU</TD>
-    <TD>0000</TD>
-    <TD>3</TD>
-    <TD>29</TD>
-    <TD>3</TD>
-    <TD>29</TD>
-    <TD>0</TD>
-    <TD>15</TD>
-    <TD>0</TD>
-    <TD>15</TD>
+  </TR>
+  <TR>
+    <TD>J211717.80-555535.6</TD>
+    <TD>319.3242063</TD>
+    <TD>-55.9265595</TD>
+    <TD>17.485</TD>
+    <TD>0.151</TD>
+    <TD>7.2</TD>
+    <TD>0.8853</TD>
+    <TD>16.676</TD>
+    <TD>0.277</TD>
+    <TD>3.9</TD>
+    <TD>0.9878</TD>
+    <TD>12.201</TD>
+    <TD>0.337</TD>
+    <TD>3.2</TD>
+    <TD>0.9996</TD>
+    <TD>9.181</TD>
+    <TD>NaN</TD>
+    <TD>-0.8</TD>
+    <TD>0.9314</TD>
+  </TR>
+  <TR>
+    <TD>J212006.93-553115.3</TD>
+    <TD>320.0289088</TD>
+    <TD>-55.5209397</TD>
+    <TD>17.126</TD>
+    <TD>0.117</TD>
+    <TD>9.3</TD>
+    <TD>0.9026</TD>
+    <TD>16.263</TD>
+    <TD>0.219</TD>
+    <TD>4.9</TD>
+    <TD>0.8477</TD>
+    <TD>12.559</TD>
+    <TD>0.442</TD>
+    <TD>2.5</TD>
+    <TD>0.9604</TD>
+    <TD>8.462</TD>
+    <TD>NaN</TD>
+    <TD>1.5</TD>
+    <TD>0.9839</TD>
+  </TR>
+  <TR>
+    <TD>J211456.45-561150.2</TD>
+    <TD>318.7352177</TD>
+    <TD>-56.1972939</TD>
+    <TD>17.001</TD>
+    <TD>0.097</TD>
+    <TD>11.2</TD>
+    <TD>1.103</TD>
+    <TD>14.743</TD>
+    <TD>0.053</TD>
+    <TD>20.7</TD>
+    <TD>0.9608</TD>
+    <TD>10.055</TD>
+    <TD>0.058</TD>
+    <TD>18.6</TD>
+    <TD>0.9777</TD>
+    <TD>7.519</TD>
+    <TD>0.143</TD>
+    <TD>7.6</TD>
+    <TD>1.021</TD>
   </TR>
   <TR>
     <TD>J211649.79-552216.3</TD>
     <TD>319.2074747</TD>
     <TD>-55.3712051</TD>
-    <TD>0.1887</TD>
-    <TD>0.1998</TD>
-    <TD>-0.063</TD>
     <TD>16.604</TD>
     <TD>0.073</TD>
     <TD>14.9</TD>
@@ -3049,37 +3124,53 @@ ___ number of profile-fit flux measurements for source, band 4">
     <TD>NaN</TD>
     <TD>0.4</TD>
     <TD>0.9152</TD>
-    <TD>1</TD>
-    <TD>0</TD>
-    <TD>0.0</TD>
-    <TD>0.0</TD>
-    <TD>0.0</TD>
-    <TD>0.0</TD>
-    <TD>580</TD>
-    <TD>755</TD>
-    <TD>-10</TD>
-    <TD>804</TD>
-    <TD>0000</TD>
-    <TD>0</TD>
-    <TD>1nnn</TD>
-    <TD>ABCU</TD>
-    <TD>0000</TD>
-    <TD>17</TD>
-    <TD>32</TD>
-    <TD>6</TD>
-    <TD>32</TD>
-    <TD>0</TD>
-    <TD>16</TD>
-    <TD>0</TD>
-    <TD>16</TD>
+  </TR>
+  <TR>
+    <TD>J212056.77-554106.4</TD>
+    <TD>320.2365524</TD>
+    <TD>-55.6851318</TD>
+    <TD>17.02</TD>
+    <TD>0.101</TD>
+    <TD>10.7</TD>
+    <TD>0.9614</TD>
+    <TD>16.218</TD>
+    <TD>0.18</TD>
+    <TD>6.0</TD>
+    <TD>0.9736</TD>
+    <TD>12.679</TD>
+    <TD>0.477</TD>
+    <TD>2.3</TD>
+    <TD>1.045</TD>
+    <TD>8.54</TD>
+    <TD>NaN</TD>
+    <TD>1.9</TD>
+    <TD>1.117</TD>
+  </TR>
+  <TR>
+    <TD>J211526.48-555433.2</TD>
+    <TD>318.8603568</TD>
+    <TD>-55.9092344</TD>
+    <TD>17.649</TD>
+    <TD>0.166</TD>
+    <TD>6.5</TD>
+    <TD>1.037</TD>
+    <TD>16.778</TD>
+    <TD>0.287</TD>
+    <TD>3.8</TD>
+    <TD>0.9133</TD>
+    <TD>12.712</TD>
+    <TD>0.514</TD>
+    <TD>2.1</TD>
+    <TD>0.9746</TD>
+    <TD>9.179</TD>
+    <TD>NaN</TD>
+    <TD>-2.1</TD>
+    <TD>1.12</TD>
   </TR>
   <TR>
     <TD>J211719.62-552541.8</TD>
     <TD>319.3317858</TD>
     <TD>-55.4282782</TD>
-    <TD>0.0557</TD>
-    <TD>0.0558</TD>
-    <TD>-0.0098</TD>
     <TD>14.633</TD>
     <TD>0.031</TD>
     <TD>35.5</TD>
@@ -3096,37 +3187,32 @@ ___ number of profile-fit flux measurements for source, band 4">
     <TD>0.175</TD>
     <TD>6.2</TD>
     <TD>0.8608</TD>
-    <TD>1</TD>
-    <TD>0</TD>
-    <TD>0.0</TD>
-    <TD>0.0</TD>
-    <TD>0.0</TD>
-    <TD>0.0</TD>
-    <TD>-106</TD>
-    <TD>224</TD>
-    <TD>-293</TD>
-    <TD>221</TD>
-    <TD>0000</TD>
-    <TD>0</TD>
-    <TD>011n</TD>
-    <TD>AAAB</TD>
-    <TD>0000</TD>
-    <TD>33</TD>
-    <TD>33</TD>
-    <TD>33</TD>
-    <TD>33</TD>
-    <TD>16</TD>
-    <TD>17</TD>
-    <TD>1</TD>
-    <TD>17</TD>
+  </TR>
+  <TR>
+    <TD>J211822.34-561236.0</TD>
+    <TD>319.5931123</TD>
+    <TD>-56.2100083</TD>
+    <TD>17.721</TD>
+    <TD>0.187</TD>
+    <TD>5.8</TD>
+    <TD>1.035</TD>
+    <TD>16.33</TD>
+    <TD>0.182</TD>
+    <TD>6.0</TD>
+    <TD>0.9605</TD>
+    <TD>12.12</TD>
+    <TD>0.276</TD>
+    <TD>3.9</TD>
+    <TD>1.04</TD>
+    <TD>9.071</TD>
+    <TD>NaN</TD>
+    <TD>-0.6</TD>
+    <TD>0.8518</TD>
   </TR>
   <TR>
     <TD>J211618.57-553217.9</TD>
     <TD>319.0774109</TD>
     <TD>-55.5383158</TD>
-    <TD>0.1375</TD>
-    <TD>0.1437</TD>
-    <TD>-0.0409</TD>
     <TD>16.255</TD>
     <TD>0.063</TD>
     <TD>17.3</TD>
@@ -3143,37 +3229,179 @@ ___ number of profile-fit flux measurements for source, band 4">
     <TD>0.535</TD>
     <TD>2.0</TD>
     <TD>0.9808</TD>
-    <TD>1</TD>
-    <TD>0</TD>
-    <TD>0.0</TD>
-    <TD>0.0</TD>
-    <TD>0.0</TD>
-    <TD>0.0</TD>
-    <TD>-158</TD>
-    <TD>515</TD>
-    <TD>-352</TD>
-    <TD>542</TD>
-    <TD>0000</TD>
-    <TD>0</TD>
-    <TD>00nn</TD>
-    <TD>AABC</TD>
-    <TD>0000</TD>
-    <TD>23</TD>
-    <TD>29</TD>
-    <TD>26</TD>
-    <TD>29</TD>
-    <TD>1</TD>
-    <TD>15</TD>
-    <TD>0</TD>
-    <TD>15</TD>
+  </TR>
+  <TR>
+    <TD>J211719.58-555524.0</TD>
+    <TD>319.3316133</TD>
+    <TD>-55.9233423</TD>
+    <TD>16.72</TD>
+    <TD>0.082</TD>
+    <TD>13.2</TD>
+    <TD>1.022</TD>
+    <TD>15.646</TD>
+    <TD>0.116</TD>
+    <TD>9.4</TD>
+    <TD>0.8807</TD>
+    <TD>11.586</TD>
+    <TD>0.18</TD>
+    <TD>6.0</TD>
+    <TD>1.068</TD>
+    <TD>8.899</TD>
+    <TD>NaN</TD>
+    <TD>0.8</TD>
+    <TD>1.147</TD>
+  </TR>
+  <TR>
+    <TD>J211851.26-555857.9</TD>
+    <TD>319.7136118</TD>
+    <TD>-55.9827679</TD>
+    <TD>17.742</TD>
+    <TD>0.189</TD>
+    <TD>5.7</TD>
+    <TD>1.008</TD>
+    <TD>16.782</TD>
+    <TD>0.273</TD>
+    <TD>4.0</TD>
+    <TD>1.076</TD>
+    <TD>12.301</TD>
+    <TD>0.347</TD>
+    <TD>3.1</TD>
+    <TD>1.047</TD>
+    <TD>8.932</TD>
+    <TD>NaN</TD>
+    <TD>0.6</TD>
+    <TD>0.7695</TD>
+  </TR>
+  <TR>
+    <TD>J212044.53-555747.9</TD>
+    <TD>320.1855594</TD>
+    <TD>-55.9633278</TD>
+    <TD>16.106</TD>
+    <TD>0.054</TD>
+    <TD>20.0</TD>
+    <TD>0.9218</TD>
+    <TD>15.13</TD>
+    <TD>0.075</TD>
+    <TD>14.5</TD>
+    <TD>0.9713</TD>
+    <TD>11.16</TD>
+    <TD>0.13</TD>
+    <TD>8.4</TD>
+    <TD>0.8496</TD>
+    <TD>7.691</TD>
+    <TD>0.15</TD>
+    <TD>7.3</TD>
+    <TD>0.9643</TD>
+  </TR>
+  <TR>
+    <TD>J211749.84-560730.7</TD>
+    <TD>319.4576944</TD>
+    <TD>-56.1251969</TD>
+    <TD>15.619</TD>
+    <TD>0.041</TD>
+    <TD>26.4</TD>
+    <TD>1.222</TD>
+    <TD>14.449</TD>
+    <TD>0.046</TD>
+    <TD>23.5</TD>
+    <TD>0.9266</TD>
+    <TD>10.885</TD>
+    <TD>0.099</TD>
+    <TD>10.9</TD>
+    <TD>0.9871</TD>
+    <TD>8.479</TD>
+    <TD>0.288</TD>
+    <TD>3.8</TD>
+    <TD>0.9693</TD>
+  </TR>
+  <TR>
+    <TD>J212055.84-561420.2</TD>
+    <TD>320.2326821</TD>
+    <TD>-56.2389623</TD>
+    <TD>14.026</TD>
+    <TD>0.027</TD>
+    <TD>41.0</TD>
+    <TD>1.526</TD>
+    <TD>12.871</TD>
+    <TD>0.025</TD>
+    <TD>42.7</TD>
+    <TD>1.001</TD>
+    <TD>9.482</TD>
+    <TD>0.036</TD>
+    <TD>30.4</TD>
+    <TD>0.9725</TD>
+    <TD>6.853</TD>
+    <TD>0.09</TD>
+    <TD>12.1</TD>
+    <TD>1.016</TD>
+  </TR>
+  <TR>
+    <TD>J212012.30-554504.0</TD>
+    <TD>320.0512801</TD>
+    <TD>-55.7511252</TD>
+    <TD>16.058</TD>
+    <TD>0.063</TD>
+    <TD>17.2</TD>
+    <TD>1.125</TD>
+    <TD>14.895</TD>
+    <TD>0.073</TD>
+    <TD>14.8</TD>
+    <TD>1.125</TD>
+    <TD>11.393</TD>
+    <TD>0.192</TD>
+    <TD>5.6</TD>
+    <TD>0.8436</TD>
+    <TD>8.539</TD>
+    <TD>NaN</TD>
+    <TD>1.8</TD>
+    <TD>0.9704</TD>
+  </TR>
+  <TR>
+    <TD>J211736.25-555947.7</TD>
+    <TD>319.4010678</TD>
+    <TD>-55.9965908</TD>
+    <TD>17.516</TD>
+    <TD>0.159</TD>
+    <TD>6.8</TD>
+    <TD>0.9926</TD>
+    <TD>16.693</TD>
+    <TD>0.287</TD>
+    <TD>3.8</TD>
+    <TD>0.9112</TD>
+    <TD>12.643</TD>
+    <TD>0.492</TD>
+    <TD>2.2</TD>
+    <TD>0.9831</TD>
+    <TD>8.598</TD>
+    <TD>NaN</TD>
+    <TD>1.3</TD>
+    <TD>0.957</TD>
+  </TR>
+  <TR>
+    <TD>J211859.10-554659.7</TD>
+    <TD>319.7462824</TD>
+    <TD>-55.7832772</TD>
+    <TD>17.268</TD>
+    <TD>0.13</TD>
+    <TD>8.4</TD>
+    <TD>0.9197</TD>
+    <TD>16.429</TD>
+    <TD>0.228</TD>
+    <TD>4.8</TD>
+    <TD>0.9379</TD>
+    <TD>12.388</TD>
+    <TD>0.477</TD>
+    <TD>2.3</TD>
+    <TD>0.8487</TD>
+    <TD>9.105</TD>
+    <TD>NaN</TD>
+    <TD>0.2</TD>
+    <TD>0.9937</TD>
   </TR>
   <TR>
     <TD>J211702.77-555026.6</TD>
     <TD>319.2615707</TD>
     <TD>-55.8407369</TD>
-    <TD>0.1062</TD>
-    <TD>0.108</TD>
-    <TD>-0.0298</TD>
     <TD>15.831</TD>
     <TD>0.045</TD>
     <TD>24.4</TD>
@@ -3190,37 +3418,11 @@ ___ number of profile-fit flux measurements for source, band 4">
     <TD>0.49</TD>
     <TD>2.2</TD>
     <TD>0.9263</TD>
-    <TD>1</TD>
-    <TD>0</TD>
-    <TD>0.0</TD>
-    <TD>0.0</TD>
-    <TD>0.0</TD>
-    <TD>0.0</TD>
-    <TD>155</TD>
-    <TD>424</TD>
-    <TD>194</TD>
-    <TD>425</TD>
-    <TD>0000</TD>
-    <TD>0</TD>
-    <TD>111n</TD>
-    <TD>AABC</TD>
-    <TD>0000</TD>
-    <TD>30</TD>
-    <TD>31</TD>
-    <TD>24</TD>
-    <TD>31</TD>
-    <TD>7</TD>
-    <TD>15</TD>
-    <TD>0</TD>
-    <TD>15</TD>
   </TR>
   <TR>
     <TD>J211927.81-555456.1</TD>
     <TD>319.8658953</TD>
     <TD>-55.9155887</TD>
-    <TD>0.4328</TD>
-    <TD>0.4653</TD>
-    <TD>-0.1401</TD>
     <TD>17.868</TD>
     <TD>0.216</TD>
     <TD>5.0</TD>
@@ -3237,37 +3439,32 @@ ___ number of profile-fit flux measurements for source, band 4">
     <TD>NaN</TD>
     <TD>1.9</TD>
     <TD>1.109</TD>
-    <TD>1</TD>
-    <TD>0</TD>
-    <TD>0.0</TD>
-    <TD>0.0</TD>
-    <TD>0.0</TD>
-    <TD>0.0</TD>
-    <TD>-560</TD>
-    <TD>1984</TD>
-    <TD>-719</TD>
-    <TD>2139</TD>
-    <TD>0000</TD>
-    <TD>0</TD>
-    <TD>nnnn</TD>
-    <TD>BBBU</TD>
-    <TD>0000</TD>
-    <TD>1</TD>
-    <TD>31</TD>
-    <TD>1</TD>
-    <TD>31</TD>
-    <TD>0</TD>
-    <TD>16</TD>
-    <TD>1</TD>
-    <TD>16</TD>
+  </TR>
+  <TR>
+    <TD>J211721.79-555207.5</TD>
+    <TD>319.3408094</TD>
+    <TD>-55.8687701</TD>
+    <TD>17.813</TD>
+    <TD>0.21</TD>
+    <TD>5.2</TD>
+    <TD>0.9941</TD>
+    <TD>16.733</TD>
+    <TD>0.283</TD>
+    <TD>3.8</TD>
+    <TD>0.9297</TD>
+    <TD>12.534</TD>
+    <TD>0.45</TD>
+    <TD>2.4</TD>
+    <TD>0.8469</TD>
+    <TD>8.966</TD>
+    <TD>NaN</TD>
+    <TD>0.4</TD>
+    <TD>1.028</TD>
   </TR>
   <TR>
     <TD>J211513.44-552305.2</TD>
     <TD>318.8060018</TD>
     <TD>-55.3847787</TD>
-    <TD>0.1731</TD>
-    <TD>0.1768</TD>
-    <TD>-0.0526</TD>
     <TD>16.335</TD>
     <TD>0.066</TD>
     <TD>16.4</TD>
@@ -3284,37 +3481,11 @@ ___ number of profile-fit flux measurements for source, band 4">
     <TD>NaN</TD>
     <TD>0.3</TD>
     <TD>0.9576</TD>
-    <TD>1</TD>
-    <TD>0</TD>
-    <TD>0.0</TD>
-    <TD>0.0</TD>
-    <TD>0.0</TD>
-    <TD>0.0</TD>
-    <TD>451</TD>
-    <TD>683</TD>
-    <TD>126</TD>
-    <TD>696</TD>
-    <TD>0000</TD>
-    <TD>0</TD>
-    <TD>0nnn</TD>
-    <TD>AABU</TD>
-    <TD>0000</TD>
-    <TD>19</TD>
-    <TD>28</TD>
-    <TD>9</TD>
-    <TD>28</TD>
-    <TD>0</TD>
-    <TD>14</TD>
-    <TD>0</TD>
-    <TD>14</TD>
   </TR>
   <TR>
     <TD>J211517.60-552630.7</TD>
     <TD>318.8233339</TD>
     <TD>-55.4418824</TD>
-    <TD>0.3519</TD>
-    <TD>0.3639</TD>
-    <TD>-0.1034</TD>
     <TD>17.43</TD>
     <TD>0.146</TD>
     <TD>7.5</TD>
@@ -3331,37 +3502,11 @@ ___ number of profile-fit flux measurements for source, band 4">
     <TD>NaN</TD>
     <TD>0.9</TD>
     <TD>0.959</TD>
-    <TD>1</TD>
-    <TD>0</TD>
-    <TD>0.0</TD>
-    <TD>0.0</TD>
-    <TD>0.0</TD>
-    <TD>0.0</TD>
-    <TD>568</TD>
-    <TD>1587</TD>
-    <TD>-1256</TD>
-    <TD>1646</TD>
-    <TD>0000</TD>
-    <TD>0</TD>
-    <TD>nnnn</TD>
-    <TD>BBCU</TD>
-    <TD>0000</TD>
-    <TD>5</TD>
-    <TD>30</TD>
-    <TD>2</TD>
-    <TD>30</TD>
-    <TD>0</TD>
-    <TD>15</TD>
-    <TD>0</TD>
-    <TD>15</TD>
   </TR>
   <TR>
     <TD>J211845.08-554002.6</TD>
     <TD>319.6878676</TD>
     <TD>-55.6673937</TD>
-    <TD>0.1343</TD>
-    <TD>0.14</TD>
-    <TD>-0.0473</TD>
     <TD>16.079</TD>
     <TD>0.055</TD>
     <TD>19.7</TD>
@@ -3378,37 +3523,32 @@ ___ number of profile-fit flux measurements for source, band 4">
     <TD>NaN</TD>
     <TD>1.4</TD>
     <TD>0.9648</TD>
-    <TD>1</TD>
-    <TD>0</TD>
-    <TD>0.0</TD>
-    <TD>0.0</TD>
-    <TD>0.0</TD>
-    <TD>0.0</TD>
-    <TD>1153</TD>
-    <TD>519</TD>
-    <TD>891</TD>
-    <TD>541</TD>
-    <TD>0000</TD>
-    <TD>0</TD>
-    <TD>11nn</TD>
-    <TD>AABU</TD>
-    <TD>0000</TD>
-    <TD>23</TD>
-    <TD>27</TD>
-    <TD>21</TD>
-    <TD>28</TD>
-    <TD>0</TD>
-    <TD>14</TD>
-    <TD>0</TD>
-    <TD>14</TD>
+  </TR>
+  <TR>
+    <TD>J212103.31-560915.2</TD>
+    <TD>320.2637986</TD>
+    <TD>-56.1542337</TD>
+    <TD>16.113</TD>
+    <TD>0.058</TD>
+    <TD>18.7</TD>
+    <TD>0.9052</TD>
+    <TD>14.789</TD>
+    <TD>0.058</TD>
+    <TD>18.7</TD>
+    <TD>0.8569</TD>
+    <TD>12.165</TD>
+    <TD>0.29</TD>
+    <TD>3.7</TD>
+    <TD>0.9893</TD>
+    <TD>8.961</TD>
+    <TD>0.47</TD>
+    <TD>2.3</TD>
+    <TD>0.9397</TD>
   </TR>
   <TR>
     <TD>J211629.82-552720.6</TD>
     <TD>319.1242864</TD>
     <TD>-55.4557494</TD>
-    <TD>0.0869</TD>
-    <TD>0.0905</TD>
-    <TD>-0.0238</TD>
     <TD>15.715</TD>
     <TD>0.043</TD>
     <TD>25.0</TD>
@@ -3425,37 +3565,74 @@ ___ number of profile-fit flux measurements for source, band 4">
     <TD>0.246</TD>
     <TD>4.4</TD>
     <TD>0.8428</TD>
-    <TD>1</TD>
-    <TD>0</TD>
-    <TD>0.0</TD>
-    <TD>0.0</TD>
-    <TD>0.0</TD>
-    <TD>0.0</TD>
-    <TD>630</TD>
-    <TD>319</TD>
-    <TD>-158</TD>
-    <TD>335</TD>
-    <TD>0000</TD>
-    <TD>0</TD>
-    <TD>000n</TD>
-    <TD>AAAB</TD>
-    <TD>0000</TD>
-    <TD>30</TD>
-    <TD>31</TD>
-    <TD>31</TD>
-    <TD>31</TD>
-    <TD>12</TD>
-    <TD>16</TD>
-    <TD>0</TD>
-    <TD>16</TD>
+  </TR>
+  <TR>
+    <TD>J211725.35-554537.0</TD>
+    <TD>319.3556588</TD>
+    <TD>-55.7602973</TD>
+    <TD>16.515</TD>
+    <TD>0.068</TD>
+    <TD>15.9</TD>
+    <TD>1.011</TD>
+    <TD>15.435</TD>
+    <TD>0.096</TD>
+    <TD>11.3</TD>
+    <TD>1.109</TD>
+    <TD>11.363</TD>
+    <TD>0.154</TD>
+    <TD>7.0</TD>
+    <TD>0.9562</TD>
+    <TD>9.299</TD>
+    <TD>NaN</TD>
+    <TD>-0.2</TD>
+    <TD>1.035</TD>
+  </TR>
+  <TR>
+    <TD>J212012.29-561056.4</TD>
+    <TD>320.0512427</TD>
+    <TD>-56.182334</TD>
+    <TD>17.807</TD>
+    <TD>0.201</TD>
+    <TD>5.4</TD>
+    <TD>1.004</TD>
+    <TD>16.968</TD>
+    <TD>0.345</TD>
+    <TD>3.1</TD>
+    <TD>0.927</TD>
+    <TD>12.565</TD>
+    <TD>0.468</TD>
+    <TD>2.3</TD>
+    <TD>0.9688</TD>
+    <TD>8.943</TD>
+    <TD>NaN</TD>
+    <TD>-0.6</TD>
+    <TD>0.8921</TD>
+  </TR>
+  <TR>
+    <TD>J211452.93-560852.4</TD>
+    <TD>318.7205437</TD>
+    <TD>-56.1478947</TD>
+    <TD>16.581</TD>
+    <TD>0.075</TD>
+    <TD>14.5</TD>
+    <TD>1.072</TD>
+    <TD>14.649</TD>
+    <TD>0.053</TD>
+    <TD>20.4</TD>
+    <TD>0.9424</TD>
+    <TD>11.13</TD>
+    <TD>0.123</TD>
+    <TD>8.8</TD>
+    <TD>1.04</TD>
+    <TD>8.735</TD>
+    <TD>0.369</TD>
+    <TD>2.9</TD>
+    <TD>1.298</TD>
   </TR>
   <TR>
     <TD>J211613.65-555125.8</TD>
     <TD>319.0569064</TD>
     <TD>-55.8571674</TD>
-    <TD>0.2355</TD>
-    <TD>0.248</TD>
-    <TD>-0.0765</TD>
     <TD>17.02</TD>
     <TD>0.103</TD>
     <TD>10.5</TD>
@@ -3472,37 +3649,11 @@ ___ number of profile-fit flux measurements for source, band 4">
     <TD>NaN</TD>
     <TD>-0.3</TD>
     <TD>0.8822</TD>
-    <TD>1</TD>
-    <TD>0</TD>
-    <TD>0.0</TD>
-    <TD>0.0</TD>
-    <TD>0.0</TD>
-    <TD>0.0</TD>
-    <TD>-135</TD>
-    <TD>992</TD>
-    <TD>26</TD>
-    <TD>1049</TD>
-    <TD>0000</TD>
-    <TD>0</TD>
-    <TD>nnnn</TD>
-    <TD>AACU</TD>
-    <TD>0000</TD>
-    <TD>7</TD>
-    <TD>31</TD>
-    <TD>4</TD>
-    <TD>31</TD>
-    <TD>0</TD>
-    <TD>16</TD>
-    <TD>0</TD>
-    <TD>16</TD>
   </TR>
   <TR>
     <TD>J211559.50-555039.2</TD>
     <TD>318.997938</TD>
     <TD>-55.8442322</TD>
-    <TD>0.4698</TD>
-    <TD>0.4994</TD>
-    <TD>-0.1527</TD>
     <TD>17.87</TD>
     <TD>0.209</TD>
     <TD>5.2</TD>
@@ -3519,37 +3670,11 @@ ___ number of profile-fit flux measurements for source, band 4">
     <TD>NaN</TD>
     <TD>-0.6</TD>
     <TD>0.9751</TD>
-    <TD>1</TD>
-    <TD>0</TD>
-    <TD>0.0</TD>
-    <TD>0.001</TD>
-    <TD>0.0</TD>
-    <TD>0.0</TD>
-    <TD>115</TD>
-    <TD>2409</TD>
-    <TD>1239</TD>
-    <TD>2568</TD>
-    <TD>0000</TD>
-    <TD>0</TD>
-    <TD>nnnn</TD>
-    <TD>BBCU</TD>
-    <TD>0000</TD>
-    <TD>3</TD>
-    <TD>30</TD>
-    <TD>3</TD>
-    <TD>30</TD>
-    <TD>0</TD>
-    <TD>15</TD>
-    <TD>0</TD>
-    <TD>15</TD>
   </TR>
   <TR>
     <TD>J211912.54-553625.8</TD>
     <TD>319.8022799</TD>
     <TD>-55.6071825</TD>
-    <TD>0.1788</TD>
-    <TD>0.1859</TD>
-    <TD>-0.0537</TD>
     <TD>16.503</TD>
     <TD>0.07</TD>
     <TD>15.4</TD>
@@ -3566,37 +3691,11 @@ ___ number of profile-fit flux measurements for source, band 4">
     <TD>NaN</TD>
     <TD>1.0</TD>
     <TD>0.7631</TD>
-    <TD>1</TD>
-    <TD>0</TD>
-    <TD>0.002</TD>
-    <TD>0.0</TD>
-    <TD>0.0</TD>
-    <TD>0.0</TD>
-    <TD>418</TD>
-    <TD>739</TD>
-    <TD>214</TD>
-    <TD>764</TD>
-    <TD>0000</TD>
-    <TD>0</TD>
-    <TD>0nnn</TD>
-    <TD>AABU</TD>
-    <TD>0000</TD>
-    <TD>18</TD>
-    <TD>29</TD>
-    <TD>6</TD>
-    <TD>29</TD>
-    <TD>2</TD>
-    <TD>14</TD>
-    <TD>0</TD>
-    <TD>14</TD>
   </TR>
   <TR>
     <TD>J211912.23-552917.9</TD>
     <TD>319.800964</TD>
     <TD>-55.4883133</TD>
-    <TD>0.1302</TD>
-    <TD>0.1339</TD>
-    <TD>-0.0379</TD>
     <TD>16.36</TD>
     <TD>0.062</TD>
     <TD>17.5</TD>
@@ -3613,37 +3712,11 @@ ___ number of profile-fit flux measurements for source, band 4">
     <TD>NaN</TD>
     <TD>1.5</TD>
     <TD>0.9961</TD>
-    <TD>1</TD>
-    <TD>0</TD>
-    <TD>0.0</TD>
-    <TD>0.0</TD>
-    <TD>0.0</TD>
-    <TD>0.001</TD>
-    <TD>475</TD>
-    <TD>501</TD>
-    <TD>-220</TD>
-    <TD>519</TD>
-    <TD>0000</TD>
-    <TD>0</TD>
-    <TD>01nn</TD>
-    <TD>AABU</TD>
-    <TD>0000</TD>
-    <TD>21</TD>
-    <TD>30</TD>
-    <TD>25</TD>
-    <TD>30</TD>
-    <TD>1</TD>
-    <TD>16</TD>
-    <TD>0</TD>
-    <TD>16</TD>
   </TR>
   <TR>
     <TD>J211844.14-555943.8</TD>
     <TD>319.6839557</TD>
     <TD>-55.9955255</TD>
-    <TD>0.1329</TD>
-    <TD>0.1372</TD>
-    <TD>-0.0392</TD>
     <TD>16.177</TD>
     <TD>0.053</TD>
     <TD>20.3</TD>
@@ -3660,37 +3733,32 @@ ___ number of profile-fit flux measurements for source, band 4">
     <TD>NaN</TD>
     <TD>1.1</TD>
     <TD>0.9984</TD>
-    <TD>1</TD>
-    <TD>0</TD>
-    <TD>0.0</TD>
-    <TD>0.0</TD>
-    <TD>0.0</TD>
-    <TD>0.0</TD>
-    <TD>386</TD>
-    <TD>513</TD>
-    <TD>-17</TD>
-    <TD>532</TD>
-    <TD>0000</TD>
-    <TD>0</TD>
-    <TD>11nn</TD>
-    <TD>AABU</TD>
-    <TD>0000</TD>
-    <TD>27</TD>
-    <TD>30</TD>
-    <TD>19</TD>
-    <TD>30</TD>
-    <TD>0</TD>
-    <TD>15</TD>
-    <TD>0</TD>
-    <TD>15</TD>
+  </TR>
+  <TR>
+    <TD>J211855.39-553314.1</TD>
+    <TD>319.7308063</TD>
+    <TD>-55.5539391</TD>
+    <TD>17.738</TD>
+    <TD>0.194</TD>
+    <TD>5.6</TD>
+    <TD>0.9723</TD>
+    <TD>16.608</TD>
+    <TD>0.248</TD>
+    <TD>4.4</TD>
+    <TD>1.17</TD>
+    <TD>12.494</TD>
+    <TD>0.442</TD>
+    <TD>2.5</TD>
+    <TD>0.9736</TD>
+    <TD>9.109</TD>
+    <TD>0.509</TD>
+    <TD>2.1</TD>
+    <TD>1.028</TD>
   </TR>
   <TR>
     <TD>J211456.55-555059.9</TD>
     <TD>318.7356363</TD>
     <TD>-55.8499916</TD>
-    <TD>0.4707</TD>
-    <TD>0.5014</TD>
-    <TD>-0.1346</TD>
     <TD>17.724</TD>
     <TD>0.196</TD>
     <TD>5.6</TD>
@@ -3707,37 +3775,32 @@ ___ number of profile-fit flux measurements for source, band 4">
     <TD>NaN</TD>
     <TD>0.4</TD>
     <TD>0.8518</TD>
-    <TD>1</TD>
-    <TD>0</TD>
-    <TD>0.0</TD>
-    <TD>0.0</TD>
-    <TD>0.0</TD>
-    <TD>0.0</TD>
-    <TD>769</TD>
-    <TD>2154</TD>
-    <TD>375</TD>
-    <TD>2295</TD>
-    <TD>0000</TD>
-    <TD>0</TD>
-    <TD>nnnn</TD>
-    <TD>BBCU</TD>
-    <TD>0000</TD>
-    <TD>3</TD>
-    <TD>29</TD>
-    <TD>2</TD>
-    <TD>29</TD>
-    <TD>0</TD>
-    <TD>15</TD>
-    <TD>0</TD>
-    <TD>15</TD>
+  </TR>
+  <TR>
+    <TD>J211759.61-560751.2</TD>
+    <TD>319.4983755</TD>
+    <TD>-56.1308937</TD>
+    <TD>16.358</TD>
+    <TD>0.069</TD>
+    <TD>15.8</TD>
+    <TD>0.8926</TD>
+    <TD>15.379</TD>
+    <TD>0.09</TD>
+    <TD>12.1</TD>
+    <TD>1.046</TD>
+    <TD>12.065</TD>
+    <TD>0.27</TD>
+    <TD>4.0</TD>
+    <TD>0.8145</TD>
+    <TD>8.579</TD>
+    <TD>NaN</TD>
+    <TD>1.4</TD>
+    <TD>0.8928</TD>
   </TR>
   <TR>
     <TD>J211511.40-554206.2</TD>
     <TD>318.797531</TD>
     <TD>-55.7017273</TD>
-    <TD>0.088</TD>
-    <TD>0.0901</TD>
-    <TD>-0.0223</TD>
     <TD>15.542</TD>
     <TD>0.042</TD>
     <TD>25.7</TD>
@@ -3754,37 +3817,74 @@ ___ number of profile-fit flux measurements for source, band 4">
     <TD>0.31</TD>
     <TD>3.5</TD>
     <TD>1.06</TD>
-    <TD>1</TD>
-    <TD>0</TD>
-    <TD>0.0</TD>
-    <TD>0.0</TD>
-    <TD>0.0</TD>
-    <TD>0.0</TD>
-    <TD>72</TD>
-    <TD>330</TD>
-    <TD>-179</TD>
-    <TD>340</TD>
-    <TD>0000</TD>
-    <TD>0</TD>
-    <TD>000n</TD>
-    <TD>AAAB</TD>
-    <TD>0000</TD>
-    <TD>31</TD>
-    <TD>31</TD>
-    <TD>31</TD>
-    <TD>31</TD>
-    <TD>8</TD>
-    <TD>16</TD>
-    <TD>0</TD>
-    <TD>16</TD>
+  </TR>
+  <TR>
+    <TD>J212009.19-552437.8</TD>
+    <TD>320.0382968</TD>
+    <TD>-55.4105152</TD>
+    <TD>17.576</TD>
+    <TD>0.172</TD>
+    <TD>6.3</TD>
+    <TD>0.9712</TD>
+    <TD>16.425</TD>
+    <TD>0.213</TD>
+    <TD>5.1</TD>
+    <TD>1.021</TD>
+    <TD>12.516</TD>
+    <TD>0.45</TD>
+    <TD>2.4</TD>
+    <TD>1.078</TD>
+    <TD>9.078</TD>
+    <TD>NaN</TD>
+    <TD>0.2</TD>
+    <TD>1.047</TD>
+  </TR>
+  <TR>
+    <TD>J212000.67-554112.5</TD>
+    <TD>320.0028138</TD>
+    <TD>-55.6868279</TD>
+    <TD>16.688</TD>
+    <TD>0.085</TD>
+    <TD>12.8</TD>
+    <TD>1.008</TD>
+    <TD>15.729</TD>
+    <TD>0.113</TD>
+    <TD>9.6</TD>
+    <TD>0.982</TD>
+    <TD>12.405</TD>
+    <TD>0.351</TD>
+    <TD>3.1</TD>
+    <TD>1.06</TD>
+    <TD>8.94</TD>
+    <TD>NaN</TD>
+    <TD>0.3</TD>
+    <TD>1.016</TD>
+  </TR>
+  <TR>
+    <TD>J211852.53-553920.7</TD>
+    <TD>319.7188879</TD>
+    <TD>-55.6557627</TD>
+    <TD>18.373</TD>
+    <TD>0.352</TD>
+    <TD>3.1</TD>
+    <TD>1.155</TD>
+    <TD>16.437</TD>
+    <TD>0.252</TD>
+    <TD>4.3</TD>
+    <TD>0.9114</TD>
+    <TD>11.141</TD>
+    <TD>0.133</TD>
+    <TD>8.2</TD>
+    <TD>0.9936</TD>
+    <TD>8.478</TD>
+    <TD>0.334</TD>
+    <TD>3.3</TD>
+    <TD>0.8373</TD>
   </TR>
   <TR>
     <TD>J211703.87-552749.7</TD>
     <TD>319.266133</TD>
     <TD>-55.463822</TD>
-    <TD>0.2471</TD>
-    <TD>0.258</TD>
-    <TD>-0.0797</TD>
     <TD>16.872</TD>
     <TD>0.093</TD>
     <TD>11.6</TD>
@@ -3801,37 +3901,11 @@ ___ number of profile-fit flux measurements for source, band 4">
     <TD>NaN</TD>
     <TD>1.4</TD>
     <TD>0.892</TD>
-    <TD>1</TD>
-    <TD>0</TD>
-    <TD>0.0</TD>
-    <TD>0.0</TD>
-    <TD>0.0</TD>
-    <TD>0.0</TD>
-    <TD>201</TD>
-    <TD>1054</TD>
-    <TD>297</TD>
-    <TD>1116</TD>
-    <TD>0000</TD>
-    <TD>0</TD>
-    <TD>nnnn</TD>
-    <TD>ABCU</TD>
-    <TD>0000</TD>
-    <TD>9</TD>
-    <TD>32</TD>
-    <TD>1</TD>
-    <TD>32</TD>
-    <TD>0</TD>
-    <TD>15</TD>
-    <TD>0</TD>
-    <TD>16</TD>
   </TR>
   <TR>
     <TD>J211441.06-553044.3</TD>
     <TD>318.6710901</TD>
     <TD>-55.5123333</TD>
-    <TD>0.174</TD>
-    <TD>0.1796</TD>
-    <TD>-0.0533</TD>
     <TD>16.492</TD>
     <TD>0.071</TD>
     <TD>15.3</TD>
@@ -3848,37 +3922,11 @@ ___ number of profile-fit flux measurements for source, band 4">
     <TD>NaN</TD>
     <TD>1.1</TD>
     <TD>0.8956</TD>
-    <TD>1</TD>
-    <TD>0</TD>
-    <TD>0.0</TD>
-    <TD>0.0</TD>
-    <TD>0.0</TD>
-    <TD>0.01</TD>
-    <TD>-487</TD>
-    <TD>694</TD>
-    <TD>-258</TD>
-    <TD>720</TD>
-    <TD>0000</TD>
-    <TD>0</TD>
-    <TD>0nnn</TD>
-    <TD>AACU</TD>
-    <TD>0000</TD>
-    <TD>18</TD>
-    <TD>30</TD>
-    <TD>8</TD>
-    <TD>30</TD>
-    <TD>0</TD>
-    <TD>15</TD>
-    <TD>0</TD>
-    <TD>15</TD>
   </TR>
   <TR>
     <TD>J211500.58-551649.1</TD>
     <TD>318.7524267</TD>
     <TD>-55.2803135</TD>
-    <TD>0.2881</TD>
-    <TD>0.3005</TD>
-    <TD>-0.0918</TD>
     <TD>17.02</TD>
     <TD>0.106</TD>
     <TD>10.3</TD>
@@ -3895,37 +3943,53 @@ ___ number of profile-fit flux measurements for source, band 4">
     <TD>NaN</TD>
     <TD>-0.9</TD>
     <TD>1.083</TD>
-    <TD>1</TD>
-    <TD>0</TD>
-    <TD>0.0</TD>
-    <TD>0.0</TD>
-    <TD>0.0</TD>
-    <TD>0.0</TD>
-    <TD>-657</TD>
-    <TD>1231</TD>
-    <TD>504</TD>
-    <TD>1285</TD>
-    <TD>0000</TD>
-    <TD>0</TD>
-    <TD>0nnn</TD>
-    <TD>ABCU</TD>
-    <TD>0000</TD>
-    <TD>10</TD>
-    <TD>28</TD>
-    <TD>0</TD>
-    <TD>28</TD>
-    <TD>0</TD>
-    <TD>14</TD>
-    <TD>0</TD>
-    <TD>14</TD>
+  </TR>
+  <TR>
+    <TD>J211542.38-555603.9</TD>
+    <TD>318.926618</TD>
+    <TD>-55.9344347</TD>
+    <TD>17.416</TD>
+    <TD>0.151</TD>
+    <TD>7.2</TD>
+    <TD>0.9458</TD>
+    <TD>16.501</TD>
+    <TD>0.239</TD>
+    <TD>4.5</TD>
+    <TD>0.9082</TD>
+    <TD>12.119</TD>
+    <TD>0.272</TD>
+    <TD>4.0</TD>
+    <TD>0.9304</TD>
+    <TD>9.143</TD>
+    <TD>NaN</TD>
+    <TD>0.1</TD>
+    <TD>1.139</TD>
+  </TR>
+  <TR>
+    <TD>J211604.94-554432.2</TD>
+    <TD>319.0205962</TD>
+    <TD>-55.7423</TD>
+    <TD>16.783</TD>
+    <TD>0.088</TD>
+    <TD>12.4</TD>
+    <TD>1.054</TD>
+    <TD>15.368</TD>
+    <TD>0.096</TD>
+    <TD>11.3</TD>
+    <TD>0.9352</TD>
+    <TD>11.216</TD>
+    <TD>0.142</TD>
+    <TD>7.7</TD>
+    <TD>0.8475</TD>
+    <TD>8.413</TD>
+    <TD>0.299</TD>
+    <TD>3.6</TD>
+    <TD>0.8973</TD>
   </TR>
   <TR>
     <TD>J211820.45-552120.8</TD>
     <TD>319.5852317</TD>
     <TD>-55.3557949</TD>
-    <TD>0.0655</TD>
-    <TD>0.0658</TD>
-    <TD>-0.0126</TD>
     <TD>14.808</TD>
     <TD>0.032</TD>
     <TD>34.2</TD>
@@ -3942,37 +4006,11 @@ ___ number of profile-fit flux measurements for source, band 4">
     <TD>0.288</TD>
     <TD>3.8</TD>
     <TD>0.7507</TD>
-    <TD>1</TD>
-    <TD>0</TD>
-    <TD>0.0</TD>
-    <TD>0.0</TD>
-    <TD>0.0</TD>
-    <TD>0.0</TD>
-    <TD>22</TD>
-    <TD>247</TD>
-    <TD>-275</TD>
-    <TD>237</TD>
-    <TD>0000</TD>
-    <TD>0</TD>
-    <TD>000n</TD>
-    <TD>AABB</TD>
-    <TD>0000</TD>
-    <TD>29</TD>
-    <TD>29</TD>
-    <TD>29</TD>
-    <TD>29</TD>
-    <TD>9</TD>
-    <TD>15</TD>
-    <TD>1</TD>
-    <TD>15</TD>
   </TR>
   <TR>
     <TD>J211930.13-552809.2</TD>
     <TD>319.8755549</TD>
     <TD>-55.4692485</TD>
-    <TD>0.2414</TD>
-    <TD>0.2487</TD>
-    <TD>-0.0742</TD>
     <TD>16.803</TD>
     <TD>0.092</TD>
     <TD>11.8</TD>
@@ -3989,37 +4027,32 @@ ___ number of profile-fit flux measurements for source, band 4">
     <TD>NaN</TD>
     <TD>1.2</TD>
     <TD>1.048</TD>
-    <TD>1</TD>
-    <TD>0</TD>
-    <TD>0.0</TD>
-    <TD>0.0</TD>
-    <TD>0.0</TD>
-    <TD>0.0</TD>
-    <TD>386</TD>
-    <TD>978</TD>
-    <TD>-16</TD>
-    <TD>1013</TD>
-    <TD>0000</TD>
-    <TD>0</TD>
-    <TD>nnnn</TD>
-    <TD>ABCU</TD>
-    <TD>0000</TD>
-    <TD>9</TD>
-    <TD>27</TD>
-    <TD>3</TD>
-    <TD>27</TD>
-    <TD>0</TD>
-    <TD>14</TD>
-    <TD>0</TD>
-    <TD>14</TD>
+  </TR>
+  <TR>
+    <TD>J212044.91-552936.5</TD>
+    <TD>320.187165</TD>
+    <TD>-55.4934814</TD>
+    <TD>16.149</TD>
+    <TD>0.059</TD>
+    <TD>18.3</TD>
+    <TD>0.9675</TD>
+    <TD>15.233</TD>
+    <TD>0.085</TD>
+    <TD>12.8</TD>
+    <TD>1.041</TD>
+    <TD>12.509</TD>
+    <TD>0.424</TD>
+    <TD>2.6</TD>
+    <TD>1.106</TD>
+    <TD>8.46</TD>
+    <TD>NaN</TD>
+    <TD>1.5</TD>
+    <TD>0.9073</TD>
   </TR>
   <TR>
     <TD>J211854.77-553423.0</TD>
     <TD>319.7282392</TD>
     <TD>-55.5730694</TD>
-    <TD>0.103</TD>
-    <TD>0.1055</TD>
-    <TD>-0.0292</TD>
     <TD>15.858</TD>
     <TD>0.048</TD>
     <TD>22.8</TD>
@@ -4036,37 +4069,11 @@ ___ number of profile-fit flux measurements for source, band 4">
     <TD>NaN</TD>
     <TD>1.2</TD>
     <TD>0.9695</TD>
-    <TD>1</TD>
-    <TD>0</TD>
-    <TD>0.0</TD>
-    <TD>0.0</TD>
-    <TD>0.0</TD>
-    <TD>0.0</TD>
-    <TD>-436</TD>
-    <TD>386</TD>
-    <TD>292</TD>
-    <TD>393</TD>
-    <TD>0000</TD>
-    <TD>0</TD>
-    <TD>00nn</TD>
-    <TD>AABU</TD>
-    <TD>0000</TD>
-    <TD>30</TD>
-    <TD>30</TD>
-    <TD>29</TD>
-    <TD>30</TD>
-    <TD>1</TD>
-    <TD>15</TD>
-    <TD>0</TD>
-    <TD>15</TD>
   </TR>
   <TR>
     <TD>J211800.06-552022.7</TD>
     <TD>319.5002621</TD>
     <TD>-55.3396488</TD>
-    <TD>0.2457</TD>
-    <TD>0.2585</TD>
-    <TD>-0.0749</TD>
     <TD>16.918</TD>
     <TD>0.095</TD>
     <TD>11.4</TD>
@@ -4083,37 +4090,11 @@ ___ number of profile-fit flux measurements for source, band 4">
     <TD>NaN</TD>
     <TD>-0.7</TD>
     <TD>1.044</TD>
-    <TD>1</TD>
-    <TD>0</TD>
-    <TD>0.0</TD>
-    <TD>0.0</TD>
-    <TD>0.0</TD>
-    <TD>0.0</TD>
-    <TD>-878</TD>
-    <TD>1046</TD>
-    <TD>-326</TD>
-    <TD>1100</TD>
-    <TD>0000</TD>
-    <TD>0</TD>
-    <TD>nnnn</TD>
-    <TD>ABCU</TD>
-    <TD>0000</TD>
-    <TD>8</TD>
-    <TD>30</TD>
-    <TD>4</TD>
-    <TD>30</TD>
-    <TD>2</TD>
-    <TD>15</TD>
-    <TD>0</TD>
-    <TD>15</TD>
   </TR>
   <TR>
     <TD>J211800.36-551622.6</TD>
     <TD>319.5015197</TD>
     <TD>-55.272957</TD>
-    <TD>0.1419</TD>
-    <TD>0.1492</TD>
-    <TD>-0.0425</TD>
     <TD>16.282</TD>
     <TD>0.058</TD>
     <TD>18.7</TD>
@@ -4130,37 +4111,74 @@ ___ number of profile-fit flux measurements for source, band 4">
     <TD>0.39</TD>
     <TD>2.8</TD>
     <TD>1.106</TD>
-    <TD>1</TD>
-    <TD>0</TD>
-    <TD>0.0</TD>
-    <TD>0.0</TD>
-    <TD>0.0</TD>
-    <TD>0.0</TD>
-    <TD>-1049</TD>
-    <TD>562</TD>
-    <TD>-824</TD>
-    <TD>594</TD>
-    <TD>0000</TD>
-    <TD>0</TD>
-    <TD>01nn</TD>
-    <TD>AABC</TD>
-    <TD>0000</TD>
-    <TD>24</TD>
-    <TD>30</TD>
-    <TD>15</TD>
-    <TD>29</TD>
-    <TD>1</TD>
-    <TD>15</TD>
-    <TD>0</TD>
-    <TD>15</TD>
+  </TR>
+  <TR>
+    <TD>J212032.33-551535.4</TD>
+    <TD>320.1347197</TD>
+    <TD>-55.2598503</TD>
+    <TD>15.794</TD>
+    <TD>0.045</TD>
+    <TD>24.3</TD>
+    <TD>0.9017</TD>
+    <TD>14.53</TD>
+    <TD>0.047</TD>
+    <TD>23.0</TD>
+    <TD>0.9282</TD>
+    <TD>11.647</TD>
+    <TD>0.189</TD>
+    <TD>5.7</TD>
+    <TD>1.019</TD>
+    <TD>8.485</TD>
+    <TD>NaN</TD>
+    <TD>1.8</TD>
+    <TD>0.9086</TD>
+  </TR>
+  <TR>
+    <TD>J211936.54-560940.2</TD>
+    <TD>319.9022889</TD>
+    <TD>-56.1611767</TD>
+    <TD>15.457</TD>
+    <TD>0.039</TD>
+    <TD>28.0</TD>
+    <TD>1.008</TD>
+    <TD>14.051</TD>
+    <TD>0.039</TD>
+    <TD>28.0</TD>
+    <TD>0.8816</TD>
+    <TD>10.864</TD>
+    <TD>0.094</TD>
+    <TD>11.5</TD>
+    <TD>0.9839</TD>
+    <TD>7.937</TD>
+    <TD>0.166</TD>
+    <TD>6.5</TD>
+    <TD>0.9167</TD>
+  </TR>
+  <TR>
+    <TD>J211701.43-561010.8</TD>
+    <TD>319.2559775</TD>
+    <TD>-56.1696762</TD>
+    <TD>17.502</TD>
+    <TD>0.149</TD>
+    <TD>7.3</TD>
+    <TD>0.8278</TD>
+    <TD>16.682</TD>
+    <TD>0.262</TD>
+    <TD>4.1</TD>
+    <TD>1.13</TD>
+    <TD>12.585</TD>
+    <TD>0.398</TD>
+    <TD>2.7</TD>
+    <TD>1.077</TD>
+    <TD>8.491</TD>
+    <TD>NaN</TD>
+    <TD>1.6</TD>
+    <TD>1.027</TD>
   </TR>
   <TR>
     <TD>J211736.53-552623.0</TD>
     <TD>319.4022225</TD>
     <TD>-55.4397356</TD>
-    <TD>0.1269</TD>
-    <TD>0.1327</TD>
-    <TD>-0.0382</TD>
     <TD>16.075</TD>
     <TD>0.051</TD>
     <TD>21.4</TD>
@@ -4177,37 +4195,11 @@ ___ number of profile-fit flux measurements for source, band 4">
     <TD>NaN</TD>
     <TD>1.5</TD>
     <TD>1.025</TD>
-    <TD>1</TD>
-    <TD>0</TD>
-    <TD>0.0</TD>
-    <TD>0.0</TD>
-    <TD>0.0</TD>
-    <TD>0.0</TD>
-    <TD>2074</TD>
-    <TD>470</TD>
-    <TD>-3089</TD>
-    <TD>498</TD>
-    <TD>0000</TD>
-    <TD>0</TD>
-    <TD>00nn</TD>
-    <TD>AABU</TD>
-    <TD>0000</TD>
-    <TD>30</TD>
-    <TD>32</TD>
-    <TD>15</TD>
-    <TD>32</TD>
-    <TD>2</TD>
-    <TD>17</TD>
-    <TD>0</TD>
-    <TD>17</TD>
   </TR>
   <TR>
     <TD>J211555.36-552531.8</TD>
     <TD>318.9806851</TD>
     <TD>-55.4255101</TD>
-    <TD>0.1321</TD>
-    <TD>0.1353</TD>
-    <TD>-0.0353</TD>
     <TD>16.212</TD>
     <TD>0.056</TD>
     <TD>19.4</TD>
@@ -4224,37 +4216,11 @@ ___ number of profile-fit flux measurements for source, band 4">
     <TD>NaN</TD>
     <TD>1.0</TD>
     <TD>0.8518</TD>
-    <TD>1</TD>
-    <TD>0</TD>
-    <TD>0.0</TD>
-    <TD>0.0</TD>
-    <TD>0.0</TD>
-    <TD>0.0</TD>
-    <TD>49</TD>
-    <TD>509</TD>
-    <TD>-299</TD>
-    <TD>523</TD>
-    <TD>0000</TD>
-    <TD>0</TD>
-    <TD>00nn</TD>
-    <TD>AABU</TD>
-    <TD>0000</TD>
-    <TD>26</TD>
-    <TD>30</TD>
-    <TD>27</TD>
-    <TD>30</TD>
-    <TD>3</TD>
-    <TD>16</TD>
-    <TD>0</TD>
-    <TD>16</TD>
   </TR>
   <TR>
     <TD>J211650.04-552735.9</TD>
     <TD>319.2085103</TD>
     <TD>-55.4599931</TD>
-    <TD>0.375</TD>
-    <TD>0.3929</TD>
-    <TD>-0.1237</TD>
     <TD>17.433</TD>
     <TD>0.15</TD>
     <TD>7.2</TD>
@@ -4271,37 +4237,11 @@ ___ number of profile-fit flux measurements for source, band 4">
     <TD>NaN</TD>
     <TD>0.5</TD>
     <TD>0.9475</TD>
-    <TD>1</TD>
-    <TD>0</TD>
-    <TD>0.0</TD>
-    <TD>0.0</TD>
-    <TD>0.0</TD>
-    <TD>0.0</TD>
-    <TD>-325</TD>
-    <TD>1686</TD>
-    <TD>-298</TD>
-    <TD>1770</TD>
-    <TD>0000</TD>
-    <TD>0</TD>
-    <TD>nnnn</TD>
-    <TD>BBCU</TD>
-    <TD>0000</TD>
-    <TD>6</TD>
-    <TD>30</TD>
-    <TD>1</TD>
-    <TD>30</TD>
-    <TD>0</TD>
-    <TD>16</TD>
-    <TD>0</TD>
-    <TD>16</TD>
   </TR>
   <TR>
     <TD>J211654.65-551722.5</TD>
     <TD>319.2277413</TD>
     <TD>-55.2896078</TD>
-    <TD>0.4653</TD>
-    <TD>0.4855</TD>
-    <TD>-0.1308</TD>
     <TD>17.775</TD>
     <TD>0.195</TD>
     <TD>5.6</TD>
@@ -4318,37 +4258,11 @@ ___ number of profile-fit flux measurements for source, band 4">
     <TD>NaN</TD>
     <TD>-0.3</TD>
     <TD>1.025</TD>
-    <TD>1</TD>
-    <TD>0</TD>
-    <TD>0.0</TD>
-    <TD>0.0</TD>
-    <TD>0.0</TD>
-    <TD>0.0</TD>
-    <TD>172</TD>
-    <TD>2199</TD>
-    <TD>-3568</TD>
-    <TD>2302</TD>
-    <TD>0000</TD>
-    <TD>0</TD>
-    <TD>nnnn</TD>
-    <TD>BBCU</TD>
-    <TD>0000</TD>
-    <TD>1</TD>
-    <TD>30</TD>
-    <TD>1</TD>
-    <TD>30</TD>
-    <TD>0</TD>
-    <TD>14</TD>
-    <TD>0</TD>
-    <TD>15</TD>
   </TR>
   <TR>
     <TD>J211507.46-552158.7</TD>
     <TD>318.7811145</TD>
     <TD>-55.3663196</TD>
-    <TD>0.1388</TD>
-    <TD>0.1453</TD>
-    <TD>-0.0415</TD>
     <TD>16.171</TD>
     <TD>0.055</TD>
     <TD>19.6</TD>
@@ -4365,37 +4279,53 @@ ___ number of profile-fit flux measurements for source, band 4">
     <TD>NaN</TD>
     <TD>-0.3</TD>
     <TD>1.054</TD>
-    <TD>1</TD>
-    <TD>0</TD>
-    <TD>0.001</TD>
-    <TD>0.0</TD>
-    <TD>0.0</TD>
-    <TD>0.0</TD>
-    <TD>285</TD>
-    <TD>547</TD>
-    <TD>756</TD>
-    <TD>573</TD>
-    <TD>0000</TD>
-    <TD>0</TD>
-    <TD>00nn</TD>
-    <TD>AABU</TD>
-    <TD>0000</TD>
-    <TD>24</TD>
-    <TD>30</TD>
-    <TD>13</TD>
-    <TD>30</TD>
-    <TD>0</TD>
-    <TD>14</TD>
-    <TD>0</TD>
-    <TD>14</TD>
+  </TR>
+  <TR>
+    <TD>J212052.11-553103.8</TD>
+    <TD>320.2171584</TD>
+    <TD>-55.517738</TD>
+    <TD>16.782</TD>
+    <TD>0.088</TD>
+    <TD>12.3</TD>
+    <TD>1.003</TD>
+    <TD>15.949</TD>
+    <TD>0.151</TD>
+    <TD>7.2</TD>
+    <TD>0.9193</TD>
+    <TD>12.122</TD>
+    <TD>0.293</TD>
+    <TD>3.7</TD>
+    <TD>1.12</TD>
+    <TD>9.012</TD>
+    <TD>NaN</TD>
+    <TD>-0.3</TD>
+    <TD>0.9751</TD>
+  </TR>
+  <TR>
+    <TD>J211847.31-560704.0</TD>
+    <TD>319.6971641</TD>
+    <TD>-56.1178011</TD>
+    <TD>15.49</TD>
+    <TD>0.042</TD>
+    <TD>26.0</TD>
+    <TD>1.068</TD>
+    <TD>14.46</TD>
+    <TD>0.049</TD>
+    <TD>22.4</TD>
+    <TD>1.091</TD>
+    <TD>12.162</TD>
+    <TD>0.332</TD>
+    <TD>3.3</TD>
+    <TD>1.052</TD>
+    <TD>8.634</TD>
+    <TD>NaN</TD>
+    <TD>0.8</TD>
+    <TD>1.11</TD>
   </TR>
   <TR>
     <TD>J211842.70-560521.0</TD>
     <TD>319.6779243</TD>
     <TD>-56.0891725</TD>
-    <TD>0.1685</TD>
-    <TD>0.1789</TD>
-    <TD>-0.0542</TD>
     <TD>16.345</TD>
     <TD>0.068</TD>
     <TD>16.0</TD>
@@ -4412,37 +4342,11 @@ ___ number of profile-fit flux measurements for source, band 4">
     <TD>NaN</TD>
     <TD>0.6</TD>
     <TD>0.8949</TD>
-    <TD>1</TD>
-    <TD>0</TD>
-    <TD>0.0</TD>
-    <TD>0.0</TD>
-    <TD>0.0</TD>
-    <TD>0.0</TD>
-    <TD>-313</TD>
-    <TD>641</TD>
-    <TD>-646</TD>
-    <TD>681</TD>
-    <TD>0000</TD>
-    <TD>0</TD>
-    <TD>1nnn</TD>
-    <TD>AACU</TD>
-    <TD>0000</TD>
-    <TD>22</TD>
-    <TD>30</TD>
-    <TD>10</TD>
-    <TD>30</TD>
-    <TD>0</TD>
-    <TD>16</TD>
-    <TD>0</TD>
-    <TD>16</TD>
   </TR>
   <TR>
     <TD>J211756.65-551959.6</TD>
     <TD>319.4860445</TD>
     <TD>-55.3332416</TD>
-    <TD>0.2135</TD>
-    <TD>0.2198</TD>
-    <TD>-0.0641</TD>
     <TD>16.686</TD>
     <TD>0.086</TD>
     <TD>12.6</TD>
@@ -4459,37 +4363,11 @@ ___ number of profile-fit flux measurements for source, band 4">
     <TD>NaN</TD>
     <TD>-0.6</TD>
     <TD>0.9677</TD>
-    <TD>2</TD>
-    <TD>1</TD>
-    <TD>0.0</TD>
-    <TD>0.0</TD>
-    <TD>0.0</TD>
-    <TD>0.0</TD>
-    <TD>481</TD>
-    <TD>791</TD>
-    <TD>454</TD>
-    <TD>824</TD>
-    <TD>0000</TD>
-    <TD>0</TD>
-    <TD>nnnn</TD>
-    <TD>ABBU</TD>
-    <TD>0000</TD>
-    <TD>14</TD>
-    <TD>30</TD>
-    <TD>2</TD>
-    <TD>30</TD>
-    <TD>1</TD>
-    <TD>15</TD>
-    <TD>0</TD>
-    <TD>15</TD>
   </TR>
   <TR>
     <TD>J211610.23-555155.9</TD>
     <TD>319.0426465</TD>
     <TD>-55.8655398</TD>
-    <TD>0.1844</TD>
-    <TD>0.1957</TD>
-    <TD>-0.0587</TD>
     <TD>16.906</TD>
     <TD>0.093</TD>
     <TD>11.6</TD>
@@ -4506,37 +4384,11 @@ ___ number of profile-fit flux measurements for source, band 4">
     <TD>NaN</TD>
     <TD>0.9</TD>
     <TD>0.8819</TD>
-    <TD>1</TD>
-    <TD>0</TD>
-    <TD>0.0</TD>
-    <TD>0.0</TD>
-    <TD>0.0</TD>
-    <TD>0.0</TD>
-    <TD>748</TD>
-    <TD>715</TD>
-    <TD>-934</TD>
-    <TD>761</TD>
-    <TD>0000</TD>
-    <TD>0</TD>
-    <TD>n1nn</TD>
-    <TD>AABU</TD>
-    <TD>0000</TD>
-    <TD>8</TD>
-    <TD>31</TD>
-    <TD>20</TD>
-    <TD>30</TD>
-    <TD>0</TD>
-    <TD>16</TD>
-    <TD>0</TD>
-    <TD>16</TD>
   </TR>
   <TR>
     <TD>J211428.03-554049.6</TD>
     <TD>318.616831</TD>
     <TD>-55.6804707</TD>
-    <TD>0.2497</TD>
-    <TD>0.2658</TD>
-    <TD>-0.0748</TD>
     <TD>17.106</TD>
     <TD>0.108</TD>
     <TD>10.1</TD>
@@ -4553,37 +4405,95 @@ ___ number of profile-fit flux measurements for source, band 4">
     <TD>NaN</TD>
     <TD>1.1</TD>
     <TD>0.9134</TD>
-    <TD>1</TD>
-    <TD>0</TD>
-    <TD>0.0</TD>
-    <TD>0.0</TD>
-    <TD>0.0</TD>
-    <TD>0.0</TD>
-    <TD>-503</TD>
-    <TD>1053</TD>
-    <TD>587</TD>
-    <TD>1125</TD>
-    <TD>0000</TD>
-    <TD>0</TD>
-    <TD>nnnn</TD>
-    <TD>ABCU</TD>
-    <TD>0000</TD>
-    <TD>10</TD>
-    <TD>31</TD>
-    <TD>6</TD>
-    <TD>31</TD>
-    <TD>0</TD>
-    <TD>16</TD>
-    <TD>0</TD>
-    <TD>16</TD>
+  </TR>
+  <TR>
+    <TD>J211321.72-560844.6</TD>
+    <TD>318.3405307</TD>
+    <TD>-56.1457295</TD>
+    <TD>15.02</TD>
+    <TD>0.033</TD>
+    <TD>32.7</TD>
+    <TD>1.149</TD>
+    <TD>13.908</TD>
+    <TD>0.038</TD>
+    <TD>28.8</TD>
+    <TD>0.9961</TD>
+    <TD>10.615</TD>
+    <TD>0.082</TD>
+    <TD>13.2</TD>
+    <TD>0.888</TD>
+    <TD>7.913</TD>
+    <TD>0.185</TD>
+    <TD>5.9</TD>
+    <TD>1.042</TD>
+  </TR>
+  <TR>
+    <TD>J212036.33-551602.2</TD>
+    <TD>320.1514128</TD>
+    <TD>-55.2672989</TD>
+    <TD>17.56</TD>
+    <TD>0.162</TD>
+    <TD>6.7</TD>
+    <TD>0.9542</TD>
+    <TD>16.543</TD>
+    <TD>0.242</TD>
+    <TD>4.5</TD>
+    <TD>1.109</TD>
+    <TD>12.701</TD>
+    <TD>0.536</TD>
+    <TD>2.0</TD>
+    <TD>0.8626</TD>
+    <TD>9.215</TD>
+    <TD>NaN</TD>
+    <TD>-0.2</TD>
+    <TD>1.083</TD>
+  </TR>
+  <TR>
+    <TD>J211350.83-550952.0</TD>
+    <TD>318.4618326</TD>
+    <TD>-55.1644656</TD>
+    <TD>16.43</TD>
+    <TD>0.068</TD>
+    <TD>15.9</TD>
+    <TD>1.149</TD>
+    <TD>15.059</TD>
+    <TD>0.07</TD>
+    <TD>15.4</TD>
+    <TD>0.9629</TD>
+    <TD>12.049</TD>
+    <TD>0.307</TD>
+    <TD>3.5</TD>
+    <TD>0.8798</TD>
+    <TD>8.63</TD>
+    <TD>NaN</TD>
+    <TD>0.7</TD>
+    <TD>0.8924</TD>
+  </TR>
+  <TR>
+    <TD>J211336.94-550923.4</TD>
+    <TD>318.403936</TD>
+    <TD>-55.1565037</TD>
+    <TD>16.676</TD>
+    <TD>0.077</TD>
+    <TD>14.0</TD>
+    <TD>1.021</TD>
+    <TD>15.38</TD>
+    <TD>0.092</TD>
+    <TD>11.8</TD>
+    <TD>0.8885</TD>
+    <TD>12.06</TD>
+    <TD>0.281</TD>
+    <TD>3.9</TD>
+    <TD>1.048</TD>
+    <TD>9.158</TD>
+    <TD>NaN</TD>
+    <TD>-0.5</TD>
+    <TD>1.001</TD>
   </TR>
   <TR>
     <TD>J211444.95-554108.8</TD>
     <TD>318.6873267</TD>
     <TD>-55.6857871</TD>
-    <TD>0.1292</TD>
-    <TD>0.1346</TD>
-    <TD>-0.0399</TD>
     <TD>16.166</TD>
     <TD>0.053</TD>
     <TD>20.4</TD>
@@ -4600,37 +4510,32 @@ ___ number of profile-fit flux measurements for source, band 4">
     <TD>0.395</TD>
     <TD>2.7</TD>
     <TD>0.8612</TD>
-    <TD>1</TD>
-    <TD>0</TD>
-    <TD>0.0</TD>
-    <TD>0.001</TD>
-    <TD>0.0</TD>
-    <TD>0.0</TD>
-    <TD>-216</TD>
-    <TD>505</TD>
-    <TD>-892</TD>
-    <TD>530</TD>
-    <TD>0000</TD>
-    <TD>0</TD>
-    <TD>00nn</TD>
-    <TD>AACC</TD>
-    <TD>0000</TD>
-    <TD>28</TD>
-    <TD>30</TD>
-    <TD>15</TD>
-    <TD>30</TD>
-    <TD>0</TD>
-    <TD>15</TD>
-    <TD>0</TD>
-    <TD>15</TD>
+  </TR>
+  <TR>
+    <TD>J212052.49-560237.0</TD>
+    <TD>320.2187499</TD>
+    <TD>-56.0436334</TD>
+    <TD>16.309</TD>
+    <TD>0.059</TD>
+    <TD>18.5</TD>
+    <TD>1.053</TD>
+    <TD>15.0</TD>
+    <TD>0.075</TD>
+    <TD>14.5</TD>
+    <TD>0.865</TD>
+    <TD>11.263</TD>
+    <TD>0.123</TD>
+    <TD>8.8</TD>
+    <TD>0.9012</TD>
+    <TD>8.848</TD>
+    <TD>NaN</TD>
+    <TD>0.8</TD>
+    <TD>1.113</TD>
   </TR>
   <TR>
     <TD>J211817.89-553536.7</TD>
     <TD>319.5745743</TD>
     <TD>-55.5935474</TD>
-    <TD>0.1575</TD>
-    <TD>0.1641</TD>
-    <TD>-0.0489</TD>
     <TD>16.341</TD>
     <TD>0.062</TD>
     <TD>17.4</TD>
@@ -4647,37 +4552,32 @@ ___ number of profile-fit flux measurements for source, band 4">
     <TD>NaN</TD>
     <TD>1.3</TD>
     <TD>0.9151</TD>
-    <TD>1</TD>
-    <TD>0</TD>
-    <TD>0.0</TD>
-    <TD>0.0</TD>
-    <TD>0.0</TD>
-    <TD>0.0</TD>
-    <TD>-1382</TD>
-    <TD>602</TD>
-    <TD>18</TD>
-    <TD>631</TD>
-    <TD>0000</TD>
-    <TD>0</TD>
-    <TD>00nn</TD>
-    <TD>AACU</TD>
-    <TD>0000</TD>
-    <TD>23</TD>
-    <TD>31</TD>
-    <TD>12</TD>
-    <TD>31</TD>
-    <TD>0</TD>
-    <TD>16</TD>
-    <TD>1</TD>
-    <TD>16</TD>
+  </TR>
+  <TR>
+    <TD>J212020.37-554053.4</TD>
+    <TD>320.0849087</TD>
+    <TD>-55.681513</TD>
+    <TD>17.331</TD>
+    <TD>0.147</TD>
+    <TD>7.4</TD>
+    <TD>1.065</TD>
+    <TD>16.477</TD>
+    <TD>0.239</TD>
+    <TD>4.5</TD>
+    <TD>0.9206</TD>
+    <TD>12.357</TD>
+    <TD>0.385</TD>
+    <TD>2.8</TD>
+    <TD>1.032</TD>
+    <TD>8.886</TD>
+    <TD>NaN</TD>
+    <TD>0.7</TD>
+    <TD>0.9154</TD>
   </TR>
   <TR>
     <TD>J211932.73-552943.0</TD>
     <TD>319.8864103</TD>
     <TD>-55.4952937</TD>
-    <TD>0.2208</TD>
-    <TD>0.2267</TD>
-    <TD>-0.0743</TD>
     <TD>16.78</TD>
     <TD>0.085</TD>
     <TD>12.8</TD>
@@ -4694,37 +4594,32 @@ ___ number of profile-fit flux measurements for source, band 4">
     <TD>NaN</TD>
     <TD>1.4</TD>
     <TD>0.9341</TD>
-    <TD>1</TD>
-    <TD>0</TD>
-    <TD>0.0</TD>
-    <TD>0.0</TD>
-    <TD>0.0</TD>
-    <TD>0.002</TD>
-    <TD>78</TD>
-    <TD>955</TD>
-    <TD>108</TD>
-    <TD>975</TD>
-    <TD>0000</TD>
-    <TD>0</TD>
-    <TD>0nnn</TD>
-    <TD>ABCU</TD>
-    <TD>0000</TD>
-    <TD>12</TD>
-    <TD>28</TD>
-    <TD>4</TD>
-    <TD>28</TD>
-    <TD>0</TD>
-    <TD>13</TD>
-    <TD>0</TD>
-    <TD>14</TD>
+  </TR>
+  <TR>
+    <TD>J211652.99-560822.8</TD>
+    <TD>319.2208267</TD>
+    <TD>-56.1396822</TD>
+    <TD>17.535</TD>
+    <TD>0.159</TD>
+    <TD>6.8</TD>
+    <TD>0.9832</TD>
+    <TD>16.579</TD>
+    <TD>0.229</TD>
+    <TD>4.7</TD>
+    <TD>0.9778</TD>
+    <TD>12.784</TD>
+    <TD>0.501</TD>
+    <TD>2.2</TD>
+    <TD>1.1</TD>
+    <TD>9.028</TD>
+    <TD>NaN</TD>
+    <TD>-1.1</TD>
+    <TD>0.8239</TD>
   </TR>
   <TR>
     <TD>J211745.35-551933.5</TD>
     <TD>319.4389641</TD>
     <TD>-55.3259886</TD>
-    <TD>0.362</TD>
-    <TD>0.3871</TD>
-    <TD>-0.1135</TD>
     <TD>17.348</TD>
     <TD>0.141</TD>
     <TD>7.7</TD>
@@ -4741,37 +4636,11 @@ ___ number of profile-fit flux measurements for source, band 4">
     <TD>NaN</TD>
     <TD>1.4</TD>
     <TD>0.8517</TD>
-    <TD>1</TD>
-    <TD>0</TD>
-    <TD>0.0</TD>
-    <TD>0.0</TD>
-    <TD>0.0</TD>
-    <TD>0.0</TD>
-    <TD>793</TD>
-    <TD>1605</TD>
-    <TD>-1230</TD>
-    <TD>1700</TD>
-    <TD>0000</TD>
-    <TD>0</TD>
-    <TD>nnnn</TD>
-    <TD>BBCU</TD>
-    <TD>0000</TD>
-    <TD>4</TD>
-    <TD>30</TD>
-    <TD>1</TD>
-    <TD>30</TD>
-    <TD>0</TD>
-    <TD>15</TD>
-    <TD>0</TD>
-    <TD>15</TD>
   </TR>
   <TR>
     <TD>J211621.38-554538.3</TD>
     <TD>319.0890992</TD>
     <TD>-55.7606653</TD>
-    <TD>0.2505</TD>
-    <TD>0.2637</TD>
-    <TD>-0.0785</TD>
     <TD>17.178</TD>
     <TD>0.118</TD>
     <TD>9.2</TD>
@@ -4788,37 +4657,11 @@ ___ number of profile-fit flux measurements for source, band 4">
     <TD>0.494</TD>
     <TD>2.2</TD>
     <TD>1.07</TD>
-    <TD>1</TD>
-    <TD>0</TD>
-    <TD>0.0</TD>
-    <TD>0.0</TD>
-    <TD>0.0</TD>
-    <TD>0.0</TD>
-    <TD>-940</TD>
-    <TD>1092</TD>
-    <TD>-15</TD>
-    <TD>1153</TD>
-    <TD>0000</TD>
-    <TD>0</TD>
-    <TD>nnnn</TD>
-    <TD>BACC</TD>
-    <TD>0000</TD>
-    <TD>4</TD>
-    <TD>30</TD>
-    <TD>4</TD>
-    <TD>30</TD>
-    <TD>0</TD>
-    <TD>16</TD>
-    <TD>0</TD>
-    <TD>16</TD>
   </TR>
   <TR>
     <TD>J211535.35-554339.0</TD>
     <TD>318.8972946</TD>
     <TD>-55.7275063</TD>
-    <TD>0.2836</TD>
-    <TD>0.2966</TD>
-    <TD>-0.0871</TD>
     <TD>17.239</TD>
     <TD>0.121</TD>
     <TD>9.0</TD>
@@ -4835,37 +4678,53 @@ ___ number of profile-fit flux measurements for source, band 4">
     <TD>NaN</TD>
     <TD>1.2</TD>
     <TD>0.9814</TD>
-    <TD>1</TD>
-    <TD>0</TD>
-    <TD>0.0</TD>
-    <TD>0.0</TD>
-    <TD>0.0</TD>
-    <TD>0.0</TD>
-    <TD>374</TD>
-    <TD>1256</TD>
-    <TD>1041</TD>
-    <TD>1321</TD>
-    <TD>0000</TD>
-    <TD>0</TD>
-    <TD>nnnn</TD>
-    <TD>BBBU</TD>
-    <TD>0000</TD>
-    <TD>6</TD>
-    <TD>30</TD>
-    <TD>4</TD>
-    <TD>30</TD>
-    <TD>0</TD>
-    <TD>15</TD>
-    <TD>0</TD>
-    <TD>15</TD>
+  </TR>
+  <TR>
+    <TD>J212104.82-552926.4</TD>
+    <TD>320.2700993</TD>
+    <TD>-55.4906874</TD>
+    <TD>16.454</TD>
+    <TD>0.07</TD>
+    <TD>15.5</TD>
+    <TD>1.103</TD>
+    <TD>15.16</TD>
+    <TD>0.082</TD>
+    <TD>13.3</TD>
+    <TD>0.8932</TD>
+    <TD>12.171</TD>
+    <TD>0.31</TD>
+    <TD>3.5</TD>
+    <TD>1.002</TD>
+    <TD>8.448</TD>
+    <TD>NaN</TD>
+    <TD>2.0</TD>
+    <TD>1.067</TD>
+  </TR>
+  <TR>
+    <TD>J212030.72-560347.2</TD>
+    <TD>320.1280372</TD>
+    <TD>-56.0631268</TD>
+    <TD>16.262</TD>
+    <TD>0.059</TD>
+    <TD>18.3</TD>
+    <TD>1.096</TD>
+    <TD>15.107</TD>
+    <TD>0.073</TD>
+    <TD>14.8</TD>
+    <TD>0.9247</TD>
+    <TD>12.095</TD>
+    <TD>0.334</TD>
+    <TD>3.3</TD>
+    <TD>0.7845</TD>
+    <TD>8.887</TD>
+    <TD>NaN</TD>
+    <TD>0.3</TD>
+    <TD>0.9652</TD>
   </TR>
   <TR>
     <TD>J211701.93-554915.8</TD>
     <TD>319.2580787</TD>
     <TD>-55.8210663</TD>
-    <TD>0.2611</TD>
-    <TD>0.2702</TD>
-    <TD>-0.0845</TD>
     <TD>16.939</TD>
     <TD>0.098</TD>
     <TD>11.1</TD>
@@ -4882,37 +4741,11 @@ ___ number of profile-fit flux measurements for source, band 4">
     <TD>NaN</TD>
     <TD>0.6</TD>
     <TD>1.042</TD>
-    <TD>1</TD>
-    <TD>0</TD>
-    <TD>0.0</TD>
-    <TD>0.0</TD>
-    <TD>0.0</TD>
-    <TD>0.0</TD>
-    <TD>879</TD>
-    <TD>1130</TD>
-    <TD>-799</TD>
-    <TD>1168</TD>
-    <TD>00P0</TD>
-    <TD>0</TD>
-    <TD>nnnn</TD>
-    <TD>ABCU</TD>
-    <TD>0000</TD>
-    <TD>9</TD>
-    <TD>29</TD>
-    <TD>0</TD>
-    <TD>29</TD>
-    <TD>0</TD>
-    <TD>15</TD>
-    <TD>0</TD>
-    <TD>15</TD>
   </TR>
   <TR>
     <TD>J211837.17-555938.5</TD>
     <TD>319.6549109</TD>
     <TD>-55.9940437</TD>
-    <TD>0.1115</TD>
-    <TD>0.1137</TD>
-    <TD>-0.0304</TD>
     <TD>15.901</TD>
     <TD>0.047</TD>
     <TD>23.2</TD>
@@ -4929,37 +4762,53 @@ ___ number of profile-fit flux measurements for source, band 4">
     <TD>NaN</TD>
     <TD>1.9</TD>
     <TD>0.8689</TD>
-    <TD>1</TD>
-    <TD>0</TD>
-    <TD>0.0</TD>
-    <TD>0.0</TD>
-    <TD>0.0</TD>
-    <TD>0.0</TD>
-    <TD>35</TD>
-    <TD>426</TD>
-    <TD>218</TD>
-    <TD>436</TD>
-    <TD>0000</TD>
-    <TD>0</TD>
-    <TD>00nn</TD>
-    <TD>AABU</TD>
-    <TD>0000</TD>
-    <TD>30</TD>
-    <TD>30</TD>
-    <TD>25</TD>
-    <TD>30</TD>
-    <TD>2</TD>
-    <TD>15</TD>
-    <TD>1</TD>
-    <TD>15</TD>
+  </TR>
+  <TR>
+    <TD>J212027.18-552410.5</TD>
+    <TD>320.1132899</TD>
+    <TD>-55.4029173</TD>
+    <TD>16.591</TD>
+    <TD>0.076</TD>
+    <TD>14.2</TD>
+    <TD>1.007</TD>
+    <TD>15.366</TD>
+    <TD>0.088</TD>
+    <TD>12.3</TD>
+    <TD>0.8789</TD>
+    <TD>11.966</TD>
+    <TD>0.297</TD>
+    <TD>3.7</TD>
+    <TD>0.9536</TD>
+    <TD>8.986</TD>
+    <TD>0.495</TD>
+    <TD>2.2</TD>
+    <TD>0.9086</TD>
+  </TR>
+  <TR>
+    <TD>J212010.75-555634.5</TD>
+    <TD>320.044827</TD>
+    <TD>-55.9429297</TD>
+    <TD>16.622</TD>
+    <TD>0.077</TD>
+    <TD>14.1</TD>
+    <TD>1.055</TD>
+    <TD>15.769</TD>
+    <TD>0.123</TD>
+    <TD>8.8</TD>
+    <TD>0.9023</TD>
+    <TD>12.555</TD>
+    <TD>0.465</TD>
+    <TD>2.3</TD>
+    <TD>1.009</TD>
+    <TD>8.496</TD>
+    <TD>NaN</TD>
+    <TD>1.9</TD>
+    <TD>0.9616</TD>
   </TR>
   <TR>
     <TD>J211443.61-553815.7</TD>
     <TD>318.6817258</TD>
     <TD>-55.6377196</TD>
-    <TD>0.1137</TD>
-    <TD>0.1179</TD>
-    <TD>-0.0315</TD>
     <TD>15.958</TD>
     <TD>0.048</TD>
     <TD>22.8</TD>
@@ -4976,29 +4825,6 @@ ___ number of profile-fit flux measurements for source, band 4">
     <TD>0.289</TD>
     <TD>3.8</TD>
     <TD>0.8283</TD>
-    <TD>1</TD>
-    <TD>0</TD>
-    <TD>0.0</TD>
-    <TD>0.0</TD>
-    <TD>0.0</TD>
-    <TD>0.0</TD>
-    <TD>1252</TD>
-    <TD>440</TD>
-    <TD>-1178</TD>
-    <TD>460</TD>
-    <TD>0000</TD>
-    <TD>0</TD>
-    <TD>11nn</TD>
-    <TD>AABB</TD>
-    <TD>0000</TD>
-    <TD>30</TD>
-    <TD>31</TD>
-    <TD>24</TD>
-    <TD>31</TD>
-    <TD>4</TD>
-    <TD>16</TD>
-    <TD>1</TD>
-    <TD>16</TD>
   </TR>
 </TABLEDATA>
 </DATA>

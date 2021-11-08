@@ -9,7 +9,7 @@
 import numpy as np, matplotlib.pyplot as plt, os
 from distutils.util import strtobool
 from astropy.io import fits
-from astropy.table import Table
+from astropy.table import Table, join
 from astropy.wcs import WCS
 from astropy.coordinates import SkyCoord
 from astropy import units as u
@@ -92,6 +92,7 @@ def radio_image_as_2d(file):
 
 class ForcedPhoto:
     'Aperture photometry functionality'
+    ###need to identify those input positions with pixel coords outside the image -need to mask these out to not break code
     
     def __init__(self, image_file, rms_file,
                  load_method=radio_image_as_2d,
@@ -351,16 +352,36 @@ class ForcedPhoto:
         return(psf_results)
 
 
-    def photoTable(self, targets, include_psf=True):
+    def photoTable(self, targets, include_psf=True,
+                   namecol='designation', acol='ra', dcol='dec',
+                   tposunits='deg'):
         'output astropy table with results, option to not do psf photo as this is slower'
         
-        aphot = self.aperture_measurements(targets=targets)
+        ###move inside phototab function
+        targetids = targets[namecol]
+        targetpos = SkyCoord(ra=targets[acol], dec=targets[dcol], unit=tposunits)
+        
+        ###mask out targets outside imge here
+        xc, yc = self.wcs.world_to_pixel(targetpos)
+        good_target_filter = ((xc>0) & (xc<=self.head['NAXIS1']-1)
+                              & (yc>0) & (yc<=self.head['NAXIS2']-1))##identifies only targets whose positions are within the image
+        
+        aphot = self.aperture_measurements(targets=targetpos[good_target_filter])
         if include_psf == True:
-            pphot = self.psf_measurements(targets=targets)
+            pphot = self.psf_measurements(targets=targetpos[good_target_filter])
         else:
             pphot = {}
 
-        return(Table({**aphot, **pphot}))
+        outdata = Table({**aphot, **pphot})
+        
+        ##add ID column
+        outdata.add_column(col=targetids[good_target_filter], index=0)
+        
+        ###join with original designation list to output nans/masked for where photometry not performed
+        outdata = join(Table({namecol: targetids}), outdata, keys=namecol,
+                       join_type='left')
+
+        return(outdata)
 
 
 def parse_args():
@@ -391,15 +412,14 @@ if __name__ == '__main__':
     
     ###load data, grab target names and positions
     targets = Table.read(args.targets)
-    targetids = targets[namecol]
-    targetpos = SkyCoord(ra=targets[acol], dec=targets[dcol], unit=tposunits)
 
     ##perform photometry
     photo = ForcedPhoto(image_file=args.image, rms_file=args.noise, load_method=radio_image_as_2d)
-    phototab = photo.photoTable(targets=targetpos, include_psf=args.model_psf)
+    phototab = photo.photoTable(targets=targets, include_psf=args.model_psf,
+                                namecol=namecol, acol=acol, dcol=dcol,
+                                tposunits=tposunits)
 
     ##finalise table and write to file
-    phototab.add_column(col=targetids, index=0) ##adds ID column
     phototab.write(outname, format=outformat)
 
 
