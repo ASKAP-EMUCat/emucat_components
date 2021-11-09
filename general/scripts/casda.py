@@ -24,13 +24,16 @@ def download_file(url, check_exists, output, timeout):
     # Large timeout is necessary as the file may need to be stage from tape
     logging.info(f"Requesting output: {os.path.basename(output)} URL: {url} Timeout: {timeout}")
 
+    if url is None:
+        raise ValueError('URL is empty')
+
     with urllib.request.urlopen(url, timeout=timeout) as r:
         http_size = int(r.info()['Content-Length'])
         if check_exists:
             try:
                 file_size = os.path.getsize(output)
                 if file_size == http_size:
-                    logging.info(f"File exists, ignoring: {output}")
+                    logging.info(f"File exists, ignoring: {os.path.basename(output)}")
                     # File exists and is same size; do nothing
                     return
             except FileNotFoundError:
@@ -50,7 +53,7 @@ def download_file(url, check_exists, output, timeout):
         if http_size != download_size:
             raise ValueError(f"File size does not match file {download_size} and http {http_size}")
 
-        logging.info(f"Download complete: {output}")
+        logging.info(f"Download complete: {os.path.basename(output)}")
 
 
 def download_casda_obscore_fits(rowset, check_exists, output_dir, timeout, credentials):
@@ -78,6 +81,7 @@ def download_casda_obscore_fits(rowset, check_exists, output_dir, timeout, crede
 
         first = root.findall('./ivoa:RESOURCE/ivoa:TABLE/ivoa:DATA/ivoa:TABLEDATA/ivoa:TR', ns)[0]
         output = f"{output_dir}/{filename}"
+
         download_file(first[1].text, check_exists, output, timeout)
 
         if 'image' in output:
