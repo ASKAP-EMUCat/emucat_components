@@ -56,6 +56,9 @@ def apply_mask( catalogue, mask_image, ra_col='RA', dec_col='DEC', overwrite=Tru
     naxis1 = mymask[0].header['NAXIS1']
     naxis2 = mymask[0].header['NAXIS2']
 
+    mymask.close()
+    del mymask
+
     ## find the flags -- this can take a while if the catalogue is large
     flags = []
     for x, y in pix_coords:
@@ -78,6 +81,10 @@ def apply_mask( catalogue, mask_image, ra_col='RA', dec_col='DEC', overwrite=Tru
     new_name = catalogue.replace('.fits', '_masked.fits')
     new_table.writeto( new_name, overwrite=overwrite )
     print("apply mask complete")
+
+    mycat.close()
+    del mycat
+
     return( new_name )
 
 def get_unmasked_area( mask_image, outdir, overwrite=True ):
@@ -100,6 +107,8 @@ def get_unmasked_area( mask_image, outdir, overwrite=True ):
         ## find the unmasked area
         area_asec = pix_area_asec * npix_unmasked
         mymask.close()
+        del mymask
+
         with open(os.path.join(outdir, 'unmasked_area.dat'), 'w') as f:
             f.write(str(area_asec))
         f.close()
@@ -123,6 +132,7 @@ def make_master_cat( multiwave_cat, overwrite=False, outdir='.', my_bands='J,H,K
     ## convert to table
     mw_tab = Table( mw_dat )
     mw_hdul.close()
+    del mw_hdul
 
     if os.path.isfile( outcat ) and not overwrite:
         print( 'Master catalogue already exists and overwrite is not set to true, exiting.' )
@@ -430,6 +440,9 @@ def find_Q0_fleuren( band, radio_dat, band_dat, radii, mask_image, outdir,
         ## read in the masked radio catalogue 
         masked_hdul = fits.open( masked_rand_cat )
         masked_dat = masked_hdul[1].data
+        masked_hdul.close()
+        del masked_hdul
+
         if masked_dat.shape[0] >= n_srcs:
             ## trim it down to the right size
             masked_dat = masked_dat[np.arange(n_srcs)]
@@ -682,6 +695,8 @@ def main( multiwave_cat, radio_cat, mask_image, config_file='lr_config.txt', ove
     master_hdul = fits.open( master_cat )
     master_hdr = master_hdul[1].header
     master_dat = master_hdul[1].data
+    master_hdul.close()
+    del master_hdul
 
     ## get the un-masked area
     area_asec = get_unmasked_area( mask_image, outdir=outdir, overwrite=overwrite )
@@ -692,6 +707,9 @@ def main( multiwave_cat, radio_cat, mask_image, config_file='lr_config.txt', ove
     ## read in the masked radio data
     radio_hdul = fits.open( masked_radio_cat )
     radio_dat = radio_hdul[1].data
+    radio_hdul.close()
+    del radio_hdul
+
     ## count the radio sources
     n_radio_sources = radio_dat.shape[0]
     ## find the positional error
@@ -801,6 +819,9 @@ def main( multiwave_cat, radio_cat, mask_image, config_file='lr_config.txt', ove
                                          outdir=outdir, LR_threshold=LR_threshold, ra_col=ra_col, dec_col=dec_col,
                                          mag_col=mag_col, id_col=id_col, rad_ra_col=radio_ra_col,
                                          rad_dec_col=radio_dec_col, rad_id_col=radio_id_col)
+
+        import gc
+        gc.collect()
 
         ## make another plot -- LR vs. separation
         final_matches = Table.read( final_file, format='ascii' )
