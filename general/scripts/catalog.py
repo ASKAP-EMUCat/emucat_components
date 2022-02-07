@@ -266,7 +266,7 @@ async def import_lhr_catalog(conn, filename: str):
 
     ns = '{http://www.ivoa.net/xml/VOTable/v1.4}'
 
-    data_types = [int, str, float, float, float, float, int]
+    data_types = [int, str, float, float, float, float]
     rows = []
     row = []
     type_count = 0
@@ -275,7 +275,7 @@ async def import_lhr_catalog(conn, filename: str):
         if event == 'end':
             if elem.tag == f"{ns}TR":
                 # remove q_warning element
-                row.pop()
+                #row.pop()
                 rows.append(row)
                 elem.clear()
             elif elem.tag == f"{ns}TD":
