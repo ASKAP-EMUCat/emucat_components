@@ -8,7 +8,7 @@ RUN apt install -y python3-setuptools
 RUN apt install -y python3
 RUN apt install -y wget
 RUN apt install -y python3-pip
-RUN pip3 install numpy astropy scipy matplotlib aplpy pandas
+RUN pip3 install setuptools wheel numpy astropy scipy matplotlib pandas pyregion
 
 RUN mkdir /input
 RUN mkdir /output

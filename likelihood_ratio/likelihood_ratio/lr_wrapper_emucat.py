@@ -151,7 +151,7 @@ def output_to_VOTable(fname_in, fname_out, overwrite=True,
                       merge_with_other=False, other_table='',
                       other_format='votable', main_on='', other_on='',
                       needcolumns=[]):
-    'take output data and convert to votable for emucat'
+    #'take output data and convert to votable for emucat'
     
     data = Table.read(fname_in, format='ascii')
     
@@ -224,13 +224,13 @@ def run_lr(fakefile='fakemask.fits', racol='ra', deccol='dec'):
     ###convert outputs (keep those that end in '_LR_matches.dat') to VOTable
     ###add merging tables to get q_warning
 
-    for filename in os.listdir(outdir):
-        if '_LR_matches.dat' in filename:
-            newname = os.path.join(outdir, filename.split('.')[0] + '.xml')
-            output_to_VOTable(fname_in=os.path.join(outdir, filename), fname_out=newname,
-                              overwrite=True, merge_with_other=True, other_table=fitsnames[1],
-                              other_format='fits', main_on='radio_ID', other_on=radio_id,
-                              needcolumns=['q_warning'])
+    #for filename in os.listdir(outdir):
+    #    if '_LR_matches.dat' in filename:
+    #        newname = os.path.join(outdir, filename.split('.')[0] + '.xml')
+    #        output_to_VOTable(fname_in=os.path.join(outdir, filename), fname_out=newname,
+    #                          overwrite=True, merge_with_other=True, other_table=fitsnames[1],
+    #                          other_format='fits', main_on='radio_ID', other_on=radio_id,
+    #                          needcolumns=['q_warning'])
 
     ##tidy up - get rid of surplus (add in moving files to target directory)
     '''for filename in file_list:

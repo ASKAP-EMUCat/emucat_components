@@ -13,7 +13,7 @@ from scipy.optimize import curve_fit
 import matplotlib
 matplotlib.use('Agg')
 from matplotlib import pyplot as plt
-import aplpy
+#import aplpy
 import multiprocessing
 from multiprocessing import Process, Queue
 
@@ -649,13 +649,15 @@ def LR_and_reliability( band, band_dat, radio_dat, qm_nm, sigma_pos, mag_bins, r
     t[band_name_sep] = separation
 
     print( 'Found a total of %s candidates'%str(count) )
-    outfile = os.path.join(outdir, band + '_LR_matches.dat')
+    #outfile = os.path.join(outdir, band + '_LR_matches.dat')
+    outfile = os.path.join(outdir, band + '_LR_matches.xml')
+    out_fits = os.path.join(outdir, band + '_LR_matches.fits')
     #outfile = band + '_LR_matches.xml' #updated to output VOTab for EMUcat - yg
     print( 'Saving matches to %s'%outfile )
-    t.write( outfile, format='csv', overwrite=True, fast_writer=True)
-    #t.write( outfile, format='votable', overwrite=True) #updated to output VOTab for EMUcat - yg
-
-    return( outfile )
+    #t.write( outfile, format='csv', overwrite=True, fast_writer=True)
+    t.write( outfile, format='votable', overwrite=True) #updated to output VOTab for EMUcat - yg
+    t.write(out_fits, format='fits', overwrite=True)
+    return( out_fits )
 
 
 def main( multiwave_cat, radio_cat, mask_image, config_file='lr_config.txt', overwrite=False, snr_cut=5.0, LR_threshold=0.8 ):
@@ -720,12 +722,12 @@ def main( multiwave_cat, radio_cat, mask_image, config_file='lr_config.txt', ove
 
     ## make a plot of the sky coverage
     ## first get a colormap
-    cmap = matplotlib.cm.get_cmap('magma')
-    im = aplpy.FITSFigure( mask_image )
-    im.show_markers( master_dat[ra_col], master_dat[dec_col], marker=',', facecolor='0.4', edgecolor='0.4' )
-    im.show_markers( radio_dat[radio_ra_col], radio_dat[radio_dec_col], marker='*', facecolor=cmap(0.75), edgecolor=cmap(0.15), linewidth=0.3, s=70  )
-    im.save(os.path.join(outdir, 'Sky_coverage.png'))
-    im.close()
+    #cmap = matplotlib.cm.get_cmap('magma')
+    #im = aplpy.FITSFigure( mask_image )
+    #im.show_markers( master_dat[ra_col], master_dat[dec_col], marker=',', facecolor='0.4', edgecolor='0.4' )
+    #im.show_markers( radio_dat[radio_ra_col], radio_dat[radio_dec_col], marker='*', facecolor=cmap(0.75), edgecolor=cmap(0.15), linewidth=0.3, s=70  )
+    #im.save(os.path.join(outdir, 'Sky_coverage.png'))
+    #im.close()
     
 
     for my_band in my_bands:
@@ -820,11 +822,8 @@ def main( multiwave_cat, radio_cat, mask_image, config_file='lr_config.txt', ove
                                          mag_col=mag_col, id_col=id_col, rad_ra_col=radio_ra_col,
                                          rad_dec_col=radio_dec_col, rad_id_col=radio_id_col)
 
-        import gc
-        gc.collect()
-
         ## make another plot -- LR vs. separation
-        final_matches = Table.read( final_file, format='ascii' )
+        final_matches = Table.read( final_file, format='fits' )
         ## plot the LR values where the reliability is above the threshold
         rel_col = my_band + '_Rel'
         lr_thresh_idx = np.where( final_matches[rel_col] >= LR_threshold )[0]
