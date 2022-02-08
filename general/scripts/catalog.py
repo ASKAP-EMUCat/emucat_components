@@ -1,7 +1,8 @@
 #!python3
-import xml.etree.ElementTree as ET
+import xml.etree.cElementTree as ET
 import asyncio
 import asyncpg
+import csv
 import os
 import sys
 import random
@@ -102,7 +103,7 @@ async def db_components_upsert_many(conn, rows):
 
 
 async def db_lhr_upsert_many(conn, rows):
-    await conn.executemany('INSERT INTO emucat.sources_lhr_allwise ("component_id", "wise_id", "w1_lr",'
+    '''await conn.executemany('INSERT INTO emucat.sources_lhr_allwise ("component_id", "wise_id", "w1_lr",'
                            '"w1_rel","w1_n_cont","w1_separation")'
                            'VALUES($1, $2, $3, $4, $5, $6) '
                            'ON CONFLICT ("component_id", "wise_id") '
@@ -112,6 +113,8 @@ async def db_lhr_upsert_many(conn, rows):
                            '"w1_n_cont"=EXCLUDED."w1_n_cont",'
                            '"w1_separation"=EXCLUDED."w1_separation"',
                            rows)
+    '''
+    await conn.copy_records_to_table('emucat.sources_lhr_allwise', records=rows)
 
 
 async def db_match_nearest_neighbour_with_allwise(conn, ser_name: str, max_separation_rads: float):
@@ -262,33 +265,52 @@ async def import_selavy_catalog(conn, ser_name: str, filename: str):
         await db_components_upsert_many(conn, rows)
 
 
+def iter_csv(filename: str):
+    with open(filename, newline='') as csvfile:
+        csv_reader = csv.reader(csvfile, delimiter=',')
+        next(csv_reader) # skip header
+        for row in csv_reader:
+            yield row
+
+
 async def import_lhr_catalog(conn, filename: str):
-
-    ns = '{http://www.ivoa.net/xml/VOTable/v1.4}'
-
-    data_types = [int, str, float, float, float, float]
     rows = []
-    row = []
-    type_count = 0
 
-    for event, elem in ET.iterparse(filename, events=('start', 'end', 'start-ns', 'end-ns')):
-        if event == 'end':
+    logging.info('import_lhr_catalog being parse')
+    
+    for r in iter_csv(filename):
+        row = [int(r[0]), r[1], float(r[2]), float(r[3]), float(r[4]), float(r[5])]
+        rows.append(row)
+
+    '''for event, elem in ET.iterparse(filename, events=('start', 'end', 'start-ns', 'end-ns')):
+        if event == 'nf-start':
+            ns = f'{elem[1]}'
+
+        elif event == 'end':
             if elem.tag == f"{ns}TR":
                 # remove q_warning element
                 #row.pop()
-                rows.append(row)
+                rows.append(row)              
                 elem.clear()
             elif elem.tag == f"{ns}TD":
                 value = data_types[type_count](elem.text)
                 row.append(value)
                 type_count += 1
+                elem.clear()
         elif event == 'start':
             if elem.tag == f"{ns}TR":
                 row = []
                 type_count = 0
+                elem.clear()
+    '''
 
-    async with conn.transaction():
-        await db_lhr_upsert_many(conn, rows)
+    logging.info('import_lhr_catalog end parse')
+
+    logging.info('import_lhr_catalog begin import')
+
+    await db_lhr_upsert_many(conn, rows)
+    
+    logging.info('import_lhr_catalog end import')
 
 
 def import_lhr(args):
@@ -304,7 +326,10 @@ async def import_extended_double_catalog(conn, filename):
     type_count = 0
 
     for event, elem in ET.iterparse(filename, events=('start', 'end', 'start-ns', 'end-ns')):
-        if event == 'end':
+        if event == 'nf-start':
+            ns = f'{elem[1]}'
+        
+        elif event == 'end':
             if elem.tag == f"{ns}TR":
                 dec = row.pop()
                 ra = row.pop()
@@ -316,11 +341,14 @@ async def import_extended_double_catalog(conn, filename):
                 value = data_types[type_count](elem.text)
                 row.append(value)
                 type_count += 1
+                elem.clear()
+
         elif event == 'start':
             if elem.tag == f"{ns}TR":
                 row = []
                 type_count = 0
-
+                elem.clear()
+                
     async with conn.transaction():
         await db_insert_extended_doubles(conn, rows)
 
