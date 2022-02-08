@@ -649,13 +649,13 @@ def LR_and_reliability( band, band_dat, radio_dat, qm_nm, sigma_pos, mag_bins, r
     t[band_name_sep] = separation
 
     print( 'Found a total of %s candidates'%str(count) )
-    #outfile = os.path.join(outdir, band + '_LR_matches.dat')
-    outfile = os.path.join(outdir, band + '_LR_matches.xml')
+    outfile = os.path.join(outdir, band + '_LR_matches.csv')
+    #outfile = os.path.join(outdir, band + '_LR_matches.xml')
     out_fits = os.path.join(outdir, band + '_LR_matches.fits')
     #outfile = band + '_LR_matches.xml' #updated to output VOTab for EMUcat - yg
     print( 'Saving matches to %s'%outfile )
     #t.write( outfile, format='csv', overwrite=True, fast_writer=True)
-    t.write( outfile, format='votable', overwrite=True) #updated to output VOTab for EMUcat - yg
+    t.write( outfile, format='ascii', overwrite=True) #updated to output VOTab for EMUcat - yg
     t.write(out_fits, format='fits', overwrite=True)
     return( out_fits )
 
