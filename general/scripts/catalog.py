@@ -114,7 +114,7 @@ async def db_lhr_upsert_many(conn, rows):
                            '"w1_separation"=EXCLUDED."w1_separation"',
                            rows)
     '''
-    await conn.copy_records_to_table('emucat.sources_lhr_allwise', records=rows)
+    await conn.copy_records_to_table(table_name='sources_lhr_allwise', records=rows, schema_name='emucat')
 
 
 async def db_match_nearest_neighbour_with_allwise(conn, ser_name: str, max_separation_rads: float):
