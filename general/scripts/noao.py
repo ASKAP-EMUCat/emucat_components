@@ -38,7 +38,7 @@ def read_noao_credentials(credentials: str):
     return user, password
 
 def connect_to_noao():
-    return vo.dal.TAPService("https://datalab.noao.edu/tap")
+    return vo.dal.TAPService("https://datalab.noirlab.edu/tap")
 
 
 async def _import_des_dr1_from_lhr(ser: str, output: str, credentials: str):
@@ -71,6 +71,8 @@ async def _import_des_dr1_from_lhr(ser: str, output: str, credentials: str):
     insert_conn = None
     conn = None
     try:
+        logging.info(f'Getting lhr sources that dont already exist in des_dr1.')
+
         noao = await loop.run_in_executor(None, connect_to_noao)
         insert_conn = await asyncpg.connect(user=user, password=password, database=database, host=host, port=port)
         conn = await asyncpg.connect(user=user, password=password, database=database, host=host, port=port)
@@ -199,6 +201,8 @@ async def _import_des_dr2_from_lhr(ser: str, output: str, credentials: str):
     insert_conn = None
     conn = None
     try:
+        logging.info(f'Getting lhr sources that dont already exist in des_dr2.')
+
         noao = await loop.run_in_executor(None, connect_to_noao)
         insert_conn = await asyncpg.connect(user=user, password=password, database=database, host=host, port=port)
         conn = await asyncpg.connect(user=user, password=password, database=database, host=host, port=port)
