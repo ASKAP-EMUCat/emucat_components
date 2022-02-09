@@ -37,9 +37,6 @@ def read_noao_credentials(credentials: str):
     password = config['noao']['password']
     return user, password
 
-def connect_to_noao():
-    return vo.dal.TAPService("https://datalab.noirlab.edu/tap")
-
 
 async def _import_des_dr1_from_lhr(ser: str, output: str, credentials: str):
     loop = asyncio.get_event_loop()
@@ -73,7 +70,6 @@ async def _import_des_dr1_from_lhr(ser: str, output: str, credentials: str):
     try:
         logging.info(f'Getting lhr sources that dont already exist in des_dr1.')
 
-        noao = await loop.run_in_executor(None, connect_to_noao)
         insert_conn = await asyncpg.connect(user=user, password=password, database=database, host=host, port=port)
         conn = await asyncpg.connect(user=user, password=password, database=database, host=host, port=port)
         async with conn.transaction():
@@ -123,6 +119,7 @@ async def _import_des_dr1_from_lhr(ser: str, output: str, credentials: str):
 
         logging.info(f'Cross matching with des_dr1.')
         resp = qc.query(sql=query, fmt='csv', out=f"vos://{out_table}", drop=True, timeout=600) #async_=True, wait=True, timeout=3000, poll=1)
+        #resp = qc.query(adql=query, fmt='csv', out=f"vos://{out_table}", drop=True, async_=True, wait=True, timeout=3000, poll=1)
         if resp != 'OK':
             raise Exception(f'query: {resp}')
             
@@ -159,6 +156,7 @@ async def _import_des_dr1_from_lhr(ser: str, output: str, credentials: str):
                                             'ON CONFLICT ("wise_id", "coadd_object_id") '
                                             'DO NOTHING',
                                             xmatch_rows)
+
     finally:
         if insert_conn:
             await insert_conn.close()
@@ -203,7 +201,6 @@ async def _import_des_dr2_from_lhr(ser: str, output: str, credentials: str):
     try:
         logging.info(f'Getting lhr sources that dont already exist in des_dr2.')
 
-        noao = await loop.run_in_executor(None, connect_to_noao)
         insert_conn = await asyncpg.connect(user=user, password=password, database=database, host=host, port=port)
         conn = await asyncpg.connect(user=user, password=password, database=database, host=host, port=port)
         async with conn.transaction():
