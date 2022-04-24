@@ -9,6 +9,7 @@ on:
       - 'master'
     paths:
       - 'general/**'
+      - 'likelihood_ratio/likelihood_ratio/**'
 
 jobs:
   docker:
