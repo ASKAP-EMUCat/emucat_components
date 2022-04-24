@@ -268,9 +268,9 @@ async def import_selavy_catalog(conn, ser_name: str, filename: str):
         await db_components_upsert_many(conn, rows)
 
 
-def iter_csv(filename: str):
+def iter_csv(filename: str, delimiter=','):
     with open(filename, newline='') as csvfile:
-        csv_reader = csv.reader(csvfile, delimiter=',')
+        csv_reader = csv.reader(csvfile, delimiter=delimiter)
         next(csv_reader) # skip header
         for row in csv_reader:
             yield row
@@ -281,7 +281,7 @@ async def import_lhr_catalog(conn, filename: str):
 
     logging.info('import_lhr_catalog being parse')
     
-    for r in iter_csv(filename):
+    for r in iter_csv(filename=filename, delimiter=' '):
         row = [int(r[0]), r[1], float(r[2]), float(r[3]), float(r[4]), float(r[5])]
         rows.append(row)
 
