@@ -137,7 +137,7 @@ def main():
 
     # Example: '9287', '9325', '9351', '9410', '9434', '9437', '9442', '9501', '10083', '10635'
     query = f"select * from ivoa.obscore where obs_id in ({obs_list}) and " \
-            f"(filename like 'weights.i.%.cont.taylor._.fits' or filename like 'image.i.%.cont.taylor._.restored.fits')"
+            f"(filename like 'weights.i.%.cont.taylor._.fits' or filename like 'image.i.%.cont.taylor._.alt.restored.fits')"
 
     service = vo.dal.TAPService(URL)
     rowset = service.search(query)
