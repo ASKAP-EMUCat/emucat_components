@@ -103,7 +103,7 @@ async def db_components_upsert_many(conn, rows):
 
 
 async def db_lhr_upsert_many(conn, rows):
-    '''await conn.executemany('INSERT INTO emucat.sources_lhr_allwise ("component_id", "wise_id", "w1_lr",'
+    await conn.executemany('INSERT INTO emucat.sources_lhr_allwise ("component_id", "wise_id", "w1_lr",'
                            '"w1_rel","w1_n_cont","w1_separation")'
                            'VALUES($1, $2, $3, $4, $5, $6) '
                            'ON CONFLICT ("component_id", "wise_id") '
@@ -113,11 +113,11 @@ async def db_lhr_upsert_many(conn, rows):
                            '"w1_n_cont"=EXCLUDED."w1_n_cont",'
                            '"w1_separation"=EXCLUDED."w1_separation"',
                            rows)
-    '''
-    await conn.copy_records_to_table(table_name='sources_lhr_allwise', 
-                                     records=rows, 
-                                     columns=["component_id", "wise_id", "w1_lr", "w1_rel", "w1_n_cont", "w1_separation"], 
-                                     schema_name='emucat')
+    
+    #await conn.copy_records_to_table(table_name='sources_lhr_allwise', 
+    #                                 records=rows, 
+    #                                 columns=["component_id", "wise_id", "w1_lr", "w1_rel", "w1_n_cont", "w1_separation"], 
+    #                                 schema_name='emucat')
 
 
 async def db_match_nearest_neighbour_with_allwise(conn, ser_name: str, max_separation_rads: float):
