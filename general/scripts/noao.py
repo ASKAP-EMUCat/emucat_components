@@ -8,6 +8,7 @@ import asyncpg
 import asyncio
 import configparser
 import pyvo as vo
+import copy 
 
 from pathlib import Path
 from dl import queryClient as qc
@@ -41,8 +42,10 @@ def read_noao_credentials(credentials: str):
 async def _import_des_dr1_from_lhr(ser: str, output: str, credentials: str):
     loop = asyncio.get_event_loop()
 
-    in_table = f"{ser.lower()}_des_dr1_allwise"
-    out_table = f"{ser.lower()}_des_dr1_xmatched.csv"
+    ser_mod = copy.deepcopy(ser).replace('-', '_').lower()
+
+    in_table = f"{ser_mod}_des_dr1_allwise"
+    out_table = f"{ser_mod}_des_dr1_xmatched.csv"
 
     Path(output).mkdir(parents=True, exist_ok=True)
 
@@ -157,6 +160,7 @@ async def _import_des_dr1_from_lhr(ser: str, output: str, credentials: str):
                                             'DO NOTHING',
                                             xmatch_rows)
 
+
     finally:
         if insert_conn:
             await insert_conn.close()
@@ -172,8 +176,10 @@ async def _import_des_dr1_from_lhr(ser: str, output: str, credentials: str):
 async def _import_des_dr2_from_lhr(ser: str, output: str, credentials: str):
     loop = asyncio.get_event_loop()
 
-    in_table = f"{ser.lower()}_des_dr2_allwise"
-    out_table = f"{ser.lower()}_des_dr2_xmatched.csv"
+    ser_mod = copy.deepcopy(ser).replace('-', '_').lower()
+
+    in_table = f"{ser_mod}_des_dr2_allwise"
+    out_table = f"{ser_mod}_des_dr2_xmatched.csv"
 
     Path(output).mkdir(parents=True, exist_ok=True)
 
