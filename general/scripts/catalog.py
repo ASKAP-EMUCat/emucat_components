@@ -103,16 +103,38 @@ async def db_components_upsert_many(conn, rows):
 
 
 async def db_lhr_upsert_many(conn, rows):
-    await conn.executemany('INSERT INTO emucat.sources_lhr_allwise ("component_id", "wise_id", "w1_lr",'
-                           '"w1_rel","w1_n_cont","w1_separation")'
-                           'VALUES($1, $2, $3, $4, $5, $6) '
-                           'ON CONFLICT ("component_id", "wise_id") '
-                           'DO UPDATE SET '
-                           '"w1_lr"=EXCLUDED."w1_lr",'
-                           '"w1_rel"=EXCLUDED."w1_rel",'
-                           '"w1_n_cont"=EXCLUDED."w1_n_cont",'
-                           '"w1_separation"=EXCLUDED."w1_separation"',
-                           rows)
+    table_name = ''.join(random.choice(string.ascii_letters) for m in range(6)).lower()
+
+    async with conn.transaction():
+        create_table = '''
+                        CREATE TEMPORARY TABLE {table_name} (
+                        component_id bigint,
+                        wise_id character varying,
+                        w1_lr double precision,
+                        w1_rel double precision,
+                        w1_n_cont double precision,
+                        w1_separation double precision)
+                        '''.format(table_name=table_name)
+
+        await conn.execute(create_table)
+        await conn.copy_records_to_table(table_name, records=rows)
+
+        insert_query = '''
+                        INSERT INTO emucat.sources_lhr_allwise
+                        (component_id, wise_id, w1_lr,
+                        w1_rel, w1_n_cont, w1_separation) 
+                        SELECT * FROM {table_name} 
+                        ON CONFLICT (component_id, wise_id) 
+                        DO UPDATE SET 
+                        w1_lr=EXCLUDED.w1_lr,
+                        w1_rel=EXCLUDED.w1_rel,
+                        w1_n_cont=EXCLUDED.w1_n_cont,
+                        w1_separation=EXCLUDED.w1_separation 
+                        WHERE emucat.sources_lhr_allwise.component_id <> EXCLUDED.component_id AND 
+                              emucat.sources_lhr_allwise.wise_id <> EXCLUDED.wise_id
+                        '''.format(table_name=table_name)
+
+        await conn.execute(insert_query)
     
     #await conn.copy_records_to_table(table_name='sources_lhr_allwise', 
     #                                 records=rows, 
@@ -279,7 +301,7 @@ def iter_csv(filename: str, delimiter=','):
 async def import_lhr_catalog(conn, filename: str):
     rows = []
 
-    logging.info('import_lhr_catalog being parse')
+    logging.info('import_lhr_catalog begin parse')
     
     for r in iter_csv(filename=filename, delimiter=' '):
         row = [int(r[0]), r[1], float(r[2]), float(r[3]), float(r[4]), float(r[5])]
