@@ -42,7 +42,7 @@ def read_noao_credentials(credentials: str):
 async def _import_des_dr1_from_lhr(ser: str, output: str, credentials: str):
     loop = asyncio.get_event_loop()
 
-    ser_mod = copy.deepcopy(ser).replace('-', '_').lower()
+    ser_mod = copy.deepcopy(ser).replace('-', '_').replace('+', '_').lower()
 
     in_table = f"{ser_mod}_des_dr1_allwise"
     out_table = f"{ser_mod}_des_dr1_xmatched.csv"
@@ -176,7 +176,7 @@ async def _import_des_dr1_from_lhr(ser: str, output: str, credentials: str):
 async def _import_des_dr2_from_lhr(ser: str, output: str, credentials: str):
     loop = asyncio.get_event_loop()
 
-    ser_mod = copy.deepcopy(ser).replace('-', '_').lower()
+    ser_mod = copy.deepcopy(ser).replace('-', '_').replace('+', '_').lower()
 
     in_table = f"{ser_mod}_des_dr2_allwise"
     out_table = f"{ser_mod}_des_dr2_xmatched.csv"
