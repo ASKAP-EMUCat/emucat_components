@@ -8,8 +8,9 @@ import asyncpg
 import asyncio
 import configparser
 import pyvo as vo
-import copy 
+import copy
 
+from astropy.io import ascii
 from pathlib import Path
 from dl import queryClient as qc
 from dl import authClient as ac
@@ -39,6 +40,214 @@ def read_noao_credentials(credentials: str):
     return user, password
 
 
+async def _import_vhs_from_lhr(ser: str, output: str, credentials: str):
+
+    ser_mod = copy.deepcopy(ser).replace('-', '_').replace('+', '_').lower()
+
+    in_table = f"vhs_allwise_{ser_mod}"
+    out_table = f"vhs_xmatched_{ser_mod}"
+
+    Path(output).mkdir(parents=True, exist_ok=True)
+
+    try:
+        os.remove(f"{output}/{out_table}")
+    except OSError:
+        pass
+
+    user, password, database, host, port = read_credentials(credentials)
+
+    # Get the lhr sources that dont already exist in des_dr1
+    sql =  '''
+           SELECT distinct(aw.designation), trim(aw.source_id) as source_id
+           FROM emucat.components c, emucat.mosaics m, emucat.regions s, 
+           emucat.sources_lhr_allwise lhr 
+           LEFT JOIN emucat.allwise as aw on lhr.wise_id=aw.designation 
+           LEFT JOIN emucat.vhs_dr5_allwise as vhs on aw.source_id=vhs.aw_source_id 
+           WHERE c.mosaic_id=m.id 
+           AND m.ser_id=s.id 
+           AND lhr.component_id=c.id 
+           AND s.name=$1 
+           AND vhs.aw_source_id is NULL
+           '''
+
+    insert_conn = None
+    conn = None
+    try:
+        logging.info(f'Getting lhr sources that dont already exist in vhs.')
+
+        conn = await asyncpg.connect(user=user, password=password, database=database, host=host, port=port)
+        records = await conn.fetch(sql, ser)
+        if not records:
+            return
+
+        logging.info(f'Writing vhs records from {len(records)} lhr matches.')
+
+        with open(f"{output}/{in_table}.csv", 'w') as csvfile:
+            filewriter = csv.writer(csvfile)
+            filewriter.writerow(["source_id"])
+            for s in records:
+                filewriter.writerow([f"{s[1]}"])
+
+        with open(f"{output}/{in_table}_schema.txt", 'w') as csvfile:
+            filewriter = csv.writer(csvfile)
+            filewriter.writerow(["source_id", "text"])
+
+        noao_user, noao_password = read_noao_credentials(credentials)
+        token = ac.login(noao_user, noao_password)
+
+        logging.info(f'Uploading table.')
+
+        # create remote table at noao and import data
+        resp = qc.mydb_create(in_table, f"{output}/{in_table}_schema.txt", drop=True)
+        if resp != 'OK':
+            raise Exception('mydb_create failed')
+
+        resp = qc.mydb_import(in_table, f"{output}/{in_table}.csv", drop=True)
+        if resp != 'OK':
+            raise Exception('mydb_import failed')
+
+        logging.info(f'Uploading complete.')
+        
+        query = "SELECT xm.*, vhs.* " \
+                f"FROM vhs_dr5.vhs_cat_v3 as vhs, vhs_dr5.x1p5__vhs_cat_v3__allwise__source as xm, mydb://{in_table} as aw " \
+                "WHERE xm.id1=vhs.sourceid AND aw.source_id=xm.id2"
+
+        logging.info(f'Cross matching with vhs.')
+    
+        resp = qc.query(sql=query, fmt='table', out=f"vos://{out_table}", drop=True, timeout=600)
+        if resp != 'OK':
+            raise Exception(f'query: {resp}')
+            
+        sc.get(f"vos://{out_table}", f"{output}/{out_table}")
+
+        logging.info(f'Cross matching with vhs complete.')
+
+        vhs_rows = []
+        xmatch_rows = []
+        data = ascii.read(out_table)
+        for r in data:
+            vhs_rows.append([r['sourcename'], r['sourceid'],r['cueventid'],
+            r['framesetid'],r['ra2000'],r['dec2000'],r['l'],
+            r['b'],r['lambda'],r['eta'],r['priorsec'],
+            r['ymjpnt'],r['ymjpnterr'],r['jmhpnt'],r['jmhpnterr'],
+            r['hmkspnt'],r['hmkspnterr'],r['jmkspnt'],r['jmkspnterr'],
+            r['ymjext'],r['ymjexterr'],r['jmhext'],r['jmhexterr'],
+            r['hmksext'],r['hmksexterr'],r['jmksext'],r['jmksexterr'],
+            r['mergedclassstat'],r['mergedclass'],r['pstar'],r['pgalaxy'],
+            r['pnoise'],r['psaturated'],r['ebv'],r['ay'],
+            r['aj'],r['ah'],r['aks'],r['ymjd'],
+            r['ypetromag'],r['ypetromagerr'],r['yapermag3'],r['yapermag3err'],
+            r['yapermag4'],r['yapermag4err'],r['yapermag6'],r['yapermag6err'],
+            r['yapermagnoapercorr3'],r['yapermagnoapercorr4'],
+            r['yapermagnoapercorr6'],r['yhlcorsmjradas'],
+            r['ygausig'],r['yell'],r['ypa'],r['yerrbits'],
+            r['yaverageconf'],r['yclass'],r['yclassstat'],r['ypperrbits'],
+            r['yseqnum'],r['yxi'],r['yeta'],r['jmjd'],
+            r['jpetromag'],r['jpetromagerr'],r['japermag3'],r['japermag3err'],
+            r['japermag4'],r['japermag4err'],r['japermag6'],r['japermag6err'],
+            r['japermagnoapercorr3'],r['japermagnoapercorr4'],
+            r['japermagnoapercorr6'],r['jhlcorsmjradas'],
+            r['jgausig'],r['jell'],r['jpa'],r['jerrbits'],
+            r['javerageconf'],r['jclass'],r['jclassstat'],r['jpperrbits'],
+            r['jseqnum'],r['jxi'],r['jeta'],r['hmjd'],
+            r['hpetromag'],r['hpetromagerr'],r['hapermag3'],r['hapermag3err'],
+            r['hapermag4'],r['hapermag4err'],r['hapermag6'],r['hapermag6err'],
+            r['hapermagnoapercorr3'],r['hapermagnoapercorr4'],
+            r['hapermagnoapercorr6'],r['hhlcorsmjradas'],
+            r['hgausig'],r['hell'],r['hpa'],r['herrbits'],
+            r['haverageconf'],r['hclass'],r['hclassstat'],r['hpperrbits'],
+            r['hseqnum'],r['hxi'],r['heta'],r['ksmjd'],
+            r['kspetromag'],r['kspetromagerr'],r['ksapermag3'],r['ksapermag3err'],
+            r['ksapermag4'],r['ksapermag4err'],r['ksapermag6'],r['ksapermag6err'],
+            r['ksapermagnoapercorr3'],r['ksapermagnoapercorr4'],
+            r['ksapermagnoapercorr6'],r['kshlcorsmjradas'],
+            r['ksgausig'],r['ksell'],r['kspa'],r['kserrbits'],
+            r['ksaverageconf'],r['ksclass']])
+            
+            xmatch_rows.append([r['id1'], r['ra1'], r['ra2'], r['id2'], r['ra2'], r['dec2'], r['distance']])
+
+        logging.info(f'Inserting {len(xmatch_rows)} into vhs.')
+
+        INSERT = '''
+                 INSERT INTO emucat.vhs_dr5_cat_v3 (
+                    sourcename,sourceid,
+                    cueventid,framesetid,
+                    ra2000,dec2000,l,b,lambda,
+                    eta,priorsec,ymjpnt,ymjpnterr,jmhpnt,
+                    jmhpnterr,hmkspnt,hmkspnterr,jmkspnt,
+                    jmkspnterr,ymjext,ymjexterr,jmhext,
+                    jmhexterr,hmksext,hmksexterr,jmksext,
+                    jmksexterr,mergedclassstat,mergedclass,pstar,
+                    pgalaxy,pnoise,psaturated,ebv,
+                    ay,aj,ah,aks,ymjd,ypetromag,
+                    ypetromagerr,yapermag3,yapermag3err,yapermag4,
+                    yapermag4err,yapermag6,yapermag6err,yapermagnoapercorr3,
+                    yapermagnoapercorr4,yapermagnoapercorr6,
+                    yhlcorsmjradas,ygausig,yell,ypa,
+                    yerrbits,yaverageconf,yclass,yclassstat,
+                    ypperrbits,yseqnum,yxi,yeta,jmjd,
+                    jpetromag,jpetromagerr,japermag3,japermag3err,
+                    japermag4,japermag4err,japermag6,japermag6err,
+                    japermagnoapercorr3,japermagnoapercorr4,
+                    japermagnoapercorr6,jhlcorsmjradas,
+                    jgausig,jell,jpa,jerrbits,
+                    javerageconf,jclass,jclassstat,jpperrbits,
+                    jseqnum,jxi,jeta,hmjd,hpetromag,
+                    hpetromagerr,hapermag3,hapermag3err,hapermag4,
+                    hapermag4err,hapermag6,hapermag6err,hapermagnoapercorr3,
+                    hapermagnoapercorr4,hapermagnoapercorr6,
+                    hhlcorsmjradas,hgausig,hell,hpa,
+                    herrbits,haverageconf,hclass,hclassstat,
+                    hpperrbits,hseqnum,hxi,heta,
+                    ksmjd,kspetromag,kspetromagerr,ksapermag3,
+                    ksapermag3err,ksapermag4,ksapermag4err,ksapermag6,
+                    ksapermag6err,ksapermagnoapercorr3,ksapermagnoapercorr4,ksapermagnoapercorr6,
+                    kshlcorsmjradas,ksgausig,ksell,kspa,kserrbits,ksaverageconf,ksclass) 
+                    VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,
+                            $12,$13,$14,$15,$16,$17,$18,$19,
+                            $20,$21,$22,$23,$24,$25,$26,$27,
+                            $28,$29,$30,$31,$32,$33,$34,$35,
+                            $36,$37,$38,$39,$40,$41,$42,$43,
+                            $44,$45,$46,$47,$48,$49,$50,$51,
+                            $52,$53,$54,$55,$56,$57,$58,$59,
+                            $60,$61,$62,$63,$64,$65,$66,$67,
+                            $68,$69,$70,$71,$72,$73,$74,$75,
+                            $76,$77,$78,$79,$80,$81,$82,$83,
+                            $84,$85,$86,$87,$88,$89,$90,$91,
+                            $92,$93,$94,$95,$96,$97,$98,$99,
+                            $100,$101,$102,$103,$104,$105,$106,$107,
+                            $108,$109,$110,$111,$112,$113,$114,$115,
+                            $116,$117,$118,$119,$120,$121,$122,$123,
+                            $124,$125,$126,$127,$128,$129) 
+                    ON CONFLICT (sourceid) 
+                    DO NOTHING 
+                 '''
+
+        insert_conn = await asyncpg.connect(user=user, password=password, database=database, host=host, port=port)
+        async with insert_conn.transaction():
+            await insert_conn.executemany(INSERT, vhs_rows)
+            await insert_conn.executemany('''INSERT INTO emucat.vhs_dr5_allwise 
+                                             (vhs_id, vhs_ra, vhs_dec, aw_source_id, aw_ra, aw_dec, distance) 
+                                             VALUES($1, $2, $3, $4, $5, $6, $7) 
+                                             ON CONFLICT (vhs_id, aw_source_id) 
+                                             DO NOTHING''', xmatch_rows)
+    finally:
+        if insert_conn:
+            await insert_conn.close()
+        if conn:
+            await conn.close()
+
+        try:
+            qc.mydb_drop(in_table)
+        except:
+            pass
+
+        try:
+            sc.rm(out_table)
+        except:
+            pass
+
+
 async def _import_des_dr1_from_lhr(ser: str, output: str, credentials: str):
     loop = asyncio.get_event_loop()
 
@@ -57,7 +266,7 @@ async def _import_des_dr1_from_lhr(ser: str, output: str, credentials: str):
     user, password, database, host, port = read_credentials(credentials)
 
     # Get the lhr sources that dont already exist in des_dr1
-    sql =   'SELECT aw.designation, aw.source_id, aw.ra, aw.dec ' \
+    sql =   'SELECT distinct(aw.designation), aw.source_id, aw.ra, aw.dec ' \
             'FROM emucat.components c, emucat.mosaics m, emucat.regions s, ' \
             'emucat.sources_lhr_allwise lhr ' \
             'LEFT JOIN emucat.allwise as aw on lhr.wise_id = aw.designation ' \
@@ -160,7 +369,6 @@ async def _import_des_dr1_from_lhr(ser: str, output: str, credentials: str):
                                             'DO NOTHING',
                                             xmatch_rows)
 
-
     finally:
         if insert_conn:
             await insert_conn.close()
@@ -169,6 +377,11 @@ async def _import_des_dr1_from_lhr(ser: str, output: str, credentials: str):
 
         try:
             qc.mydb_drop(in_table)
+        except:
+            pass
+
+        try:
+            sc.rm(out_table)
         except:
             pass
 
@@ -191,7 +404,7 @@ async def _import_des_dr2_from_lhr(ser: str, output: str, credentials: str):
     user, password, database, host, port = read_credentials(credentials)
 
     # Get the lhr sources that dont already exist in des_dr2
-    sql =   'SELECT aw.designation, aw.source_id, aw.ra, aw.dec ' \
+    sql =   'SELECT distinct(aw.designation), aw.source_id, aw.ra, aw.dec ' \
             'FROM emucat.components c, emucat.mosaics m, emucat.regions s, ' \
             'emucat.sources_lhr_allwise lhr ' \
             'LEFT JOIN emucat.allwise as aw on lhr.wise_id = aw.designation ' \
@@ -341,6 +554,11 @@ async def _import_des_dr2_from_lhr(ser: str, output: str, credentials: str):
         except:
             pass
 
+        try:
+            sc.rm(out_table)
+        except:
+            pass
+
 
 def import_des_dr1_from_lhr(args):
     asyncio.run(_import_des_dr1_from_lhr(args.ser, args.output, args.credentials))
@@ -348,6 +566,10 @@ def import_des_dr1_from_lhr(args):
 
 def import_des_dr2_from_lhr(args):
     asyncio.run(_import_des_dr2_from_lhr(args.ser, args.output, args.credentials))
+
+
+def import_vhs_from_lhr(args):
+    asyncio.run(_import_vhs_from_lhr(args.ser, args.output, args.credentials))
 
 
 def main():
@@ -368,6 +590,14 @@ def main():
     import_des_dr2_from_lhr_parser.add_argument('-c', '--credentials', help='Credentials file.', required=True)
     import_des_dr2_from_lhr_parser.add_argument('-o', '--output', help='Output directory', type=str, required=True, default='./')
     import_des_dr2_from_lhr_parser.set_defaults(func=import_des_dr2_from_lhr)
+
+    import_vhs_from_lhr_parser = subparsers.add_parser('import_vhs_from_lhr',
+                                                           help='Import vhs catalog based on lhr matches.')
+    import_vhs_from_lhr_parser.add_argument('-s', '--ser', help='Source extraction region.', type=str, required=True)
+    import_vhs_from_lhr_parser.add_argument('-c', '--credentials', help='Credentials file.', required=True)
+    import_vhs_from_lhr_parser.add_argument('-o', '--output', help='Output directory', type=str, required=True, default='./')
+    import_vhs_from_lhr_parser.set_defaults(func=import_vhs_from_lhr)
+
 
     args = parser.parse_args()
     args.func(args)
