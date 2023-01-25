@@ -227,7 +227,7 @@ async def _import_vhs_from_lhr(ser: str, output: str, credentials: str):
         async with insert_conn.transaction():
             await insert_conn.executemany(INSERT, vhs_rows)
             await insert_conn.executemany('''INSERT INTO emucat.vhs_dr5_allwise 
-                                             (vhs_id, vhs_ra, vhs_dec, aw_source_id, aw_ra, aw_dec, distance) 
+                                             (vhs_id, vhs_ra, vhs_dec, aw_source_id, aw_ra, aw_dec, separation) 
                                              VALUES($1, $2, $3, $4, $5, $6, $7) 
                                              ON CONFLICT (vhs_id, aw_source_id) 
                                              DO NOTHING''', xmatch_rows)
