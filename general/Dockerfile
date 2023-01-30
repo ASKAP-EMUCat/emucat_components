@@ -4,13 +4,8 @@ ARG DEBIAN_FRONTEND=noninteractive
 
 RUN apt update
 RUN apt -y upgrade
-RUN apt install -y python3-setuptools
-RUN apt install -y python3
-RUN apt install -y wget
-RUN apt install -y python3-pip
-RUN apt install -y libcurl4-openssl-dev libssl-dev
-RUN pip3 install wheel
-RUN pip3 install astropy pyvo retry jinja2 asyncio asyncpg aiofiles
+RUN apt install -y python3-setuptools python3 wget python3-pip libcurl4-openssl-dev libssl-dev ca-certificates
+RUN pip3 install wheel astropy pyvo retry jinja2 asyncio asyncpg aiofiles
 RUN pip3 install --ignore-installed --no-cache-dir noaodatalab
 
 RUN mkdir /input
