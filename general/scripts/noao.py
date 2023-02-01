@@ -56,9 +56,9 @@ async def _import_vhs_from_lhr(ser: str, output: str, credentials: str):
 
     user, password, database, host, port = read_credentials(credentials)
 
-    # Get the lhr sources that dont already exist in des_dr1
+    # Get the lhr sources that dont already exist in vhs
     sql =  '''
-           SELECT distinct(aw.designation), trim(aw.source_id) as source_id
+           SELECT aw.designation, trim(aw.source_id) as source_id 
            FROM emucat.components c, emucat.mosaics m, emucat.regions s, 
            emucat.sources_lhr_allwise lhr 
            LEFT JOIN emucat.allwise as aw on lhr.wise_id=aw.designation 
@@ -67,7 +67,9 @@ async def _import_vhs_from_lhr(ser: str, output: str, credentials: str):
            AND m.ser_id=s.id 
            AND lhr.component_id=c.id 
            AND s.name=$1 
-           AND vhs.aw_source_id is NULL
+           AND vhs.aw_source_id is NULL 
+           GROUP BY aw.designation 
+           ORDER BY aw.designation ASC
            '''
 
     insert_conn = None
@@ -266,16 +268,20 @@ async def _import_des_dr1_from_lhr(ser: str, output: str, credentials: str):
     user, password, database, host, port = read_credentials(credentials)
 
     # Get the lhr sources that dont already exist in des_dr1
-    sql =   'SELECT distinct(aw.designation), aw.source_id, aw.ra, aw.dec ' \
-            'FROM emucat.components c, emucat.mosaics m, emucat.regions s, ' \
-            'emucat.sources_lhr_allwise lhr ' \
-            'LEFT JOIN emucat.allwise as aw on lhr.wise_id = aw.designation ' \
-            'LEFT JOIN emucat.des_dr1_allwise as des on aw.designation = des.wise_id ' \
-            'WHERE c.mosaic_id=m.id ' \
-            'AND m.ser_id=s.id ' \
-            'AND lhr.component_id=c.id ' \
-            'AND s.name=$1 ' \
-            'AND des.wise_id is NULL '
+    sql =   """
+            SELECT aw.designation, aw.source_id, aw.ra, aw.dec 
+            FROM emucat.components c, emucat.mosaics m, emucat.regions s, 
+            emucat.sources_lhr_allwise lhr 
+            LEFT JOIN emucat.allwise as aw on lhr.wise_id = aw.designation 
+            LEFT JOIN emucat.des_dr1_allwise as des on aw.designation = des.wise_id 
+            WHERE c.mosaic_id=m.id 
+            AND m.ser_id=s.id 
+            AND lhr.component_id=c.id 
+            AND s.name=$1 
+            AND des.wise_id is NULL 
+            GROUP BY aw.designation 
+            ORDER BY aw.designation ASC
+            """
 
     insert_conn = None
     conn = None
@@ -404,16 +410,20 @@ async def _import_des_dr2_from_lhr(ser: str, output: str, credentials: str):
     user, password, database, host, port = read_credentials(credentials)
 
     # Get the lhr sources that dont already exist in des_dr2
-    sql =   'SELECT distinct(aw.designation), aw.source_id, aw.ra, aw.dec ' \
-            'FROM emucat.components c, emucat.mosaics m, emucat.regions s, ' \
-            'emucat.sources_lhr_allwise lhr ' \
-            'LEFT JOIN emucat.allwise as aw on lhr.wise_id = aw.designation ' \
-            'LEFT JOIN emucat.des_dr2_allwise as des on aw.designation = des.wise_id ' \
-            'WHERE c.mosaic_id=m.id ' \
-            'AND m.ser_id=s.id ' \
-            'AND lhr.component_id=c.id ' \
-            'AND s.name=$1 ' \
-            'AND des.wise_id is NULL'
+    sql =   """
+            SELECT distinct(aw.designation), aw.source_id, aw.ra, aw.dec 
+            FROM emucat.components c, emucat.mosaics m, emucat.regions s, 
+            emucat.sources_lhr_allwise lhr 
+            LEFT JOIN emucat.allwise as aw on lhr.wise_id = aw.designation 
+            LEFT JOIN emucat.des_dr2_allwise as des on aw.designation = des.wise_id 
+            WHERE c.mosaic_id=m.id 
+            AND m.ser_id=s.id 
+            AND lhr.component_id=c.id 
+            AND s.name=$1 
+            AND des.wise_id is NULL 
+            GROUP BY aw.designation 
+            ORDER BY aw.designation ASC
+            """
 
     insert_conn = None
     conn = None
