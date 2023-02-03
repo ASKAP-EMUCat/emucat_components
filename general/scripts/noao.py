@@ -126,7 +126,7 @@ async def _import_vhs_from_lhr(ser: str, output: str, credentials: str):
 
         vhs_rows = []
         xmatch_rows = []
-        data = ascii.read(out_table)
+        data = ascii.read( f"{output}/{out_table}")
         for r in data:
             vhs_rows.append([r['sourcename'], r['sourceid'],r['cueventid'],
             r['framesetid'],r['ra2000'],r['dec2000'],r['l'],
