@@ -1,0 +1,9 @@
+version: '3.5'
+
+services:
+  emucat_diffusefilter:
+    platform: linux/amd64
+    image: aussrc/emucat_diffusefilter
+    container_name: emucat_diffusefilter
+    build:
+      context: .
