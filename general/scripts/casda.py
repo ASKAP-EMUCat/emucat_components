@@ -82,6 +82,12 @@ def download_casda_obscore_fits(rowset, check_exists, output_dir, timeout, crede
         first = root.findall('./ivoa:RESOURCE/ivoa:TABLE/ivoa:DATA/ivoa:TABLEDATA/ivoa:TR', ns)[0]
         output = f"{output_dir}/{filename}"
 
+        try:
+            if "permission" in first[3].text:
+                raise PermissionError(f"{filename}")
+        except TypeError:
+            pass
+
         download_file(first[1].text, check_exists, output, timeout)
 
         if 'image' in output:
@@ -112,7 +118,7 @@ def main():
     parser.add_argument('-c', '--check_exists', type=str2bool, nargs='?',
                         const=True, help='Ignore files if they already exist.', required=False, default=False)
     parser.add_argument('-n', '--num_files', help='Number of files expected per observation block.',
-                        type=int, required=False, default=4)
+                        type=int, required=False)
     parser.add_argument('-t', '--timeout', help='URL timeout (s).',
                         type=int, required=False, default=3000)
 
@@ -142,9 +148,10 @@ def main():
     service = vo.dal.TAPService(URL)
     rowset = service.search(query)
 
-    if len(args.list) * args.num_files != len(rowset):
-        raise ValueError(f"Number of files expected {len(args.list) * args.num_files} "
-                         f"does not match query result {len(rowset)}")
+    if args.num_files:
+        if len(args.list) * args.num_files != len(rowset):
+            raise ValueError(f"Number of files expected {len(args.list) * args.num_files} "
+                            f"does not match query result {len(rowset)}")
 
     result = download_casda_obscore_fits(rowset,
                                          check_exists=args.check_exists,
