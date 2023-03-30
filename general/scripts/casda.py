@@ -115,6 +115,8 @@ def main():
     parser.add_argument('-o', '--output', help='Output directory.', type=str, required=True)
     parser.add_argument('-m', '--manifest', help='File manifest (json)', type=str, required=True, default='./manifest.json')
     parser.add_argument('-p', '--credentials', help='Credentials file.', required=True)
+    parser.add_argument('-i', '--types', help='0: weights and images, 1: images only, 2: weights only',
+                    type=int, required=False, default=0)
     parser.add_argument('-c', '--check_exists', type=str2bool, nargs='?',
                         const=True, help='Ignore files if they already exist.', required=False, default=False)
     parser.add_argument('-n', '--num_files', help='Number of files expected per observation block.',
@@ -141,9 +143,17 @@ def main():
 
     obs_list = ', '.join(f"'{str(i)}'" for i in args.list)
 
-    # Example: '9287', '9325', '9351', '9410', '9434', '9437', '9442', '9501', '10083', '10635'
-    query = f"select * from ivoa.obscore where obs_id in ({obs_list}) and " \
-            f"(filename like 'weights.i.%.cont.taylor._.fits' or filename like 'image.i.%.cont.taylor._.restored.conv.fits')"
+    if args.types == 0:
+        query = f"select * from ivoa.obscore where obs_id in ({obs_list}) and " \
+                f"(filename like 'weights.i.%.cont.taylor._.fits' or filename like 'image.i.%.cont.taylor._.restored.conv.fits')"
+    elif args.types == 1:
+        query = f"select * from ivoa.obscore where obs_id in ({obs_list}) and " \
+                f"(filename like 'image.i.%.cont.taylor._.restored.conv.fits')"
+    elif args.types == 2:
+        query = f"select * from ivoa.obscore where obs_id in ({obs_list}) and " \
+                f"(filename like 'weights._.%.cont.taylor._.fits')"
+    else:
+        raise ValueError("unknown product types")
 
     service = vo.dal.TAPService(URL)
     rowset = service.search(query)
