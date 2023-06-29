@@ -4,7 +4,9 @@
 ###make command line friendly with votable i/o
 import numpy as np
 from astropy.table import Table
-from astroquery.utils.tap.core import TapPlus
+#from astroquery.utils.tap.core import TapPlus
+from astroquery.xmatch import XMatch
+from astropy import units as u
 
 from pyvo.dal import TAPService
 
@@ -74,10 +76,35 @@ def xmatch_with_data_central(upload_data, acol, dcol,
     
     ##perform query
     uploads = {"upload_table" : upload_data}
-#    results = client.search(adql, uploads=uploads).to_table()
     results = client.run_async(adql, uploads=uploads, timeout=timeout).to_table()
     
     return results
+
+
+def cds_xmatch(data, racol='RAJ2000', decol='DEJ2000',
+               maxsep=1*u.arcsec,
+               catcols='*',
+               namecol='AllWISE', colsuff=None,
+               cat2='vizier:V/154/sdss16',
+               timeout=600):
+    'use cds xmatch to query sdss'
+    ###try to replace with async query (might not need to)
+    xm = XMatch()
+    xm.TIMEOUT = timeout
+    
+    xmatch = xm.query(cat1=data, cat2=cat2, max_distance=maxsep,
+                      colRA1=racol, colDec1=decol)
+    
+    ###reduce to only spec data (and unique)
+    if catcols != '*':
+        outcols = [namecol] + catcols
+    else:
+        outcols = xmatch.colnames
+    
+    xmatch.sort('angDist')
+    
+    return xmatch
+
 
 
 ######################################################
@@ -91,7 +118,7 @@ def xmatch_with_data_central(upload_data, acol, dcol,
 
 
 data = Table.read(infile)
-
+data = data[['AllWISE', 'RAJ2000', 'DEJ2000']]
 
 ####testing
 
@@ -99,4 +126,12 @@ test1 = xmatch_with_data_central(upload_data=data[:3],
                                  acol='RAJ2000', dcol='DEJ2000',
                                  acol_dc='ra', dcol_dc='dec',
                                  qtable='dc_conesearch."2mass_fdr"',
-                                 searchrad_arcsec=1)
+                                 searchrad_arcsec=1,
+                                 timeout=600)
+
+test2 = cds_xmatch(data=data[:3], racol='RAJ2000', decol='DEJ2000',
+                   maxsep=1*u.arcsec,
+                   catcols='*',
+                   namecol='AllWISE', colsuff=None,
+                   cat2='vizier:V/154/sdss16',
+                   timeout=600)
