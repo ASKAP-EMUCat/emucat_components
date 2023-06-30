@@ -27,59 +27,61 @@ tap_datacentral = 'https://datacentral.org.au/vo/tap'
 ######################################################
 ###functionality
 
-def print_tables(tap_url):
-    'print available tables in TAP client'
-    ###set up tap client
-    client = TAPService(tap_url)
-    
-    ###print available tables
-    tables = list(client.tables.keys())
-    for table in tables:
-        print(table)
-    return
-    
-    
-def pyvo_query(query, tap_url, upload_data={},
-               language='SQL'):
-    'ADQL query of public CADC YouCat database'
-    
-    ###set up tap client
-    client = TAPService(tap_url)
-    
-    ###query data
-    data = client.search(query, language=language).to_table()
-    
-    return(data)
-
-
-def xmatch_with_data_central(upload_data, acol, dcol,
-                             acol_dc='ra', dcol_dc='dec',
-                             qtable='dc_conesearch.gama_dr2',
-                             searchrad_arcsec=1,
-                             timeout=600):
+class searchDC:
     'perform positional cross match with tables from astro data central'
-    client = TAPService("https://datacentral.org.au/vo/tap")
-    searchrad_deg = np.round(searchrad_arcsec/3600, 5)
-    
-    ###make sure upload positional columns dont conflict with those in data central
-    if acol==acol_dc:
-        acol_new = f'{acol}_upload'
-        upload_data.rename_column(name=acol, new_name=acol_new)
-        acol = acol_new
-    if dcol==dcol_dc:
-        dcol_new = f'{dcol}_upload'
-        upload_data.rename_column(name=dcol, new_name=dcol_new)
-        dcol = dcol_new
-    
-    ###write ADQL query
-    adql = f"SELECT q3c_dist({acol_dc},{dcol_dc}, tup.{acol},tup.{dcol}) *3600 AS angDist, * FROM {qtable}, tap_upload.upload_table as tup WHERE 't' = q3c_radial_query({acol_dc},{dcol_dc},tup.{acol},tup.{dcol}, {searchrad_deg}) ORDER BY angDist ASC"
-    
-    ##perform query
-    uploads = {"upload_table" : upload_data}
-    results = client.run_async(adql, uploads=uploads, timeout=timeout).to_table()
-    
-    return results
+    def __init__ (self, data, acol='RAJ2000', dcol='DEJ2000',
+                  acol_dc='ra', dcol_dc='dec', namecol='AllWISE',
+                  searchrad_arcsec=1*u.arcsec,
+                  timeout=600):
+            'initial class setup'
+            self.client = TAPService("https://datacentral.org.au/vo/tap")
+            self.timeout=timeout
+            self.namecol=namecol
+            self.searchrad_deg = np.round(searchrad_arcsec.value/3600, 5)
+            ###make sure upload positional columns dont conflict with those in data central
+            self.acol_dc = acol_dc
+            self.dcol_dc = dcol_dc
+            self.acol = acol
+            self.dcol = dcol
+            if acol==acol_dc:
+                acol_new = f'{acol}_upload'
+                data.rename_column(name=acol,
+                                   new_name=acol_new)
+                self.acol = acol_new
+            if dcol==dcol_dc:
+                dcol_new = f'{dcol}_upload'
+                data.rename_column(name=dcol,
+                                   new_name=dcol_new)
+                self.dcol = dcol_new
 
+            ###define uploads
+            self.uploads = {"upload_table" : data}
+    
+    def gama(self):
+        'query GAMA'
+        adql = f"SELECT q3c_dist(t1.{self.acol_dc},t1.{self.dcol_dc}, tup.{self.acol},tup.{self.dcol}) *3600 AS angDist, tup.{self.namecol}, t2.CATAID, t2.NQ, t2.Z FROM dc_conesearch.gama_dr2 AS t1 INNER JOIN gama_dr2.SpecObj AS t2 ON t1.name=t2.CATAID, tap_upload.upload_table as tup WHERE 't' = q3c_radial_query(t1.{self.acol_dc},t1.{self.dcol_dc},tup.{self.acol},tup.{self.dcol}, {self.searchrad_deg}) ORDER BY angDist ASC"
+
+        results_table = self.client.run_async(adql,
+                                              uploads=self.uploads,
+                                              timeout=self.timeout).to_table()
+
+        return results_table
+
+    def twodf(self):
+        'query 2dFGRS'
+#        adql = f'SELECT q3c_dist(t1.{self.acol_dc},t1.{self.dcol_dc}, tup.{self.acol},tup.{self.dcol}) *3600 AS angDist, tup.{self.namecol}, t2.serial, t2.quality, t2.z FROM dc_conesearch."2dfgrs_fdr" as t1 INNER JOIN "2dfgrs".spec_best AS t2 ON t1.name=t2.serial, tap_upload.upload_table as tup WHERE '+"'t'"+ f' = q3c_radial_query(t1.{self.acol_dc},t1.{self.dcol_dc},tup.{self.acol},tup.{self.dcol}, {self.searchrad_deg}) ORDER BY angDist ASC' ###need to fix join query
+        
+        adql = f'SELECT q3c_dist(t1.{self.acol_dc},t1.{self.dcol_dc}, tup.{self.acol},tup.{self.dcol}) *3600 AS angDist, tup.{self.namecol}, * FROM dc_conesearch."2dfgrs_fdr" as t1, tap_upload.upload_table as tup WHERE '+"'t'"+f' = q3c_radial_query(t1.{self.acol_dc},t1.{self.dcol_dc},tup.{self.acol},tup.{self.dcol}, {self.searchrad_deg}) ORDER BY angDist ASC'
+        
+        print(adql)
+        print('')
+        
+        results_table = self.client.run_async(adql,
+                                              uploads=self.uploads,
+                                              timeout=self.timeout).to_table()
+
+        return results_table
+        
 
 def cds_xmatch(data, racol='RAJ2000', decol='DEJ2000',
                maxsep=1*u.arcsec,
@@ -110,28 +112,32 @@ def cds_xmatch(data, racol='RAJ2000', decol='DEJ2000',
 ######################################################
 ######################################################
 ###main
-
-###issues querying table names starting with number, e.g. noirlab_test2.1_allwise, but working for table names not starting with a number -- use "" around table name: noirlab_test2."1_allwise"tq
-
-####use q3cdist with dc_conesearch tables (except total)
-###add in CDS functionality too
+###write specific queries for each dataset and make argument of xmatch_with_data_central()
 
 
 data = Table.read(infile)
-data = data[['AllWISE', 'RAJ2000', 'DEJ2000']]
+data = data[['AllWISE', 'RAJ2000', 'DEJ2000', 'CATAID']]
+
 
 ####testing
 
-test1 = xmatch_with_data_central(upload_data=data[:3],
-                                 acol='RAJ2000', dcol='DEJ2000',
-                                 acol_dc='ra', dcol_dc='dec',
-                                 qtable='dc_conesearch."2mass_fdr"',
-                                 searchrad_arcsec=1,
-                                 timeout=600)
+test_data = data[:3]
+xdc = searchDC(test_data, searchrad_arcsec=3600*u.arcsec) ###wide search to test output where there are no matches
 
-test2 = cds_xmatch(data=data[:3], racol='RAJ2000', decol='DEJ2000',
-                   maxsep=1*u.arcsec,
-                   catcols='*',
-                   namecol='AllWISE', colsuff=None,
-                   cat2='vizier:V/154/sdss16',
-                   timeout=600)
+
+
+#client = TAPService("https://datacentral.org.au/vo/tap")
+#acol_dc, dcol_dc = 'ra', 'dec'
+#acol, dcol = 'RAJ2000', 'DEJ2000'
+#qtable = 'dc_conesearch."2mass_fdr"'
+#searchrad_deg = 2
+#uploads = {"upload_table" : test_data}
+#
+#adql = f"SELECT q3c_dist({acol_dc},{dcol_dc}, tup.{acol},tup.{dcol}) *3600 AS angDist, * FROM {qtable}, tap_upload.upload_table as tup WHERE 't' = q3c_radial_query({acol_dc},{dcol_dc},tup.{acol},tup.{dcol}, {searchrad_deg}) ORDER BY angDist ASC"
+#
+#t = "'t'"
+#adql = f'SELECT q3c_dist(t1.{acol_dc},t1.{dcol_dc}, tup.{acol},tup.{dcol}) *3600 AS angDist, tup.AllWISE, * FROM dc_conesearch."2dfgrs_fdr" as t1, tap_upload.upload_table as tup WHERE {t} = q3c_radial_query(t1.{acol_dc},t1.{dcol_dc},tup.{acol},tup.{dcol}, {searchrad_deg}) ORDER BY angDist ASC'
+#
+#atest = 'SELECT q3c_dist(t1.ra,t1.dec, tup.RAJ2000,tup.DEJ2000) *3600 AS angDist, tup.AllWISE, * FROM dc_conesearch."2dfgrs_fdr" as t1, tap_upload.upload_table as tup WHERE '+"'t'"+' =q3c_radial_query(t1.ra,t1.dec,tup.RAJ2000,tup.DEJ2000, 0.00028 arcsec) ORDER BY angDist ASC'
+
+
