@@ -90,7 +90,7 @@ class searchDC:
         results_table = self.client.run_async(adql,
                                               uploads=self.uploads,
                                               timeout=self.timeout).to_table()
-        if self.closest_only==True:
+        if self.closest_only==True and len(results_table)>1:
             results_table = unique(results_table, self.namecol,
                                    keep='first')
         
@@ -104,7 +104,7 @@ class searchDC:
         results_table = self.client.run_async(adql,
                                               uploads=self.uploads,
                                               timeout=self.timeout).to_table()
-        if self.closest_only==True:
+        if self.closest_only==True and len(results_table)>1:
             results_table = unique(results_table, self.namecol,
                                    keep='first')
 
@@ -118,7 +118,7 @@ class searchDC:
         results_table = self.client.run_async(adql,
                                               uploads=self.uploads,
                                               timeout=self.timeout).to_table()
-        if self.closest_only==True:
+        if self.closest_only==True and len(results_table)>1:
             results_table = unique(results_table, self.namecol,
                                    keep='first')
                                    
@@ -132,7 +132,7 @@ class searchDC:
         results_table = self.client.run_async(adql,
                                               uploads=self.uploads,
                                               timeout=self.timeout).to_table()
-        if self.closest_only==True:
+        if self.closest_only==True and len(results_table)>1:
             results_table = unique(results_table, self.namecol,
                                    keep='first')
                                    
@@ -146,7 +146,7 @@ class searchDC:
         results_table = self.client.run_async(adql,
                                               uploads=self.uploads,
                                               timeout=self.timeout).to_table()
-        if self.closest_only==True:
+        if self.closest_only==True and len(results_table)>1:
             results_table = unique(results_table, self.namecol,
                                    keep='first')
                                    
