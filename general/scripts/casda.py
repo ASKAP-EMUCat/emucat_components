@@ -18,6 +18,7 @@ logging.basicConfig(stream=sys.stdout,
                     level=logging.INFO,
                     format='[%(asctime)s] {%(filename)s:%(lineno)d} %(levelname)s - %(message)s')
 
+BUFFER_SIZE = 4194304
 
 @retry(exceptions=urllib.error.URLError, tries=30, delay=100, backoff=5)
 def download_file(url, check_exists, output, timeout):
@@ -43,7 +44,7 @@ def download_file(url, check_exists, output, timeout):
         count = 0
         with open(output, 'wb') as o:
             while http_size > count:
-                buff = r.read()
+                buff = r.read(BUFFER_SIZE)
                 if not buff:
                     break
                 o.write(buff)
@@ -60,10 +61,11 @@ def download_casda_obscore_fits(rowset, check_exists, output_dir, timeout, crede
     weights = []
     images = []
 
-    config = configparser.ConfigParser()
-    config.read(credentials)
-    username = config['casda']['user']
-    password = config['casda']['password']
+    if credentials:
+        config = configparser.ConfigParser()
+        config.read(credentials)
+        username = config['casda']['user']
+        password = config['casda']['password']
 
     ns = {'ivoa': 'http://www.ivoa.net/xml/VOTable/v1.3'}
     for row in rowset:
@@ -71,9 +73,11 @@ def download_casda_obscore_fits(rowset, check_exists, output_dir, timeout, crede
         filename = row['filename']
         req = urllib.request.Request(dl)
 
-        credentials = ('%s:%s' % (username, password))
-        encoded_credentials = base64.b64encode(credentials.encode('ascii'))
-        req.add_header('Authorization', 'Basic %s' % encoded_credentials.decode("ascii"))
+        if credentials:
+            credentials_str = ('%s:%s' % (username, password))
+            encoded_credentials = base64.b64encode(credentials_str.encode('ascii'))
+            req.add_header('Authorization', 'Basic %s' % encoded_credentials.decode("ascii"))
+
         response = urllib.request.urlopen(req)
         data = response.read()
         xml = data.decode('utf-8')
@@ -114,7 +118,7 @@ def main():
     parser.add_argument('-l', '--list', nargs='+', help='List of observing block numbers.', type=int, required=True)
     parser.add_argument('-o', '--output', help='Output directory.', type=str, required=True)
     parser.add_argument('-m', '--manifest', help='File manifest (json)', type=str, required=True, default='./manifest.json')
-    parser.add_argument('-p', '--credentials', help='Credentials file.', required=True)
+    parser.add_argument('-p', '--credentials', help='Credentials file.', required=False)
     parser.add_argument('-i', '--types', help='0: weights and images, 1: images only, 2: weights only',
                     type=int, required=False, default=0)
     parser.add_argument('-c', '--check_exists', type=str2bool, nargs='?',
@@ -151,7 +155,7 @@ def main():
                 f"(filename like 'image.i.%.cont.taylor._.restored.conv.fits')"
     elif args.types == 2:
         query = f"select * from ivoa.obscore where obs_id in ({obs_list}) and " \
-                f"(filename like 'weights._.%.cont.taylor._.fits')"
+                f"(filename like 'weights.i.%contcube.fits')"
     else:
         raise ValueError("unknown product types")
 
