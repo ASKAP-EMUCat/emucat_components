@@ -57,6 +57,10 @@ def download_file(url, check_exists, output, timeout):
         logging.info(f"Download complete: {os.path.basename(output)}")
 
 
+def filename_key(val):
+    return os.path.basename(val)
+
+
 def download_casda_obscore_fits(rowset, check_exists, output_dir, timeout, credentials):
     weights = []
     images = []
@@ -98,6 +102,9 @@ def download_casda_obscore_fits(rowset, check_exists, output_dir, timeout, crede
             images.append(output)
         else:
             weights.append(output)
+
+    images.sort(key=filename_key)
+    weights.sort(key=filename_key)
 
     return {'images': images, 'weights': weights}
 
