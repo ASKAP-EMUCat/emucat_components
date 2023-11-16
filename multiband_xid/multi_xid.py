@@ -56,13 +56,14 @@ class searchDC:
     def __init__ (self, data, acol='RAJ2000', dcol='DEJ2000',
                   acol_dc='ra', dcol_dc='dec', namecol='AllWISE',
                   searchrad_arcsec=1*u.arcsec,
-                  timeout=600, closest_only=True):
+                  timeout=600, closest_only=True, id_only=False):
             'initial class setup'
             self.client = TAPService("https://datacentral.org.au/vo/tap")
             self.timeout = timeout
             self.namecol = namecol
             self.searchrad_deg = np.round(searchrad_arcsec.value/3600, 5)
             self.closest_only =  closest_only
+            self.id_only = id_only
             ###make sure upload positional columns dont conflict with those in data central
             self.acol_dc = acol_dc
             self.dcol_dc = dcol_dc
@@ -85,7 +86,10 @@ class searchDC:
     def twomass(self):
         'queries 2mass for psf and Kron magnitudes (and uncertainties) in J, H and K bands'
         
-        adql = f'SELECT q3c_dist(t1.{self.acol_dc},t1.{self.dcol_dc}, tup.{self.acol},tup.{self.dcol}) *3600 AS angDist, tup.{self.namecol}, t1.name, t2.j_m, t2.j_cmsig, t2.h_m, t2.h_cmsig, t2.k_m, t2.k_cmsig, t3.j_m_e, t3.j_msig_e, t3.h_m_e, t3.h_msig_e, t3.k_m_e, t3.k_msig_e FROM dc_conesearch."2mass_fdr" as t1 LEFT JOIN "2mass_fdr".psc as t2 ON t1.name=t2.designation LEFT JOIN "2mass_fdr".xsc as t3 ON t1.name=t3.designation, tap_upload.upload_table as tup WHERE '+"'t'"+f' = q3c_radial_query(t1.{self.acol_dc},t1.{self.dcol_dc},tup.{self.acol},tup.{self.dcol}, {self.searchrad_deg}) ORDER BY angDist ASC'
+        if self.id_only==True:
+            adql = f'SELECT q3c_dist(t1.{self.acol_dc},t1.{self.dcol_dc}, tup.{self.acol},tup.{self.dcol}) *3600 AS angDist, tup.{self.namecol}, t1.name FROM dc_conesearch."2mass_fdr" as t1, tap_upload.upload_table as tup WHERE '+"'t'"+f' = q3c_radial_query(t1.{self.acol_dc},t1.{self.dcol_dc},tup.{self.acol},tup.{self.dcol}, {self.searchrad_deg}) ORDER BY angDist ASC'
+        else:
+            adql = f'SELECT q3c_dist(t1.{self.acol_dc},t1.{self.dcol_dc}, tup.{self.acol},tup.{self.dcol}) *3600 AS angDist, tup.{self.namecol}, t1.name, t2.j_m, t2.j_cmsig, t2.h_m, t2.h_cmsig, t2.k_m, t2.k_cmsig, t3.j_m_e, t3.j_msig_e, t3.h_m_e, t3.h_msig_e, t3.k_m_e, t3.k_msig_e FROM dc_conesearch."2mass_fdr" as t1 LEFT JOIN "2mass_fdr".psc as t2 ON t1.name=t2.designation LEFT JOIN "2mass_fdr".xsc as t3 ON t1.name=t3.designation, tap_upload.upload_table as tup WHERE '+"'t'"+f' = q3c_radial_query(t1.{self.acol_dc},t1.{self.dcol_dc},tup.{self.acol},tup.{self.dcol}, {self.searchrad_deg}) ORDER BY angDist ASC'
                 
         results_table = self.client.run_async(adql,
                                               uploads=self.uploads,
@@ -99,11 +103,16 @@ class searchDC:
     def gama(self):
         'queries GAMA for redshift and spec quality'
         
-        adql = f"SELECT q3c_dist(t1.{self.acol_dc},t1.{self.dcol_dc}, tup.{self.acol},tup.{self.dcol}) *3600 AS angDist, tup.{self.namecol}, t2.CATAID, t2.NQ, t2.Z FROM dc_conesearch.gama_dr2 AS t1 LEFT JOIN gama_dr2.SpecObj AS t2 ON t1.name=t2.CATAID, tap_upload.upload_table as tup WHERE 't' = q3c_radial_query(t1.{self.acol_dc},t1.{self.dcol_dc},tup.{self.acol},tup.{self.dcol}, {self.searchrad_deg}) ORDER BY angDist ASC"
+        if self.id_only==True:
+            adql = f"SELECT q3c_dist(t1.{self.acol_dc},t1.{self.dcol_dc}, tup.{self.acol},tup.{self.dcol}) *3600 AS angDist, tup.{self.namecol}, t1.name FROM dc_conesearch.gama_dr2 AS t1, tap_upload.upload_table as tup WHERE 't' = q3c_radial_query(t1.{self.acol_dc},t1.{self.dcol_dc},tup.{self.acol},tup.{self.dcol}, {self.searchrad_deg}) ORDER BY angDist ASC"
+        else:
+            adql = f"SELECT q3c_dist(t1.{self.acol_dc},t1.{self.dcol_dc}, tup.{self.acol},tup.{self.dcol}) *3600 AS angDist, tup.{self.namecol}, t2.CATAID, t2.NQ, t2.Z FROM dc_conesearch.gama_dr2 AS t1 LEFT JOIN gama_dr2.SpecObj AS t2 ON t1.name=t2.CATAID, tap_upload.upload_table as tup WHERE 't' = q3c_radial_query(t1.{self.acol_dc},t1.{self.dcol_dc},tup.{self.acol},tup.{self.dcol}, {self.searchrad_deg}) ORDER BY angDist ASC"
 
         results_table = self.client.run_async(adql,
                                               uploads=self.uploads,
                                               timeout=self.timeout).to_table()
+        if self.id_only==True: ###rename 'name' to 'CATAID' here rather than TAP query to keep upper case
+            results_table.rename_column(name='name', new_name='CATAID')
         if self.closest_only==True and len(results_table)>1:
             results_table = unique(results_table, self.namecol,
                                    keep='first')
@@ -113,7 +122,10 @@ class searchDC:
     def twodf(self):
         'query 2dFGRS for redshift'
         
-        adql = f'SELECT q3c_dist(t1.{self.acol_dc},t1.{self.dcol_dc}, tup.{self.acol},tup.{self.dcol}) *3600 AS angDist, tup.{self.namecol}, t1.name, t2.Z FROM dc_conesearch."2dfgrs_fdr" as t1 LEFT JOIN "2dfgrs_fdr".spec_all as t2 ON t1.name=t2.name, tap_upload.upload_table as tup WHERE '+"'t'"+f' = q3c_radial_query(t1.{self.acol_dc},t1.{self.dcol_dc},tup.{self.acol},tup.{self.dcol}, {self.searchrad_deg}) ORDER BY angDist ASC'
+        if self.id_only==True:
+            adql = f'SELECT q3c_dist(t1.{self.acol_dc},t1.{self.dcol_dc}, tup.{self.acol},tup.{self.dcol}) *3600 AS angDist, tup.{self.namecol}, t1.name FROM dc_conesearch."2dfgrs_fdr" as t1, tap_upload.upload_table as tup WHERE '+"'t'"+f' = q3c_radial_query(t1.{self.acol_dc},t1.{self.dcol_dc},tup.{self.acol},tup.{self.dcol}, {self.searchrad_deg}) ORDER BY angDist ASC'
+        else:
+            adql = f'SELECT q3c_dist(t1.{self.acol_dc},t1.{self.dcol_dc}, tup.{self.acol},tup.{self.dcol}) *3600 AS angDist, tup.{self.namecol}, t1.name, t2.Z FROM dc_conesearch."2dfgrs_fdr" as t1 LEFT JOIN "2dfgrs_fdr".spec_all as t2 ON t1.name=t2.name, tap_upload.upload_table as tup WHERE '+"'t'"+f' = q3c_radial_query(t1.{self.acol_dc},t1.{self.dcol_dc},tup.{self.acol},tup.{self.dcol}, {self.searchrad_deg}) ORDER BY angDist ASC'
         
         results_table = self.client.run_async(adql,
                                               uploads=self.uploads,
@@ -127,7 +139,10 @@ class searchDC:
     def sixdf(self):
         'query 6dFGS for redshift'
         
-        adql = f'SELECT q3c_dist(t1.{self.acol_dc},t1.{self.dcol_dc}, tup.{self.acol},tup.{self.dcol}) *3600 AS angDist, tup.{self.namecol}, t1.name, t2.Z FROM dc_conesearch."6dfgs_fdr" as t1 LEFT JOIN "6dfgs_fdr".SPECTRA as t2 ON t1.name=t2.TARGETNAME, tap_upload.upload_table as tup WHERE '+"'t'"+f' = q3c_radial_query(t1.{self.acol_dc},t1.{self.dcol_dc},tup.{self.acol},tup.{self.dcol}, {self.searchrad_deg}) ORDER BY angDist ASC'
+        if self.id_only==True:
+            adql = f'SELECT q3c_dist(t1.{self.acol_dc},t1.{self.dcol_dc}, tup.{self.acol},tup.{self.dcol}) *3600 AS angDist, tup.{self.namecol}, t1.name FROM dc_conesearch."6dfgs_fdr" as t1, tap_upload.upload_table as tup WHERE '+"'t'"+f' = q3c_radial_query(t1.{self.acol_dc},t1.{self.dcol_dc},tup.{self.acol},tup.{self.dcol}, {self.searchrad_deg}) ORDER BY angDist ASC'
+        else:
+            adql = f'SELECT q3c_dist(t1.{self.acol_dc},t1.{self.dcol_dc}, tup.{self.acol},tup.{self.dcol}) *3600 AS angDist, tup.{self.namecol}, t1.name, t2.Z FROM dc_conesearch."6dfgs_fdr" as t1 LEFT JOIN "6dfgs_fdr".SPECTRA as t2 ON t1.name=t2.TARGETNAME, tap_upload.upload_table as tup WHERE '+"'t'"+f' = q3c_radial_query(t1.{self.acol_dc},t1.{self.dcol_dc},tup.{self.acol},tup.{self.dcol}, {self.searchrad_deg}) ORDER BY angDist ASC'
                 
         results_table = self.client.run_async(adql,
                                               uploads=self.uploads,
@@ -141,7 +156,10 @@ class searchDC:
     def wigglez(self):
         'query WiggleZ for redshift and quality'
         
-        adql = f'SELECT q3c_dist(t1.{self.acol_dc},t1.{self.dcol_dc}, tup.{self.acol},tup.{self.dcol}) *3600 AS angDist, tup.{self.namecol}, t1.name, t2.redshift, t2.Q  FROM dc_conesearch.wigglez_final as t1 LEFT JOIN wigglez_final.WiggleZCat as t2 ON t1.name=t2.WiggleZ_Name, tap_upload.upload_table as tup WHERE '+"'t'"+f' = q3c_radial_query(t1.{self.acol_dc},t1.{self.dcol_dc},tup.{self.acol},tup.{self.dcol}, {self.searchrad_deg}) ORDER BY angDist ASC'
+        if self.id_only==True:
+            adql = f'SELECT q3c_dist(t1.{self.acol_dc},t1.{self.dcol_dc}, tup.{self.acol},tup.{self.dcol}) *3600 AS angDist, tup.{self.namecol}, t1.name FROM dc_conesearch.wigglez_final as t1, tap_upload.upload_table as tup WHERE '+"'t'"+f' = q3c_radial_query(t1.{self.acol_dc},t1.{self.dcol_dc},tup.{self.acol},tup.{self.dcol}, {self.searchrad_deg}) ORDER BY angDist ASC'
+        else:
+            adql = f'SELECT q3c_dist(t1.{self.acol_dc},t1.{self.dcol_dc}, tup.{self.acol},tup.{self.dcol}) *3600 AS angDist, tup.{self.namecol}, t1.name, t2.redshift, t2.Q  FROM dc_conesearch.wigglez_final as t1 LEFT JOIN wigglez_final.WiggleZCat as t2 ON t1.name=t2.WiggleZ_Name, tap_upload.upload_table as tup WHERE '+"'t'"+f' = q3c_radial_query(t1.{self.acol_dc},t1.{self.dcol_dc},tup.{self.acol},tup.{self.dcol}, {self.searchrad_deg}) ORDER BY angDist ASC'
                 
         results_table = self.client.run_async(adql,
                                               uploads=self.uploads,
@@ -199,11 +217,15 @@ if __name__ == '__main__':
     twodf = qdatacen.twodf()
     gama = qdatacen.gama()
     wigglez = qdatacen.wigglez()
-    
+
     ###write to file
     twomass.write(f'{args.outdir}/x_2MASS.xml', format='votable')
     sixdf.write(f'{args.outdir}/x_6dFGS.xml', format='votable')
     twodf.write(f'{args.outdir}/x_2dFGRS.xml', format='votable')
     gama.write(f'{args.outdir}/x_GAMA.xml', format='votable')
     wigglez.write(f'{args.outdir}/x_WiggleZ.xml', format='votable')
-    
+
+
+
+
+
