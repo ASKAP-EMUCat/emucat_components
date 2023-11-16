@@ -190,22 +190,40 @@ def cds_xmatch(data, racol='RAJ2000', decol='DEJ2000',
                catcols='*',
                namecol='AllWISE', colsuff=None,
                cat2='vizier:V/154/sdss16',
-               timeout=600):
+               timeout=600, closest_only=True,
+               drop_poscols=True):
     'use cds xmatch to query sdss'
     ###try to replace with async query (might not need to)
     xm = XMatch()
     xm.TIMEOUT = timeout
+    incols = [namecol, racol, decol]
     
-    xmatch = xm.query(cat1=data, cat2=cat2, max_distance=maxsep,
+    xmatch = xm.query(cat1=data[incols],
+                      cat2=cat2, max_distance=maxsep,
                       colRA1=racol, colDec1=decol)
     
     ###reduce to only spec data (and unique)
     if catcols != '*':
-        outcols = [namecol] + catcols
+        outcols = ['angDist'] + incols + catcols
     else:
         outcols = xmatch.colnames
     
-    xmatch.sort('angDist')
+    if closest_only == True:
+        xmatch.sort('angDist')
+        xmatch = unique(xmatch, namecol, keep='first')
+    
+    ###account for possibility of same RA/DEC col names being the same in uploaded and queried tables
+    if racol not in xmatch.colnames and f'{racol}_1' in xmatch.colnames:
+        xmatch.rename_column(name=f'{racol}_1', new_name=racol)
+    if decol not in xmatch.colnames and f'{decol}_1' in xmatch.colnames:
+        xmatch.rename_column(name=f'{decol}_1', new_name=decol)
+    
+    xmatch.sort(racol)
+    
+    xmatch = xmatch[outcols]
+    
+    if drop_poscols==True:
+        xmatch.remove_columns(names=[racol, decol])
     
     return xmatch
 
@@ -231,12 +249,31 @@ if __name__ == '__main__':
     gama = qdatacen.gama()
     wigglez = qdatacen.wigglez()
 
+    ###additional external data not in DC
+    sdss = cds_xmatch(data=data, racol=args.racol, decol=args.decol,
+                      namecol=args.namecol, maxsep=args.search_rad,
+                      timeout=args.timeout, closest_only=args.only_find_closest,
+                      cat2='vizier:V/154/sdss16',
+                      catcols=['objID', 'umag', 'gmag', 'rmag', 'imag', 'zmag',
+                               'e_umag', 'e_gmag', 'e_rmag', 'e_imag', 'e_zmag',
+                               'zsp', 'e_zsp', 'f_zsp', 'zph', 'e_zph'])
+    des = cds_xmatch(data=data, racol=args.racol, decol=args.decol,
+                      namecol=args.namecol, maxsep=args.search_rad,
+                      timeout=args.timeout, closest_only=args.only_find_closest,
+                      cat2='vizier:II/371/des_dr2',
+                      catcols=['DES', 'CoadID', 'Aimg', 'Bimg', 'PA', 'ExtClsCoad',
+                               'ExtClsWavg', 'gFlag', 'rFlag', 'iFlag', 'zFlag',
+                               'yFlag', 'gmag', 'rmag', 'imag', 'zmag', 'Ymag',
+                               'e_gmag', 'e_rmag', 'e_imag', 'e_zmag', 'e_Ymag'])
+
     ###write to file
     twomass.write(f'{args.outdir}/x_2MASS.xml', format='votable')
     sixdf.write(f'{args.outdir}/x_6dFGS.xml', format='votable')
     twodf.write(f'{args.outdir}/x_2dFGRS.xml', format='votable')
     gama.write(f'{args.outdir}/x_GAMA.xml', format='votable')
     wigglez.write(f'{args.outdir}/x_WiggleZ.xml', format='votable')
+    sdss.write(f'{args.outdir}/x_SDSS.xml', format='votable')
+    des.write(f'{args.outdir}/x_DES.xml', format='votable')
 
 
 
