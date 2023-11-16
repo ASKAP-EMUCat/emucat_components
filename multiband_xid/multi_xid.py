@@ -4,7 +4,7 @@
 ###make command line friendly with votable i/o
 import numpy as np, argparse
 from distutils.util import strtobool
-from astropy.table import Table, unique
+from astropy.table import Table, unique, MaskedColumn
 from astroquery.xmatch import XMatch
 from astropy import units as u
 from pyvo.dal import TAPService
@@ -49,7 +49,7 @@ def parse_args():
     args.outdir = args.outdir.removesuffix('/')
     
     return args
-
+        
 
 class searchDC:
     'perform positional cross match with tables from astro data central'
@@ -106,17 +106,30 @@ class searchDC:
         if self.id_only==True:
             adql = f"SELECT q3c_dist(t1.{self.acol_dc},t1.{self.dcol_dc}, tup.{self.acol},tup.{self.dcol}) *3600 AS angDist, tup.{self.namecol}, t1.name FROM dc_conesearch.gama_dr2 AS t1, tap_upload.upload_table as tup WHERE 't' = q3c_radial_query(t1.{self.acol_dc},t1.{self.dcol_dc},tup.{self.acol},tup.{self.dcol}, {self.searchrad_deg}) ORDER BY angDist ASC"
         else:
-            adql = f"SELECT q3c_dist(t1.{self.acol_dc},t1.{self.dcol_dc}, tup.{self.acol},tup.{self.dcol}) *3600 AS angDist, tup.{self.namecol}, t2.CATAID, t2.NQ, t2.Z FROM dc_conesearch.gama_dr2 AS t1 LEFT JOIN gama_dr2.SpecObj AS t2 ON t1.name=t2.CATAID, tap_upload.upload_table as tup WHERE 't' = q3c_radial_query(t1.{self.acol_dc},t1.{self.dcol_dc},tup.{self.acol},tup.{self.dcol}, {self.searchrad_deg}) ORDER BY angDist ASC"
+            adql = f"SELECT q3c_dist(t1.{self.acol_dc},t1.{self.dcol_dc}, tup.{self.acol},tup.{self.dcol}) *3600 AS angDist, tup.{self.namecol}, t2.CATAID, t2.NQ, t2.Z, t3.logmstar, t3.fluxscale, t4.SFR FROM dc_conesearch.gama_dr2 AS t1 LEFT JOIN gama_dr2.SpecObj AS t2 ON t1.name=t2.CATAID LEFT JOIN gama_dr2.StellarMasses AS t3 ON t1.name=t3.CATAID LEFT JOIN gama_dr2.EmLinesPhys AS t4 ON t1.name=t4.CATAID, tap_upload.upload_table as tup WHERE 't' = q3c_radial_query(t1.{self.acol_dc},t1.{self.dcol_dc},tup.{self.acol},tup.{self.dcol}, {self.searchrad_deg}) ORDER BY angDist ASC"
 
         results_table = self.client.run_async(adql,
                                               uploads=self.uploads,
                                               timeout=self.timeout).to_table()
-        if self.id_only==True: ###rename 'name' to 'CATAID' here rather than TAP query to keep upper case
-            results_table.rename_column(name='name', new_name='CATAID')
         if self.closest_only==True and len(results_table)>1:
             results_table = unique(results_table, self.namecol,
                                    keep='first')
-
+        
+        ###gama specific value adds
+        if self.id_only==True: ###rename 'name' to 'CATAID' here rather than TAP query to keep upper case
+            results_table.rename_column(name='name', new_name='CATAID')
+        else:
+            ###account for flux scaling in stellar masses (only if not Lambdar): http://www.gama-survey.org/dr2/schema/table.php?id=179
+            logmstar = np.array(results_table['logmstar']).astype(float)
+            fluxscale = np.array(results_table['fluxscale']).astype(float)
+            results_table['logStellarMass'] = logmstar + np.log10(fluxscale)
+            ##obtain stellar mass masks
+            if type(results_table['logmstar']) == MaskedColumn:
+                massmask = results_table['logmstar'].mask | results_table['fluxscale'].mask
+                results_table['logStellarMass'] = MaskedColumn(results_table['logStellarMass'])
+                results_table['logStellarMass'].mask = massmask
+            results_table.remove_columns(['logmstar', 'fluxscale'])
+            
         return results_table
 
     def twodf(self):
@@ -224,7 +237,6 @@ if __name__ == '__main__':
     twodf.write(f'{args.outdir}/x_2dFGRS.xml', format='votable')
     gama.write(f'{args.outdir}/x_GAMA.xml', format='votable')
     wigglez.write(f'{args.outdir}/x_WiggleZ.xml', format='votable')
-
 
 
 
