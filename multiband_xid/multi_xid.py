@@ -55,33 +55,33 @@ class searchDC:
     'perform positional cross match with tables from astro data central'
     def __init__ (self, data, acol='RAJ2000', dcol='DEJ2000',
                   acol_dc='ra', dcol_dc='dec', namecol='AllWISE',
-                  searchrad_arcsec=1*u.arcsec,
+                  searchrad_arcsec=1*u.arcsec, chunksize=50000,
                   timeout=600, closest_only=True, id_only=False):
-            'initial class setup'
-            self.client = TAPService("https://datacentral.org.au/vo/tap")
-            self.timeout = timeout
-            self.namecol = namecol
-            self.searchrad_deg = np.round(searchrad_arcsec.value/3600, 5)
-            self.closest_only =  closest_only
-            self.id_only = id_only
-            ###make sure upload positional columns dont conflict with those in data central
-            self.acol_dc = acol_dc
-            self.dcol_dc = dcol_dc
-            self.acol = acol
-            self.dcol = dcol
-            if acol==acol_dc:
-                acol_new = f'{acol}_upload'
-                data.rename_column(name=acol,
-                                   new_name=acol_new)
-                self.acol = acol_new
-            if dcol==dcol_dc:
-                dcol_new = f'{dcol}_upload'
-                data.rename_column(name=dcol,
-                                   new_name=dcol_new)
-                self.dcol = dcol_new
+        'initial class setup'
+        self.data = data.copy()
+        self.client = TAPService("https://datacentral.org.au/vo/tap")
+        self.timeout = timeout
+        self.chunksize = chunksize ###not currently used will probably need to incorporate for large data uploads
+        self.namecol = namecol
+        self.searchrad_deg = np.round(searchrad_arcsec.value/3600, 5)
+        self.closest_only =  closest_only
+        self.id_only = id_only
+        ###make sure upload positional columns dont conflict with those in data central
+        self.acol_dc = acol_dc
+        self.dcol_dc = dcol_dc
+        self.acol = acol
+        self.dcol = dcol
+        if acol==acol_dc:
+            acol_new = f'{acol}_upload'
+            self.data.rename_column(name=acol, new_name=acol_new)
+            self.acol = acol_new
+        if dcol==dcol_dc:
+            dcol_new = f'{dcol}_upload'
+            self.data.rename_column(name=dcol, new_name=dcol_new)
+            self.dcol = dcol_new
 
-            ###define uploads
-            self.uploads = {"upload_table" : data}
+        ###define uploads
+        self.uploads = {"upload_table" : self.data}
     
     def twomass(self):
         'queries 2mass for psf and Kron magnitudes (and uncertainties) in J, H and K bands'
@@ -90,7 +90,7 @@ class searchDC:
             adql = f'SELECT q3c_dist(t1.{self.acol_dc},t1.{self.dcol_dc}, tup.{self.acol},tup.{self.dcol}) *3600 AS angDist, tup.{self.namecol}, t1.name FROM dc_conesearch."2mass_fdr" as t1, tap_upload.upload_table as tup WHERE '+"'t'"+f' = q3c_radial_query(t1.{self.acol_dc},t1.{self.dcol_dc},tup.{self.acol},tup.{self.dcol}, {self.searchrad_deg}) ORDER BY angDist ASC'
         else:
             adql = f'SELECT q3c_dist(t1.{self.acol_dc},t1.{self.dcol_dc}, tup.{self.acol},tup.{self.dcol}) *3600 AS angDist, tup.{self.namecol}, t1.name, t2.j_m, t2.j_cmsig, t2.h_m, t2.h_cmsig, t2.k_m, t2.k_cmsig, t3.j_m_e, t3.j_msig_e, t3.h_m_e, t3.h_msig_e, t3.k_m_e, t3.k_msig_e FROM dc_conesearch."2mass_fdr" as t1 LEFT JOIN "2mass_fdr".psc as t2 ON t1.name=t2.designation LEFT JOIN "2mass_fdr".xsc as t3 ON t1.name=t3.designation, tap_upload.upload_table as tup WHERE '+"'t'"+f' = q3c_radial_query(t1.{self.acol_dc},t1.{self.dcol_dc},tup.{self.acol},tup.{self.dcol}, {self.searchrad_deg}) ORDER BY angDist ASC'
-                
+        
         results_table = self.client.run_async(adql,
                                               uploads=self.uploads,
                                               timeout=self.timeout).to_table()
@@ -182,9 +182,53 @@ class searchDC:
                                    keep='first')
                                    
         return results_table
+
+
+class searchVizieR:
+    'tap query VizieR for data not available using CDS x_match service'
+    def __init__ (self, data, acol='RAJ2000', dcol='DEJ2000',
+                  acol_viz='RAJ2000', dcol_viz='DEJ2000', namecol='AllWISE',
+                  searchrad_arcsec=1*u.arcsec, chunksize=50000,
+                  timeout=600, closest_only=True):
+        'initial class setup'
+        self.client = TAPService("http://tapvizier.u-strasbg.fr/TAPVizieR/tap")
+        self.timeout = timeout
+        self.chunksize = chunksize ###not currently used will probably need to incorporate for large data uploads
+        self.namecol = namecol
+        self.searchrad_deg = np.round(searchrad_arcsec.value/3600, 5)
+        self.closest_only =  closest_only
+        ###make sure upload positional columns dont conflict with those in CDS
+        self.acol_viz = acol_viz
+        self.dcol_viz = dcol_viz
+        self.acol = acol
+        self.dcol = dcol
+        if acol==acol_viz:
+            acol_new = f'{acol}_upload'
+            data.rename_column(name=acol, new_name=acol_new)
+            self.acol = acol_new
+        if dcol==dcol_viz:
+            dcol_new = f'{dcol}_upload'
+            data.rename_column(name=dcol, new_name=dcol_new)
+            self.dcol = dcol_new
+
+        ###define uploads
+        self.uploads = {"uploaded_data" : data}
+
+    def lsdr8_photozs(self):
+        'query LS-DR8 photo-z catalog (Duncan 2022)'
+        adql = f'SELECT * from tap_upload.uploaded_data as tup JOIN "VII/292/south" AS t1 on 1=CONTAINS(POINT(\'ICRS\', tup.{self.acol}, tup.{self.dcol}), CIRCLE(\'ICRS\', t1.{self.acol_viz}, t1.{self.dcol_viz}, {self.searchrad_deg}))'
         
+        results_table = self.client.run_async(adql,
+                                              uploads=self.uploads,
+                                              timeout=self.timeout).to_table()
+        
+        if self.closest_only==True and len(results_table)>1:
+            results_table = unique(results_table, self.namecol,
+                                   keep='first')
+                                   
+        return results_table
 
-
+        
 def cds_xmatch(data, racol='RAJ2000', decol='DEJ2000',
                maxsep=1*u.arcsec,
                catcols='*',
@@ -234,7 +278,7 @@ def cds_xmatch(data, racol='RAJ2000', decol='DEJ2000',
 ###main
 ###write specific queries for each dataset and make argument of xmatch_with_data_central()
 
-
+#
 if __name__ == '__main__':
     args = parse_args()
     data = Table.read(args.targets)
@@ -250,6 +294,7 @@ if __name__ == '__main__':
     wigglez = qdatacen.wigglez()
 
     ###additional external data not in DC
+    ###CDS XMatch
     sdss = cds_xmatch(data=data, racol=args.racol, decol=args.decol,
                       namecol=args.namecol, maxsep=args.search_rad,
                       timeout=args.timeout, closest_only=args.only_find_closest,
@@ -265,6 +310,14 @@ if __name__ == '__main__':
                                'ExtClsWavg', 'gFlag', 'rFlag', 'iFlag', 'zFlag',
                                'yFlag', 'gmag', 'rmag', 'imag', 'zmag', 'Ymag',
                                'e_gmag', 'e_rmag', 'e_imag', 'e_zmag', 'e_Ymag'])
+    
+    ###TAP VizieR
+    qvizier = searchVizieR(data=data, acol=args.racol, dcol=args.decol,
+                           namecol=args.namecol,
+                           searchrad_arcsec=args.search_rad,
+                           timeout=args.timeout,
+                           closest_only=args.only_find_closest)
+    lsdr8_redshifts = qvizier.lsdr8_photozs()
 
     ###write to file
     twomass.write(f'{args.outdir}/x_2MASS.xml', format='votable')
@@ -274,6 +327,11 @@ if __name__ == '__main__':
     wigglez.write(f'{args.outdir}/x_WiggleZ.xml', format='votable')
     sdss.write(f'{args.outdir}/x_SDSS.xml', format='votable')
     des.write(f'{args.outdir}/x_DES.xml', format='votable')
+    lsdr8_redshifts.write(f'{args.outdir}/x_lsdr8-photozs.xml', format='votable')
+
+
+
+
 
 
 
