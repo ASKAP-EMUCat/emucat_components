@@ -110,6 +110,8 @@ class searchDC:
     def twomass(self):
         'queries 2mass for psf and Kron magnitudes (and uncertainties) in J, H and K bands'
         
+        print('Querying data central for matches in 2MASS')
+        
         if self.id_only==True:
             adql = f'SELECT q3c_dist(t1.{self.acol_dc},t1.{self.dcol_dc}, tup.{self.acol},tup.{self.dcol}) *3600 AS angDist, tup.{self.namecol}, t1.name FROM dc_conesearch."2mass_fdr" as t1, tap_upload.upload_table as tup WHERE '+"'t'"+f' = q3c_radial_query(t1.{self.acol_dc},t1.{self.dcol_dc},tup.{self.acol},tup.{self.dcol}, {self.searchrad_deg}) ORDER BY angDist ASC'
         else:
@@ -124,6 +126,8 @@ class searchDC:
     
     def gama(self):
         'queries GAMA for redshift and spec quality'
+        
+        print('Querying data central for matches in GAMA')
         
         if self.id_only==True:
             adql = f"SELECT q3c_dist(t1.{self.acol_dc},t1.{self.dcol_dc}, tup.{self.acol},tup.{self.dcol}) *3600 AS angDist, tup.{self.namecol}, t1.name FROM dc_conesearch.gama_dr2 AS t1, tap_upload.upload_table as tup WHERE 't' = q3c_radial_query(t1.{self.acol_dc},t1.{self.dcol_dc},tup.{self.acol},tup.{self.dcol}, {self.searchrad_deg}) ORDER BY angDist ASC"
@@ -155,6 +159,8 @@ class searchDC:
     def twodf(self):
         'query 2dFGRS for redshift'
         
+        print('Querying data central for matches in 2dFGRS')
+        
         if self.id_only==True:
             adql = f'SELECT q3c_dist(t1.{self.acol_dc},t1.{self.dcol_dc}, tup.{self.acol},tup.{self.dcol}) *3600 AS angDist, tup.{self.namecol}, t1.name FROM dc_conesearch."2dfgrs_fdr" as t1, tap_upload.upload_table as tup WHERE '+"'t'"+f' = q3c_radial_query(t1.{self.acol_dc},t1.{self.dcol_dc},tup.{self.acol},tup.{self.dcol}, {self.searchrad_deg}) ORDER BY angDist ASC'
         else:
@@ -170,6 +176,8 @@ class searchDC:
     def sixdf(self):
         'query 6dFGS for redshift'
         
+        print('Querying data central for matches in 6dFGS')
+        
         if self.id_only==True:
             adql = f'SELECT q3c_dist(t1.{self.acol_dc},t1.{self.dcol_dc}, tup.{self.acol},tup.{self.dcol}) *3600 AS angDist, tup.{self.namecol}, t1.name FROM dc_conesearch."6dfgs_fdr" as t1, tap_upload.upload_table as tup WHERE '+"'t'"+f' = q3c_radial_query(t1.{self.acol_dc},t1.{self.dcol_dc},tup.{self.acol},tup.{self.dcol}, {self.searchrad_deg}) ORDER BY angDist ASC'
         else:
@@ -184,6 +192,8 @@ class searchDC:
         
     def wigglez(self):
         'query WiggleZ for redshift and quality'
+        
+        print('Querying data central for matches in WiggleZ')
         
         if self.id_only==True:
             adql = f'SELECT q3c_dist(t1.{self.acol_dc},t1.{self.dcol_dc}, tup.{self.acol},tup.{self.dcol}) *3600 AS angDist, tup.{self.namecol}, t1.name FROM dc_conesearch.wigglez_final as t1, tap_upload.upload_table as tup WHERE '+"'t'"+f' = q3c_radial_query(t1.{self.acol_dc},t1.{self.dcol_dc},tup.{self.acol},tup.{self.dcol}, {self.searchrad_deg}) ORDER BY angDist ASC'
@@ -251,9 +261,13 @@ class searchVizieR:
 
     def lsdr8_photozs(self):
         'query LS-DR8 photo-z catalog (Duncan 2022)'
-        adql = f'SELECT * from tap_upload.uploaded_data as tup JOIN "VII/292/south" AS t1 on 1=CONTAINS(POINT(\'ICRS\', tup.{self.acol}, tup.{self.dcol}), CIRCLE(\'ICRS\', t1.{self.acol_viz}, t1.{self.dcol_viz}, {self.searchrad_deg}))'
+        
+        print('Querying VizieR for matches in LS-DR8 photo-z catalog')
+
+        adql = f'SELECT DISTANCE(POINT(\'ICRS\', tup.{self.acol}, tup.{self.dcol}), POINT(\'ICRS\', t1.{self.acol_viz}, t1.{self.dcol_viz})) *3600 AS angDist, tup.{self.namecol}, t1.id, t1.zphot, t1.e_zphot, t1.fclean, t1.fqual, t1.pstar from tap_upload.uploaded_data as tup JOIN "VII/292/south" AS t1 on 1=CONTAINS(POINT(\'ICRS\', tup.{self.acol}, tup.{self.dcol}), CIRCLE(\'ICRS\', t1.{self.acol_viz}, t1.{self.dcol_viz}, {self.searchrad_deg}))'
         
         results_table = self.query_in_chunks(query=adql)
+        results_table['angDist'].unit = None ##tapvizier adds units in deg for DISTANCE, multiplying by 3600 to arcsec makes deg incorrect
         
         if self.closest_only==True and len(results_table)>1:
             results_table = unique(results_table, self.namecol,
@@ -274,6 +288,8 @@ def cds_xmatch(data, racol='RAJ2000', decol='DEJ2000',
     xm = XMatch()
     xm.TIMEOUT = timeout
     incols = [namecol, racol, decol]
+    
+    print(f'Querying CDS XMatch service for matches in {cat2}')
     
     xmatch = xm.query(cat1=data[incols],
                       cat2=cat2, max_distance=maxsep,
@@ -361,8 +377,6 @@ if __name__ == '__main__':
     sdss.write(f'{args.outdir}/x_SDSS.xml', format='votable')
     des.write(f'{args.outdir}/x_DES.xml', format='votable')
     lsdr8_redshifts.write(f'{args.outdir}/x_lsdr8-photozs.xml', format='votable')
-
-
 
 
 
