@@ -142,6 +142,43 @@ async def db_lhr_upsert_many(conn, rows):
     #                                 schema_name='emucat')
 
 
+
+async def db_lhr_islands_upsert_many(conn, rows):
+    table_name = ''.join(random.choice(string.ascii_letters) for m in range(6)).lower()
+
+    async with conn.transaction():
+        create_table = '''
+                        CREATE TEMPORARY TABLE {table_name} (
+                        island_id bigint,
+                        wise_id character varying,
+                        w1_lr double precision,
+                        w1_rel double precision,
+                        w1_n_cont double precision,
+                        w1_separation double precision)
+                        '''.format(table_name=table_name)
+
+        await conn.execute(create_table)
+        await conn.copy_records_to_table(table_name, records=rows)
+
+        insert_query = '''
+                        INSERT INTO emucat.sources_lhr_islands_allwise
+                        (island_id, wise_id, w1_lr,
+                        w1_rel, w1_n_cont, w1_separation) 
+                        SELECT * FROM {table_name} 
+                        ON CONFLICT (island_id, wise_id) 
+                        DO UPDATE SET 
+                        w1_lr=EXCLUDED.w1_lr,
+                        w1_rel=EXCLUDED.w1_rel,
+                        w1_n_cont=EXCLUDED.w1_n_cont,
+                        w1_separation=EXCLUDED.w1_separation 
+                        WHERE emucat.sources_lhr_islands_allwise.island_id <> EXCLUDED.island_id AND 
+                              emucat.sources_lhr_islands_allwise.wise_id <> EXCLUDED.wise_id
+                        '''.format(table_name=table_name)
+
+        await conn.execute(insert_query)
+
+
+
 async def db_match_nearest_neighbour_with_allwise(conn, ser_name: str, max_separation_rads: float):
     sql = "INSERT INTO emucat.sources_nearest_allwise (component_id, wise_id, separation) " \
           "select c.id, a.designation, a.distance " \
@@ -342,6 +379,55 @@ def import_lhr(args):
     asyncio.run(import_lhr_votable(args.input, args.credentials))
 
 
+
+
+
+async def import_lhr_islands_catalog(conn, filename: str):
+    rows = []
+
+    logging.info('import_lhr_islands_catalog begin parse')
+    
+    for r in iter_csv(filename=filename, delimiter=' '):
+        row = [int(r[0]), r[1], float(r[2]), float(r[3]), float(r[4]), float(r[5])]
+        rows.append(row)
+
+    '''for event, elem in ET.iterparse(filename, events=('start', 'end', 'start-ns', 'end-ns')):
+        if event == 'nf-start':
+            ns = f'{elem[1]}'
+
+        elif event == 'end':
+            if elem.tag == f"{ns}TR":
+                # remove q_warning element
+                #row.pop()
+                rows.append(row)              
+                elem.clear()
+            elif elem.tag == f"{ns}TD":
+                value = data_types[type_count](elem.text)
+                row.append(value)
+                type_count += 1
+                elem.clear()
+        elif event == 'start':
+            if elem.tag == f"{ns}TR":
+                row = []
+                type_count = 0
+                elem.clear()
+    '''
+
+    logging.info('import_lhr_islands_catalog end parse')
+
+    logging.info('import_lhr_islands_catalog begin import')
+
+    await db_lhr_islands_upsert_many(conn, rows)
+    
+    logging.info('import_lhr_islands_catalog end import')
+
+
+def import_lhr_islands(args):
+    asyncio.run(import_lhr_islands_votable(args.input, args.credentials))
+
+
+
+
 async def import_extended_double_catalog(conn, filename):
     ns = '{http://www.ivoa.net/xml/VOTable/v1.4}'
 
@@ -396,6 +482,14 @@ async def import_lhr_votable(filename: str, credentials: str):
     conn = await asyncpg.connect(user=user, password=password, database=database, host=host, port=port)
     try:
         await import_lhr_catalog(conn, filename)
+    finally:
+        await conn.close()
+
+async def import_lhr_islands_votable(filename: str, credentials: str):
+    user, password, database, host, port = read_credentials(credentials)
+    conn = await asyncpg.connect(user=user, password=password, database=database, host=host, port=port)
+    try:
+        await import_lhr_islands_catalog(conn, filename)
     finally:
         await conn.close()
 
