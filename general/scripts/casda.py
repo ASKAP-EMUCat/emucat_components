@@ -122,7 +122,7 @@ def str2bool(v):
 
 def main():
     parser = argparse.ArgumentParser(description='Download images and weights from CASDA.')
-    parser.add_argument('-l', '--list', nargs='+', help='List of observing block numbers.', type=int, required=True)
+    parser.add_argument('-l', '--list', nargs='+', help='List of observing block numbers.', type=str, required=True)
     parser.add_argument('-o', '--output', help='Output directory.', type=str, required=True)
     parser.add_argument('-m', '--manifest', help='File manifest (json)', type=str, required=True, default='./manifest.json')
     parser.add_argument('-p', '--credentials', help='Credentials file.', required=False)
