@@ -2,7 +2,8 @@ version: '3'
 
 services:
   emucat_scripts:
-    image: emucat_scripts
+    image: aussrc/emucat_scripts
+    platform: linux/amd64
     container_name: emucat_scripts
     build:
       context: .

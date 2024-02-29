@@ -670,6 +670,11 @@ def main():
     input_lhr_parser.add_argument('-c', '--credentials', help='Credentials file.', required=True)
     input_lhr_parser.set_defaults(func=import_lhr)
 
+    input_lhr_parser = subparsers.add_parser('import_lhr_islands', help='Import lhr island results into EMUCat.')
+    input_lhr_parser.add_argument('-i', '--input', help='lhr islands votable.', type=str, required=True)
+    input_lhr_parser.add_argument('-c', '--credentials', help='Credentials file.', required=True)
+    input_lhr_parser.set_defaults(func=import_lhr_islands)
+
     import_extended_doubles_parser = subparsers.add_parser('import_extended_doubles',
                                                        help='Import extended doubles into EMUCat.')
     import_extended_doubles_parser.add_argument('-i', '--input', help='extended doubles votable.', type=str,
